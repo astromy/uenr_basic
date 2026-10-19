@@ -1,0 +1,382 @@
+<div th:fragment="performanceCharts" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="container-fluid py-4 px-4">
+        <!-- Section Header -->
+        <div class="dashboard-section-header">
+            <h3>Course Performance Analytics</h3>
+            <p>Visual breakdown of assessment performance by subject and course</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="row gx-3 gy-3 mb-4">
+            <div class="col-md-4">
+                <label for="classSelect" class="form-label">Select Class</label>
+                <select class="form-select" id="classSelect" th:onchange="loadPerformanceData()">
+                    <option value="">-- Select Class --</option>
+                    <option th:each="klass : ${klasses}"
+                            th:value="${klass.className}"
+                            th:text="${klass.className}"
+                            th:selected="${selectedClassName == klass.className}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="termSelect" class="form-label">Select Term</label>
+                <select class="form-select" id="termSelect" th:onchange="loadPerformanceData()">
+                    <option value="">-- Select Term --</option>
+                    <option th:each="term : ${terms}"
+                            th:value="${term.id}"
+                            th:text="${term.termName + ' - ' + term.academicyear.academicName}"
+                            th:selected="${selectedTermId == term.id}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary w-100" onclick="loadPerformanceData()">
+                    <i class="bi bi-bar-chart me-2"></i>Load Performance Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row gx-3 gy-3" id="performance-charts" th:if="${selectedClassName != null and selectedTermId != null}">
+            <!-- Bar Chart: Test Scores vs Exam Scores vs Total Scores -->
+            <div class="col-12">
+                <div class="graph-card">
+                    <h6 class="text-center mb-3">Subject Performance Comparison (Test vs Exam vs Total)</h6>
+                    <canvas id="performanceBarChart" height="100"></canvas>
+                </div>
+            </div>
+
+            <!-- Line Chart: Performance Trends -->
+            <div class="col-12 col-md-6">
+                <div class="graph-card">
+                    <h6 class="text-center mb-3">Test Score Trends by Subject</h6>
+                    <canvas id="testScoreLineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Radar Chart: Overall Performance -->
+            <div class="col-12 col-md-6">
+                <div class="graph-card">
+                    <h6 class="text-center mb-3">Overall Performance Radar</h6>
+                    <canvas id="performanceRadarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Tables Section -->
+        <div class="row gx-3 gy-3 mt-4" th:if="${selectedClassName != null and selectedTermId != null}">
+            <!-- Subject Performance Table -->
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm rounded-lg">
+                    <div class="card-body">
+                        <h5 class="card-title">Subject Performance Details</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Avg Test Score</th>
+                                        <th>Avg Exam Score</th>
+                                        <th>Avg Total Score</th>
+                                        <th>Highest Score</th>
+                                        <th>Students</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subjectPerformanceTable">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Select class and term to load data</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Performance Table -->
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm rounded-lg">
+                    <div class="card-body">
+                        <h5 class="card-title">Course Performance Details</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Subject</th>
+                                        <th>Avg Test Score</th>
+                                        <th>Avg Exam Score</th>
+                                        <th>Avg Total Score</th>
+                                        <th>Highest Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="coursePerformanceTable">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Select class and term to load data</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize charts if data is available
+            const selectedClass = /*[[${selectedClassName}]]*/ '';
+            const selectedTerm = /*[[${selectedTermId}]]*/ 0;
+
+            if (selectedClass && selectedTerm) {
+                loadPerformanceData();
+            }
+        });
+
+        function loadPerformanceData() {
+            const className = document.getElementById('classSelect').value;
+            const termId = document.getElementById('termSelect').value;
+
+            if (!className || !termId) {
+                alert('Please select both class and term');
+                return;
+            }
+
+            // Show loading indicator
+            const chartsContainer = document.getElementById('performance-charts');
+            if (chartsContainer) {
+                chartsContainer.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading performance data...</p></div>';
+            }
+
+            fetch(`/Performance/chart-data?className=${encodeURIComponent(className)}&termId=${termId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    renderPerformanceCharts(data);
+                })
+                .catch(error => {
+                    console.error('Error loading performance data:', error);
+                    alert('Error loading performance data. Please try again.');
+                });
+        }
+
+        function renderPerformanceCharts(data) {
+            // Restore charts container
+            const chartsContainer = document.getElementById('performance-charts');
+            if (chartsContainer) {
+                chartsContainer.innerHTML = `
+                    <div class="col-12">
+                        <div class="graph-card">
+                            <h6 class="text-center mb-3">Subject Performance Comparison (Test vs Exam vs Total)</h6>
+                            <canvas id="performanceBarChart" height="100"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="graph-card">
+                            <h6 class="text-center mb-3">Test Score Trends by Subject</h6>
+                            <canvas id="testScoreLineChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="graph-card">
+                            <h6 class="text-center mb-3">Overall Performance Radar</h6>
+                            <canvas id="performanceRadarChart"></canvas>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const labels = data.labels || [];
+            const testScores = data.testScores || [];
+            const examScores = data.examScores || [];
+            const totalScores = data.totalScores || [];
+
+            // Bar Chart
+            const barCtx = document.getElementById('performanceBarChart');
+            if (barCtx) {
+                new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Avg Test Score',
+                                data: testScores,
+                                backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Avg Exam Score',
+                                data: examScores,
+                                backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Avg Total Score',
+                                data: totalScores,
+                                backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 10
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Line Chart
+            const lineCtx = document.getElementById('testScoreLineChart');
+            if (lineCtx) {
+                new Chart(lineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Test Score',
+                                data: testScores,
+                                borderColor: 'rgb(54, 162, 235)',
+                                backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                                tension: 0.3,
+                                fill: true
+                            },
+                            {
+                                label: 'Exam Score',
+                                data: examScores,
+                                borderColor: 'rgb(255, 99, 132)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                                tension: 0.3,
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Radar Chart
+            const radarCtx = document.getElementById('performanceRadarChart');
+            if (radarCtx && labels.length > 0) {
+                new Chart(radarCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Test Score',
+                                data: testScores,
+                                borderColor: 'rgb(54, 162, 235)',
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            },
+                            {
+                                label: 'Exam Score',
+                                data: examScores,
+                                borderColor: 'rgb(255, 99, 132)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            },
+                            {
+                                label: 'Total Score',
+                                data: totalScores,
+                                borderColor: 'rgb(75, 192, 192)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Populate Subject Performance Table
+            const subjectTableBody = document.getElementById('subjectPerformanceTable');
+            if (subjectTableBody && data.subjectPerformance) {
+                if (data.subjectPerformance.length === 0) {
+                    subjectTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No data available</td></tr>';
+                } else {
+                    subjectTableBody.innerHTML = data.subjectPerformance.map(perf => `
+                        <tr>
+                            <td>${perf.subjectName}</td>
+                            <td>${perf.avgTestScore.toFixed(2)}</td>
+                            <td>${perf.avgExamScore.toFixed(2)}</td>
+                            <td>${perf.avgTotalScore.toFixed(2)}</td>
+                            <td>${perf.highestScore.toFixed(2)}</td>
+                            <td>${perf.studentCount}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            // Populate Course Performance Table
+            const courseTableBody = document.getElementById('coursePerformanceTable');
+            if (courseTableBody && data.coursePerformance) {
+                if (data.coursePerformance.length === 0) {
+                    courseTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No data available</td></tr>';
+                } else {
+                    courseTableBody.innerHTML = data.coursePerformance.map(perf => `
+                        <tr>
+                            <td>${perf.courseName}</td>
+                            <td>${perf.subjectName}</td>
+                            <td>${perf.avgTestScore.toFixed(2)}</td>
+                            <td>${perf.avgExamScore.toFixed(2)}</td>
+                            <td>${perf.avgTotalScore.toFixed(2)}</td>
+                            <td>${perf.highestScore.toFixed(2)}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+    </script>
+</div>

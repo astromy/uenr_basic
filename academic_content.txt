@@ -1,0 +1,25 @@
+/*  
+ * To change this license header, choose License Headers in Project Properties.  
+ * To change this template file, choose Tools | Templates  
+ * and open the template in the editor.  
+ */  
+package com.UBSDB.UnerBasicSchoolFinancialSystem.Academic;  
+  
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermResponse;  
+import java.time.LocalDate;  
+import java.util.List;  
+import java.util.stream.Collectors;  
+import org.springframework.stereotype.Component;  
+  
+/**  
+ *  
+ * @author enock  
+ */  
+@Component  
+public class AcademicResponse {  
+    private Long Id;  
+    private String AcademicName;  
+    private String AcademicYear;  
+    private String startDate;  
+    private String endDate;  
+    private String SuccessorAcademicYear;  

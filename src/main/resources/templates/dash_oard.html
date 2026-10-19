@@ -1,0 +1,220 @@
+<div th:fragment="dash_oard" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <div class="container-fluid py-4 px-4">
+
+        <!-- Section Header -->
+        <div class="dashboard-section-header">
+            <h3>Dashboard Overview</h3>
+            <p>Real-time summary of school enrollment, payments, and key metrics</p>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="row gx-3 gy-3" id="dashboard-cards">
+            <!-- Cards will be injected here -->
+        </div>
+
+        <!-- Graphs Section -->
+        <div class="graph-section mt-5">
+            <div class="section-header">
+                <h4>Analytics</h4>
+                <p>Visual breakdown of enrollment and payment data</p>
+            </div>
+            <div class="row gx-3 gy-3">
+                <div class="col-12 col-md-6">
+                    <div class="graph-card">
+                        <h6 class="text-center mb-3">Enrollment by Level</h6>
+                        <canvas id="enrollmentChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="graph-card">
+                        <h6 class="text-center mb-3">Payment Summary</h6>
+                        <canvas id="paymentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="DashboardLoad" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title w-100">Loading Dashboard...</h5>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="spinner-border text-primary mb-3" role="status"></div>
+                    <p class="mb-0">Fetching latest data. Please wait...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        // Load dashboard when the page has finished loading
+        document.addEventListener("DOMContentLoaded", function () {
+            getdashboard();
+        });
+
+        function getdashboard() {
+
+
+            $.ajax({
+                url: "/dashboard",
+                type: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    $("#DashboardLoad").modal("hide");
+
+                    const dashboardData = [
+                        { title: "Total Learners", value: data.totalStudents, icon: "fa-users", color: "primary", animated: true },
+                        { title: "Normal Learners", value: data.nonStaff, icon: "fa-user-graduate", color: "info", animated: false },
+                        { title: "Scholarship Learners", value: data.junior_Staff, icon: "fa-hand-holding-usd", color: "success", animated: true },
+                        { title: "Staff Learners", value: data.seniorMember, icon: "fa-briefcase", color: "secondary", animated: false },
+                        { title: "Creche", value: data.totalStudentsCreche, icon: "fa-baby", color: "warning", animated: true },
+                        { title: "Kindergarten", value: data.totalStudentsKindagarten, icon: "fa-child", color: "danger", animated: false },
+                        { title: "Nursery", value: data.totalStudentsNursery, icon: "fa-book-open", color: "dark", animated: true },
+                        { title: "Lower Primary", value: data.totalStudentsLowerPrimary, icon: "fa-layer-group", color: "success", animated: false },
+                        { title: "Upper Primary", value: data.totalStudentsUpperPrimary, icon: "fa-building", color: "info", animated: true },
+                        { title: "Junior High", value: data.totalStudentsJuniorHigh, icon: "fa-school", color: "primary", animated: false },
+                        { title: "Daily Payments (GHC)", value: "GHC " + data.totalAmountPaid, icon: "fa-coins", color: "primary", highlight: true, animated: true }
+                    ];
+
+                    let html = "";
+                    dashboardData.forEach(item => {
+                        const bgColor = item.highlight ? "bg-primary text-white" : "bg-white";
+                        const iconColor = item.highlight ? "text-white" : `text-${item.color}`;
+                        const animatedClass = item.animated ? "animated-border" : "";
+                        const reverseClass = item.animated && dashboardData.indexOf(item) % 2 === 0 ? "reverse" : "";
+                        const highlightClass = item.highlight ? "highlight-card" : "";
+
+                        html += `
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                <div class="dashboard-card card shadow-sm ${bgColor} ${animatedClass} ${reverseClass} ${highlightClass}">
+                                    <div class="d-flex justify-content-between align-items-center h-100">
+                                        <div>
+                                            <div class="dashboard-title mb-1">${item.title}</div>
+                                            <div class="dashboard-value">${item.value}</div>
+                                        </div>
+                                        <div><i class="fa-solid ${item.icon} dashboard-icon ${iconColor}"></i></div>
+                                    </div>
+                                </div>
+                            </div>`;
+                    });
+
+                    $("#dashboard-cards").html(html);
+
+                    // Render charts after cards are injected
+                    renderCharts(data);
+                },
+                error: function (xhr, status, error) {
+                    $("#DashboardLoad").modal("hide");
+                    $("#dashboard-cards").html(`
+                        <div class="col-12 text-danger text-center">
+                            <p>⚠️ Sorry, couldn't load dashboard data.</p>
+                        </div>`);
+                    console.error("Error loading dashboard:", error);
+                }
+            });
+        }
+
+        function renderCharts(data) {
+            // Enrollment by Level Bar Chart
+            const enrollmentCtx = document.getElementById('enrollmentChart');
+            if (enrollmentCtx) {
+                new Chart(enrollmentCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Creche', 'Kindergarten', 'Nursery', 'Lower Primary', 'Upper Primary', 'Junior High'],
+                        datasets: [{
+                            label: 'Students',
+                            data: [
+                                data.totalStudentsCreche || 0,
+                                data.totalStudentsKindagarten || 0,
+                                data.totalStudentsNursery || 0,
+                                data.totalStudentsLowerPrimary || 0,
+                                data.totalStudentsUpperPrimary || 0,
+                                data.totalStudentsJuniorHigh || 0
+                            ],
+                            backgroundColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(54, 162, 235)',
+                                'rgb(255, 206, 86)',
+                                'rgb(75, 192, 192)',
+                                'rgb(153, 102, 255)',
+                                'rgb(255, 159, 64)'
+                            ],
+                            borderColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(54, 162, 235)',
+                                'rgb(255, 206, 86)',
+                                'rgb(75, 192, 192)',
+                                'rgb(153, 102, 255)',
+                                'rgb(255, 159, 64)'
+                            ],
+                            borderWidth: 1,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Payment Doughnut Chart
+            const paymentCtx = document.getElementById('paymentChart');
+            if (paymentCtx) {
+                const totalPaid = data.totalAmountPaid || 0;
+                const nonStaff = data.nonStaff || 0;
+                const juniorStaff = data.junior_Staff || 0;
+                const seniorMember = data.seniorMember || 0;
+
+                new Chart(paymentCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Normal Learners', 'Scholarship', 'Staff Learners', 'Other'],
+                        datasets: [{
+                            data: [nonStaff, juniorStaff, seniorMember, Math.max(0, totalPaid - nonStaff - juniorStaff - seniorMember)],
+                            backgroundColor: [
+                                'rgb(54, 162, 235)',
+                                'rgb(75, 192, 192)',
+                                'rgb(255, 206, 86)',
+                                'rgb(153, 102, 255)'
+                            ],
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 16,
+                                    usePointStyle: true,
+                                    pointStyleWidth: 10
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+
+</div>

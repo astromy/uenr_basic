@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<div th:fragment="AllTerm">
+ <div th:if="${Terms}" class="jumbotron">
+          <table class="table table-striped  table-success" id="mydata">
+          <thead>
+              <tr>
+                  <th>TERM NAME</th>
+                  <th>ACADEMIC YEAR</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                    <th></th>
+                      <th></th>
+              </tr>
+          </thead><tbody>
+              <tr th:each="term:${Terms}">
+                    <td th:text="${term.TermName}"></td>
+                  <td th:text="${term.StartDate}"></td>
+                  <td th:text="${term.EndDate}"></td>
+                   <td th:text="${term.academicyear.AcademicYear.year}"></td>
+                  <td><a th:href="@{/EditTerm/{id}(id=${term.id})}" class="btn btn-primary"><span class="fa fa-edit"></span>EDIT</a></td>
+                   <td>
+                    <a th:href="@{Admin/StudentKlassAssessment/{TermId}(TermId=${term.id})}" class="btn btn-info"><span class="fa fa-edit"></span>Assessment</a></td>
+                   <td><a th:href="@{/TermWeek/view/{termId}(termId=${term.id})}" class="btn btn-warning"><span class="fa fa-calendar-week"></span>View Weeks</a></td>
+                   <TD> <a th:href="@{downloadApplicationForm/{term}(term=${term.id})}" class="btn btn-info"><span class="fa fa-edit"></span>Admission Form</a></td>
+             
+                  
+                    </tr></tbody>
+          </table>
+ </div></div>
+
+    <div th:fragment="AllTermHead">
+ <div th:if="${Terms}" class="jumbotron">
+          <table class="table table-striped  table-success" id="mydata">
+          <thead>
+              <tr>
+                  <th>TERM NAME</th>
+                  <th>ACADEMIC YEAR</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                    <th></th>
+              </tr>
+          </thead><tbody>
+              <tr th:each="term:${Terms}">
+                    <td th:text="${term.TermName}"></td>
+                  <td th:text="${term.StartDate}"></td>
+                  <td th:text="${term.EndDate}"></td>
+                   <td th:text="${term.academicyear.AcademicYear.year}"></td>
+                  <!---td><a th:href="@{/EditTerm/{id}(id=${term.id})}" class="btn btn-primary"><span class="fa fa-edit"></span>EDIT</a></td-->
+                   <td>
+                    <a th:href="@{Admin/StudentKlassAssessment/{TermId}(TermId=${term.id})}"
+                       class="btn btn-info"><span class="fa fa-edit"></span>Assessment</a></td>
+                   <td><a th:href="@{/TermWeek/view/{termId}(termId=${term.id})}" class="btn btn-warning"><span class="fa fa-calendar-week"></span>View Weeks</a></td>
+               
+                    </tr></tbody>
+          </table>
+ </div></div>
+    <div th:fragment="UpdateTerm">
+                        <div class="offset-md-1 col-md-6">
+                            <form method="post" id="form" th:action="@{/EditTerm}" th:object="${UpdateTerm}" class="jumbotron">
+                                  <input type="hidden" class="form-control" th:field="*{id}">
+                            <div class="form-group ">
+                                    <label for="inputState">Term Name</label>
+                                    <select class="form-control" th:field="*{TermName}">
+                                        <option th:value="FirstTerm" >First Term</option>
+                                        <option th:value="SecondTerm">Second Term</option>
+                                        <option th:value="ThirdTerm">Third  Term</option>
+
+                                    </select>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="text">Starting Date</label>
+                                    <input type="date" class="form-control" th:field="*{StartDate}">
+                                </div>   
+                                <div class="form-group ">
+                                    <label for="text">Ending Date</label>
+                                    <input type="date" class="form-control" th:field="*{EndDate}">
+                                </div>
+                                <div class="form-group ">
+                                    <label for="text">Academic Year</label>
+                                    <input type="text" readonly="true" class="form-control" th:value="${year}"><br />
+                                    <input type="hidden" th:field="*{academicyear}">
+                                    <button type="submit"class=" btn btn-primary"id="upload_btn" th:onclick="spinOnload()" >Save Term</button>     
+                                    <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        Uploading.................
+                                    </button>
+                                </div> 
+                            </form>
+
+                        </div> 
+
+
+
+                    </div>
+

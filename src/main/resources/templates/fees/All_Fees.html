@@ -1,0 +1,454 @@
+<div th:fragment="fees">
+
+    <div class="row" style="background-color:#fff;">
+
+        <div class="col-md-11">
+
+            <!-- SEARCH AND FILTER -->
+            <form th:action="@{/FinancePortal/AllFees/}"
+                  method="get"
+                  class="mb-3">
+
+                <div class="row g-2">
+
+                    <!-- SEARCH -->
+                    <div class="col-md-4">
+
+                        <div class="input-group">
+
+                            <input type="text"
+                                   name="search"
+                                   class="form-control"
+                                   placeholder="Search fees..."
+                                   th:value="${search}">
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                <i class="fa fa-search"></i>
+                                Search
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TERM -->
+                    <div class="col-md-2">
+
+                        <select name="term"
+                                class="form-control">
+
+                            <option value="">All Terms</option>
+
+                            <option value="First Term"
+                                    th:selected="${term == 'First Term'}">
+                                First Term
+                            </option>
+
+                            <option value="Second Term"
+                                    th:selected="${term == 'Second Term'}">
+                                Second Term
+                            </option>
+
+                            <option value="Third Term"
+                                    th:selected="${term == 'Third Term'}">
+                                Third Term
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ACADEMIC YEAR -->
+                    <div class="col-md-2">
+
+                        <input type="text"
+                               name="academicYear"
+                               class="form-control"
+                               placeholder="Academic Year"
+                               th:value="${academicYear}">
+
+                    </div>
+
+
+                    <!-- LEVEL -->
+                    <div class="col-md-2">
+
+                        <input type="text"
+                               name="level"
+                               class="form-control"
+                               placeholder="Class Level"
+                               th:value="${level}">
+
+                    </div>
+
+
+                    <!-- MONTH -->
+                    <div class="col-md-2">
+
+                        <select name="month"
+                                class="form-control">
+
+                            <option value="">All Months</option>
+
+                            <option value="January"
+                                    th:selected="${month == 'January'}">
+                                January
+                            </option>
+
+                            <option value="February"
+                                    th:selected="${month == 'February'}">
+                                February
+                            </option>
+
+                            <option value="March"
+                                    th:selected="${month == 'March'}">
+                                March
+                            </option>
+
+                            <option value="April"
+                                    th:selected="${month == 'April'}">
+                                April
+                            </option>
+
+                            <option value="May"
+                                    th:selected="${month == 'May'}">
+                                May
+                            </option>
+
+                            <option value="June"
+                                    th:selected="${month == 'June'}">
+                                June
+                            </option>
+
+                            <option value="July"
+                                    th:selected="${month == 'July'}">
+                                July
+                            </option>
+
+                            <option value="August"
+                                    th:selected="${month == 'August'}">
+                                August
+                            </option>
+
+                            <option value="September"
+                                    th:selected="${month == 'September'}">
+                                September
+                            </option>
+
+                            <option value="October"
+                                    th:selected="${month == 'October'}">
+                                October
+                            </option>
+
+                            <option value="November"
+                                    th:selected="${month == 'November'}">
+                                November
+                            </option>
+
+                            <option value="December"
+                                    th:selected="${month == 'December'}">
+                                December
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILTER BUTTONS -->
+                <div class="mt-2">
+
+                    <button type="submit"
+                            class="btn btn-primary btn-sm">
+                        Filter
+                    </button>
+
+                    <a th:href="@{/FinancePortal/AllFees/}"
+                       class="btn btn-secondary btn-sm">
+                        Clear
+                    </a>
+
+                </div>
+
+            </form>
+
+
+            <!-- RECORD COUNT -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+
+                <div>
+
+                    <strong>
+                        School Fees
+                    </strong>
+
+                    <span class="text-muted"
+                          th:if="${totalItems != null}">
+
+                        —
+                        <span th:text="${totalItems}">
+                        </span>
+                        records
+
+                    </span>
+
+                </div>
+
+
+                <!-- PAGE SIZE -->
+                <form th:action="@{/FinancePortal/AllFees/}"
+                      method="get">
+
+                    <input type="hidden"
+                           name="search"
+                           th:value="${search}">
+
+                    <input type="hidden"
+                           name="term"
+                           th:value="${term}">
+
+                    <input type="hidden"
+                           name="academicYear"
+                           th:value="${academicYear}">
+
+                    <input type="hidden"
+                           name="level"
+                           th:value="${level}">
+
+                    <input type="hidden"
+                           name="month"
+                           th:value="${month}">
+
+                    <select name="size"
+                            class="form-select form-select-sm"
+                            onchange="this.form.submit()">
+
+                        <option value="10"
+                                th:selected="${pageSize == 10}">
+                            10
+                        </option>
+
+                        <option value="25"
+                                th:selected="${pageSize == 25}">
+                            25
+                        </option>
+
+                        <option value="50"
+                                th:selected="${pageSize == 50}">
+                            50
+                        </option>
+
+                        <option value="100"
+                                th:selected="${pageSize == 100}">
+                            100
+                        </option>
+
+                    </select>
+
+                </form>
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="table-responsive">
+
+                <table class="table table-info"
+                       style="font-family:Gill Sans MT; font-size:13px;"
+                       id="mydata">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Term</th>
+
+                        <th>Academic Year</th>
+
+                        <th>Amount</th>
+
+                        <th>Description</th>
+
+                        <th>Date</th>
+
+                        <th>Level</th>
+
+                        <th>Month</th>
+
+                        <th></th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    <tr th:each="f : ${fees}">
+
+                        <td th:text="${f.value.term.TermName}">
+                        </td>
+
+                        <td th:text="${f.value.term.academicyear.AcademicYear.getYear()}">
+                        </td>
+
+                        <td th:text="${f.value.Amount}">
+                        </td>
+
+                        <td th:text="${f.value.FeeType}">
+                        </td>
+
+                        <td th:text="${f.value.FeesDate}">
+                        </td>
+
+                        <td>
+
+                            <th:block th:each="text : ${f.key}">
+
+                                <span th:text="${text}"></span>
+
+                            </th:block>
+
+                        </td>
+
+                        <td th:text="${f.value.moth}">
+                        </td>
+
+                        <td>
+
+                            <a th:href="@{/FinancePortal/Editfees/{id}(id=${f.value.Id})}"
+                               class="btn btn-primary btn-sm">
+
+                                Edit
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- NO RESULTS -->
+                    <tr th:if="${fees == null || fees.isEmpty()}">
+
+                        <td colspan="8"
+                            class="text-center">
+
+                            No fees found.
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- PAGINATION -->
+            <div th:if="${totalPages != null && totalPages > 1}"
+                 class="d-flex justify-content-between align-items-center mt-3">
+
+                <!-- PREVIOUS -->
+                <a th:if="${currentPage > 0}"
+                   th:href="@{/FinancePortal/AllFees/(
+                       page=${currentPage - 1},
+                       size=${pageSize},
+                       search=${search},
+                       term=${term},
+                       academicYear=${academicYear},
+                       level=${level},
+                       month=${month}
+                   )}"
+                   class="btn btn-outline-primary btn-sm">
+
+                    Previous
+
+                </a>
+
+                <span th:unless="${currentPage > 0}"
+                      class="btn btn-outline-secondary btn-sm disabled">
+
+                    Previous
+
+                </span>
+
+
+                <!-- PAGE NUMBERS -->
+                <div>
+
+                    <th:block th:each="p : ${#numbers.sequence(startPage, endPage)}">
+
+                        <a th:href="@{/FinancePortal/AllFees/(
+                            page=${p},
+                            size=${pageSize},
+                            search=${search},
+                            term=${term},
+                            academicYear=${academicYear},
+                            level=${level},
+                            month=${month}
+                        )}"
+                           th:text="${p + 1}"
+                           th:class="${p == currentPage
+                               ? 'btn btn-primary btn-sm'
+                               : 'btn btn-outline-primary btn-sm'}"
+                           style="margin:2px;">
+
+                        </a>
+
+                    </th:block>
+
+                </div>
+
+
+                <!-- NEXT -->
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{/FinancePortal/AllFees/(
+                       page=${currentPage + 1},
+                       size=${pageSize},
+                       search=${search},
+                       term=${term},
+                       academicYear=${academicYear},
+                       level=${level},
+                       month=${month}
+                   )}"
+                   class="btn btn-outline-primary btn-sm">
+
+                    Next
+
+                </a>
+
+                <span th:unless="${currentPage < totalPages - 1}"
+                      class="btn btn-outline-secondary btn-sm disabled">
+
+                    Next
+
+                </span>
+
+            </div>
+
+
+            <!-- PAGE INFORMATION -->
+            <div th:if="${totalPages != null}"
+                 class="text-center text-muted mt-2"
+                 style="font-size:12px;">
+
+                Page
+                <strong th:text="${currentPage + 1}"></strong>
+                of
+                <strong th:text="${totalPages}"></strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

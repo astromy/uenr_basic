@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<div th:fragment="NewUser">
+    <div class="card border-0 shadow-sm rounded-lg">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="mb-0">Add New User</h5>
+        </div>
+        <div class="card-body p-4">
+            <form th:method="post" th:action="@{/addUserAdminFinance}" th:object="${newUser}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>USER NAME</label>
+                            <input type="text" class="form-control" th:field="*{username}">
+                        </div>
+                        <div class="form-group">
+                            <label>FIRST NAME</label>
+                            <input type="text" class="form-control" th:field="*{firstname}">
+                        </div>
+                        <div class="form-group">
+                            <label>LAST NAME</label>
+                            <input type="text" class="form-control" th:field="*{lastname}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>PHONE NUMBER</label>
+                            <input type="text" class="form-control" th:field="*{phonnumber}">
+                        </div>
+                        <div class="form-group">
+                            <label>SELECT ROLE</label>
+                            <select class="form-control" th:field="*{roles}">
+                                <option th:each="role:${Roles}" th:text="${role.name}" th:value="${role.id}" />
+                            </select>
+                        </div>
+                        <div class="form-group mt-4">
+                            <input type="submit" class="btn btn-primary" value="ADD USER" id="upload_btn" th:onclick="spinOnload()">
+                            <button class="btn btn-primary d-none" id="loading_btn" type="button">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Saving.................
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="updateUser">
+    <div class="card border-0 shadow-sm rounded-lg">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="mb-0">Update User</h5>
+        </div>
+        <div class="card-body p-4">
+            <form th:method="post" th:action="@{/updateUserAdminFinance}" th:object="${updateUser}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>USER NAME</label>
+                            <input type="text" class="form-control" th:field="*{username}" required="true">
+                            <input type="hidden" class="form-control" th:field="*{id}">
+                        </div>
+                        <div class="form-group">
+                            <label>FIRST NAME</label>
+                            <input type="text" class="form-control" th:field="*{firstname}" required="true">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>UPDATE PASSWORD</label>
+                            <input type="password" class="form-control" th:field="*{password}" required="true">
+                        </div>
+                        <div class="form-group">
+                            <label>PHONE NUMBER</label>
+                            <input type="text" class="form-control" th:field="*{phonnumber}">
+                        </div>
+                        <div class="form-group">
+                            <label>SELECT ROLE</label>
+                            <select class="form-control" th:field="*{roles}">
+                                <option th:each="role:${Roles}" th:text="${role.name}" th:value="${role.id}" />
+                            </select>
+                        </div>
+                        <div class="form-group mt-4">
+                            <input type="submit" class="btn btn-primary" value="UPDATE" id="upload_btn" th:onclick="spinOnload()">
+                            <button class="btn btn-primary d-none" id="loading_btn" type="button">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Saving.................
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="reset">
+    <div class="card border-0 shadow-sm rounded-lg">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="mb-0">Reset Password</h5>
+        </div>
+        <div class="card-body p-4">
+            <form th:method="Get" th:action="@{/reset/checkUser}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>USER NAME</label>
+                            <input type="text" class="form-control" id="user_name" name="user_name" required="true">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone number</label>
+                            <input type="text" class="form-control" id="ph" name="ph" required="true">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mt-4">
+                            <input type="submit" class="btn btn-primary" value="RESET" id="upload_btn" th:onclick="spinOnload()">
+                            <button class="btn btn-primary d-none" id="loading_btn" type="button">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Saving.................
+                            </button>
+                            <a th:href="@{/login}" class="btn btn-outline-secondary ms-2">Login</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

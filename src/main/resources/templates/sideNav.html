@@ -1,0 +1,113 @@
+<div th:fragment="sideNavigation">
+    <div class="sidenav">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header text-center mb-4">
+            <img th:src="@{/pro-pics/UENR.PNG}" height="50" alt="Logo" class="mb-2">
+            <h5 class="fw-bold mb-0">UENR Basic School</h5>
+            <small class="text-muted">Admin Panel</small>
+        </div>
+
+        <hr class="sidebar-divider" />
+
+        <!-- Navigation Links -->
+        <ul class="nav flex-column">
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/Admin/home}">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/Studentgeneral}">
+                    <i class="bi bi-person-fill me-2"></i>Student
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/Teachergeneral}">
+                    <i class="bi bi-person-badge-fill me-2"></i>Teacher
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/mockgeneral}">
+                    <i class="bi bi-journal-check me-2"></i>Assessment
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/ClassTeachers}">
+                    <i class="bi bi-people-fill me-2"></i>Classes
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/ShowSendSmsForm/}">
+                    <i class="bi bi-envelope-fill me-2"></i>Send SMS
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/Termgeneral}">
+                    <i class="bi bi-calendar2-week-fill me-2"></i>Term
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/getAllTerms}">
+                    <i class="bi bi-calendar-week-fill me-2"></i>Assessment Week
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/showAcademicForm}">
+                    <i class="bi bi-calendar-check-fill me-2"></i>Academic Year
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/usergeneral}">
+                    <i class="bi bi-person-lines-fill me-2"></i>User
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/Courses}">
+                    <i class="bi bi-book me-2"></i>Courses
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/SelectExcelFileToUpload}">
+                    <i class="bi bi-upload me-2"></i>Upload Student File
+                </a>
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link py-2 px-3 rounded sidebar-link"
+                   th:href="@{/Admin/activity-logs}">
+                    <i class="bi bi-activity me-2"></i>Activity Logs
+                </a>
+            </li>
+        </ul>
+
+        <hr class="sidebar-divider mt-4" />
+
+        <!-- Footer -->
+        <div class="sidebar-footer text-center mt-3">
+            <small class="text-muted">&copy; 2024 UBS</small>
+        </div>
+    </div>
+</div>

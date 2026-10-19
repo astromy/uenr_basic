@@ -1,0 +1,120 @@
+  <div th:fragment="StudentAssessment" >
+                        <DIV CLASS="row jumbotron  "style="background-color:#fff; font-size: 14px;" >
+                            <!---    <table class="table table-info">
+                                    <tr></td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<td><img th:src="@{${StudentDetailPicture.productPicturePath}}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>First Name:</td ><td th:text="${StudentDetailPicture.FirstName}">    </tr>
+                                    <tr>
+                                        <td>Sur Name:</td ><td th:text="${StudentDetailPicture.FirstName}"></td>   
+    
+                                    </tr> 
+                                    <td>Class Name: </td><td th:text="${StudentDetailPicture.studentklass.ClassName}"></td>
+                                </table>
+                            <div>--->
+
+
+
+
+                            <img th:src="@{/pro-pics/Assessment.jpg}" class="img-fluid" />
+                            <div class="row ">
+                                <div class="col-md-9 ">
+
+                                    <table class="table table-responsive">
+                                        <tr>
+                                            <td><b>Student Name:</b></td>
+                                            <td th:text="${StudentDeatils}"></td> 
+                                            <td> <b>Student Class &nbsp;</b></td>
+                                            <td th:text="${StudentClass}"></td>
+                                        </tr>
+                                        <tr>
+
+                                            <td><b>Term :</b></td>
+                                            <td th:text="${CurrentTerm}"></td>
+                                            <td><b>Academic Year:</b></td>
+                                            <td th:text="${CurrentYear}"></td>
+
+                                        </tr>
+                                        <tr>
+
+                                            <td><b>Number On Roll:</b></td>
+                                            <td th:text="${TotalStudents}"></td>
+                                            <td><b>Position in Subject:</b></td>
+                                            <td th:text="${Position}"></td>
+
+                                        </tr>
+                                    </table>
+                                </div>
+
+
+                                <div class="col-md-3 ">
+                                    <table class="table ">
+                                        <tr>
+                                        <img th:src="@{${picturepath}}" class=" img-thumbnail  " height="220" width="300"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+
+
+
+                            <table class=" table    table-primary table-bordered table-responsive-sm table-responsive" style="font-size: 14px;" ><tr>
+                                <thead>
+                                    <tr>
+
+                                        <th>Subject</th>
+                                        <th>Test Score (30%)</th>
+                                        <th>Exam Average(70%)</th>
+                                        <th>Total Score(100)</th>
+                                     
+                                        <th th:if="${NotKindagarten}">Position In Subject</th>
+                                       
+                                        <th>Grade</th>
+                                        
+                                        <th>Remarks</th>
+                                        <th></th>
+                                    </tr></thead><tbody>
+                                <th:block th:each="Tassement :${StudentAssessment}">
+
+                                    <tr th:each="assement:${Tassement.value}">
+                                        <td th:text="${assement.subject.SubjectName}"></td>
+                                        <td th:text="${assement.TotalTestScoreAverage}"></td>
+
+                                        <td th:text="${assement.ExamsAverage}"></td>
+                                        <td th:text="${assement.TotalScore}"></td>
+                                       
+                                        <td th:if="${NotKindagarten}" th:text="${assement.position}"></td>
+                                         <td></td>
+                                           <td th:text="${assement.Remarks}"></td>
+                                           <td><a th:href="@{/RemoveAssessmentStudent/{id}(id=${assement.id})}" class="btn btn-danger">delete</a></td>
+                                         
+                                    </tr>
+                                </th:block>
+
+
+                                </tbody>
+                                
+                            </table>
+                               <img th:src="@{/pro-pics/gradeExplanation.png}" class="img-fluid" />
+                            <table class="table ">
+                                <tr>
+                                    <td><b>Attendance</b></td><td th:text="${Att.getStudentAttendedDays()}"></td>
+                                    <td><b>Out Of</b></td><td th:text="${Att.getStudentAttendedDays()}"></td>
+                                    <td><b>Conduct</b></td><td th:text="${Att.getConduct()}"></td>
+                                    <td><b>Interest</b></td><td th:text="${Att.getInterest()}">Reading</td>
+                                </tr>
+
+                            </table>
+                           <p>HeadTeacher Signature: <span th:text="${headMasterApproval}"></span></p>
+                       <p>Teacher Signature: <span th:text="${TeacherApproval}"></span></p>
+                        <a th:href="@{/Get/StudentAssessmentCurrentTermPDF/{StudentId}/{TermId}((StudentId=${user}),(TermId=${CTerm.id}))}" class="btn btn-link">Download Report</a>
+                       
+                        </div>
+                    </div> 

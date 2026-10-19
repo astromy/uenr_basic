@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<div th:fragment="AddTermWeek">
+    <div class="card border-0 shadow-sm rounded-lg" th:if="${addTermWeek}">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="mb-0">Add Week to Term: <span th:text="${term.TermName}"></span></h5>
+            <small class="text-muted" th:text="${'Term Date Range: ' + term.StartDate + ' to ' + term.EndDate}"></small>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-success" th:if="${msg}" th:text="${msg}"></div>
+<!--            <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}"></div>
+            -->
+            <form th:method="post" th:action="@{/TermWeek/save}" th:object="${termWeek}" class="jumbotron">
+                <input type="hidden" th:field="*{termWeekId}">
+                <input type="hidden" th:field="*{term}" th:value="${term.id}">
+                <div class="form-group mb-3">
+                    <label>Week Name</label>
+                    <input type="text" class="form-control" th:field="*{weekName}" placeholder="e.g., Week 1">
+                    <small class="text-muted">Leave blank for auto-generated name</small>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label>Start Date (Monday)</label>
+                            <input type="date" class="form-control" th:field="*{startDate}" required>
+                            <small class="text-muted">Must be a Monday</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label>End Date (Friday)</label>
+                            <input type="date" class="form-control" th:field="*{endDate}" required>
+                            <small class="text-muted">Must be a Friday</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <button type="submit" class="btn btn-primary" id="upload_btn" th:onclick="spinOnload()">Save Week</button>
+                    <a th:href="@{/TermWeek/view/{termId}(termId=${term.id})}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+            
+            <hr>
+            <h6>Existing Weeks</h6>
+            <table class="table table-striped" th:if="${weeks != null && !weeks.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>Week Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="week: ${weeks}">
+                        <td th:text="${week.weekName}"></td>
+                        <td th:text="${week.startDate}"></td>
+                        <td th:text="${week.endDate}"></td>
+                        <td>
+                            <a th:href="@{/TermWeek/edit/{weekId}(weekId=${week.termWeekId})}" class="btn btn-sm btn-primary">Edit</a>
+                            <a th:href="@{/TermWeek/delete/{weekId}(weekId=${week.termWeekId})}" class="btn btn-sm btn-danger" 
+                               onclick="return confirm('Are you sure you want to delete this week?')">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div th:if="${weeks == null || weeks.isEmpty()}" class="alert alert-info">
+                No weeks added yet for this term.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="ViewTermWeeks">
+    <div class="card border-0 shadow-sm rounded-lg" th:if="${viewTermWeeks}">
+        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0">Weeks for Term: <span th:text="${term.TermName}"></span></h5>
+                <small class="text-muted" th:text="${'Term Date Range: ' + term.StartDate + ' to ' + term.EndDate}"></small>
+            </div>
+            <a th:href="@{/TermWeek/add/{termId}(termId=${term.id})}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i>Add Week
+            </a>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-success" th:if="${msg}" th:text="${msg}"></div>
+            
+            <table class="table table-striped table-hover" th:if="${weeks != null && !weeks.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>Week Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="week: ${weeks}">
+                        <td th:text="${week.weekName}"></td>
+                        <td th:text="${week.startDate}"></td>
+                        <td th:text="${week.endDate}"></td>
+                        <td>
+                            <a th:href="@{/TermWeek/edit/{weekId}(weekId=${week.termWeekId})}" class="btn btn-sm btn-primary">Edit</a>
+                            <a th:href="@{/TermWeek/delete/{weekId}(weekId=${week.termWeekId})}" class="btn btn-sm btn-danger"
+                               onclick="return confirm('Are you sure you want to delete this week?')">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div th:if="${weeks == null || weeks.isEmpty()}" class="alert alert-info">
+                <p>No weeks added yet for this term.</p>
+                <a th:href="@{/TermWeek/add/{termId}(termId=${term.id})}" class="btn btn-primary">Add First Week</a>
+            </div>
+            
+            <div class="mt-3">
+                <a th:href="@{/getAllTerms}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Terms
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="EditTermWeek">
+    <div class="card border-0 shadow-sm rounded-lg" th:if="${editTermWeek}">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="mb-0">Edit Week: <span th:text="${termWeek.weekName}"></span></h5>
+            <small class="text-muted" th:text="${'Term: ' + term.TermName + ' (' + term.StartDate + ' to ' + term.EndDate + ')'}"></small>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-success" th:if="${msg}" th:text="${msg}"></div>
+            
+            <form th:method="post" th:action="@{/TermWeek/update}" th:object="${termWeek}" class="jumbotron">
+                <input type="hidden" th:field="*{termWeekId}">
+                <input type="hidden" th:field="*{term.id}">
+                
+                <div class="form-group mb-3">
+                    <label>Week Name</label>
+                    <input type="text" class="form-control" th:field="*{weekName}" required>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label>Start Date (Monday)</label>
+                            <input type="date" class="form-control" th:field="*{startDate}" required>
+                            <small class="text-muted">Must be a Monday</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label>End Date (Friday)</label>
+                            <input type="date" class="form-control" th:field="*{endDate}" required>
+                            <small class="text-muted">Must be a Friday</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <button type="submit" class="btn btn-primary" id="upload_btn" th:onclick="spinOnload()">Update Week</button>
+                    <a th:href="@{/TermWeek/view/{termId}(termId=${term.id})}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<div th:fragment="UploadVideo">
+
+    <div class="modal fade" id="VideoUpload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload Video &nbsp;&nbsp;&nbsp;<span id="StudentName"><button class="btn btn-link " onclick="getAllVideos()">Search videos</button></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Subject Name</label>
+                        <select id="arrayDropdown" style="outline:none;padding: 0.4rem;border-radius: 5px; border: none; box-shadow: 0 0 10px rgb(202, 202, 202);margin: 0.8rem;"></select>     </div>  
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Description</label>
+                        <input type="text" class="form-control" id="DescriptionV" name="Descriptionv"   required="true">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Video U.R.L.</label>
+                        <input type="text" class="form-control" id="url" name="url"   required="true">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Indicator</label>
+                        <input type="text" class="form-control" id="Indicator" name="Indicator"   required="true">
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Class</label>
+                         <div id="klassList" ></div>     </div>  
+</form>
+                    
+
+                    <div>
+                        <button class="btn btn-primary"
+                                id="uploadT"  onclick=" saveVideoIntoDatabase()();">Save Video Details</button>
+
+                        <button class="btn btn-success d-none" name="firstSaves"
+                                id="uploadT1"  onclick="saveVideoIntoDatabase();">Approve</button>
+
+                        <button  class="btn btn-success d-none" id="loadingT" name="finalSave" type="button">
+                            <span class="spinner-border spinner-border-sm" 
+                                  role="status" aria-hidden="true"></span>
+                            Uploading.................
+                        </button>
+                        <button class="btn btn-success d-none" name="firstSaves"
+                                id="reset"  onclick="reset();">Reset</button>
+                    </div>     
+
+                </div>
+
+            </div>
+        </div>
+
+
+ <div class="modal fade" id="videoss" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger ">
+                    <h5 class="modal-title text-white" id="exampleModalLabel">Videos</h5>
+                    <div class="row">
+                        
+                        <div class='col-7 offset-2'>    <input type="text" class="form-control" id="VidSearch" name="VidSearch"   required="true" placeholder="Computing Quantum computers" onkeypress="getSearchVideos();"/></div><div class="col-3"><button class="btn btn-success" onclick="getSearchVideos();">Search</button></div>
+                        <hr style="background-color: #f00; font: bold,5px; "/>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    
+                </div>
+                <div class="modal-body">
+                     
+                    <table id="ClassVideosT" class="table table-active table-light ">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Indicator</th>
+                                <th>Subject</th>
+                                <th>Class</th>
+                               <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div></div>   <div class="modal-footer bg-danger ">
+                    <h6 class="modal-title text-white" id="exampleModalLabel">Powered by quantum publications (quantumseriespublication@gmail.com)</h6>
+                   
+                </div>  </div>
+ 
+    
+
+    </div>
+
+    <script>
+
+
+        function showVideoForm() {
+            $.ajax({
+
+                url: '/GellSubjectsVideo', // Replace this with your actual API endpoint
+                method: 'Get',
+                dataType: 'json',
+
+                success: function (data) {
+                    var arr = data;
+                    console.log(data);
+                    // arr = ["Courses here","Frontend Training","Backend Training","Java Training","Ethical Hacking"];
+                    var options = "";
+                    arr.map((op, i) => {
+                        options += `<option value="${op}" id="${i}" style="border-radius: 5px;"">${op}</option>`
+                    })
+                    document.getElementById("arrayDropdown").innerHTML = options;
+
+                //    $("#VideoUpload").modal('show');
+
+                }});
+
+            $.ajax({
+
+                url: '/AllKlasses', // Replace this with your actual API endpoint
+                method: 'Get',
+                dataType: 'json',
+
+                success: function (data) {
+                      var checkboxContainer = $('#klassList');
+         
+                    data.forEach(function (d) {
+                        console.log(d);
+                        checkboxContainer.append(`
+                    <label class='form-check-label'>
+                        <input type="checkbox" class='form-check-inline' name="data[]" value="${d}"> ${d}
+                    </label>&nbsp;&nbsp;&nbsp;
+                `);
+                });}}); $("#VideoUpload").modal('show');
+        }
+      ///getAllVideos  
+         function getAllVideos() {
+                $('#ClassVideosT').dataTable().fnDestroy();
+            $.ajax({
+
+                url: '/getAllVideos', 
+                method: 'Get',
+                dataType: 'json',
+            success: function (data) {
+                console.log(data);
+            $('#ClassVideosT').DataTable({
+                 
+                 "data": data,
+                 
+                 "columns": [
+                 {"data": "description"},
+                 {"data":"indicator" },
+                 {"data": "subject"},
+                 {"data": "klass"},
+                 
+                 {
+                 "data": null,
+                 "render": function (data, type, row) {
+                 return '<button class="playAll btn btn-success" data-id="' + data.url+ '" >Play</button><span>';
+                 
+                 }
+                 
+                 }
+                 ]
+                 });  $("#videoss").modal('show');
+           
+                  }
+              });
+               $('#ClassVideosT').on('click', '.playAll', function () {
+     var id = $(this).data('id');
+
+       // displayTransactionRequestForm(id);
+        //  var StudentId = $(this).data('StudentId');
+        //  window.location = "/findShop/"+id;
+            loadVideo (id);
+        // alert(id);//alert(StudentId);
+ 
+              });
+  
+    }
+        function getSubjects() {
+            try{
+            $.ajax({
+
+                url: '/AllVats', // Replace this with your actual API endpoint
+                method: 'Get',
+                dataType: 'json',
+
+                success: function (data) {
+                    var checkboxContainer = $('#checkboxContainer');
+                    $('#Subject').empty();
+                    data.forEach(function (d) {
+                        console.log(d);
+                        checkboxContainer.append(`
+                    <label class='form-check-label'>
+                        <option    value="${d.id}"> ${d.vatName} </option>
+                    </label>&nbsp;&nbsp;&nbsp;
+                `);
+                    });
+                    /*
+                     *   private int id;
+                     private String vatName;
+                     private float percentage;
+                     */
+                   $("#VideoUpload").modal('show');
+                }
+
+
+
+            });} catch(e) {
+            alert (e);
+            }  }
+       
+
+
+        function saveVideoIntoDatabase() {
+             var selectedOptions = [];
+                $('input[name="data[]"]:checked').each(function() {
+                    selectedOptions.push($(this).val());
+                });
+          console.log(selectedOptions);
+       var videoRequest ={
+      subject:document.getElementById("arrayDropdown").value,
+      url:document.getElementById("url").value,
+      Indicator:document.getElementById("Indicator").value,
+      description:document.getElementById("DescriptionV").value,
+      klasses:selectedOptions
+       };
+  console.log(videoRequest);
+            $.ajax({
+                url: "/saveVideo",
+                type: "POST",
+                dataType: 'JSON',
+                data: videoRequest,
+                success: function (data) {
+                   alert (" Succesfully Saved Data into Database  ");
+                   
+
+                }
+
+            });
+        }
+        
+        
+          function getSearchVideos() {
+                $('#ClassVideosT').dataTable().fnDestroy();
+                var search =document.getElementById("VidSearch").value;
+
+                  
+        $.ajax({
+
+                url: '/getByVidoesBySearch/'+search, 
+                method: 'Get',
+                dataType: 'json',
+               
+            success: function (data) {
+            $('#ClassVideosT').DataTable({
+                 
+                 "data": data,
+                 
+                 "columns": [
+                 {"data": "description"},
+                 {"data":"indicator" },
+                 {"data": "subject"},
+                 {"data": "klass"},
+                 
+                 {
+                 "data": null,
+                 "render": function (data, type, row) {
+                 return '<button class="played btn btn-success" data-id="' + data.url+ '" >Play</button><span>';
+                 
+                 }
+                 
+                 }
+                 ]
+                 });  $("#videoss").modal('show');
+           
+                  },
+        error: function (xhr, status, error) {
+        console.log(xhr,status,error);
+            // $("#msg").append("<b>Error Reload </b>" + error);
+            // $("#info").modal('show');
+             //  $("#error").append("<b>   Unssucessful operation sorry !</b>" + data);
+          //  window.location="/login";
+        }
+
+    });
+
+    $('#ClassVideosT').on('click', '.played', function () {
+     var id = $(this).data('id');
+        alert("trigered");
+       // displayTransactionRequestForm(id);
+        //  var StudentId = $(this).data('StudentId');
+        //  window.location = "/findShop/"+id;
+            loadVideo (id);
+        // alert(id);//alert(StudentId);
+ 
+              });
+
+    }
+       
+
+
+       
+    </script>   
+    </div> 
+
+    <div class="modal fade" id="Videoplay" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload Video &nbsp;&nbsp;&nbsp;<span id="StudentName"><button class="btn btn-link " onclick="getAllVideos()">Search videos</button></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+              <div class="container">      
+             <div id="videoPlayer">
+        
+        
+        </div>
+                  </div>
+</div>
+  
+    <script>
+        function loadVideo (id){
+             $("#Videoplay").modal("show");
+
+           
+        var tag=document.createElement('script');
+        tag.src="https://www.youtube.com/player_api";
+        var control =document.getElementsByTagName("script")[0];
+        control.parentNode.insertBefore(tag,control);
+        //https://www.youtube.com/watch?v=3Rgc-dTAO6k
+        var player;
+       onYouTubePlayerApiReady (player,id);
+       
+        
+    }
+    function onYouTubePlayerApiReady (player,id){
+    
+        player = new YT.Player('videoPlayer',{
+            height:'360px',
+            width:'640px',
+            videoId:id
+        });
+        
+        
+    }
+    
+        </script>
+    
+    </div>
+        </div></div></div>
+
+
+   
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+             
+
+   
+    
+
+    
+    
+
+
+
+</div>

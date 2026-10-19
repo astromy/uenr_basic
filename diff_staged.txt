@@ -1,0 +1,20 @@
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessment.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessment.java
+new file mode 100644
+index 0000000..cca127f
+--- /dev/null
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessment.java
+@@ -0,0 +1,4 @@
++package com.UBSDB.UnerBasicSchoolFinancialSystem.Course.CourseAssessment;
++
++public class CourseAssessment {
++}
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessmentResponse.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessmentResponse.java
+new file mode 100644
+index 0000000..b6260eb
+--- /dev/null
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessmentResponse.java
+@@ -0,0 +1,4 @@
++package com.UBSDB.UnerBasicSchoolFinancialSystem.Course.CourseAssessment;
++
++public class CourseAssessmentResponse {
++}

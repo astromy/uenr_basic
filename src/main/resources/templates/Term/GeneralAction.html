@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<div th:fragment="GeneralAction">
+    <div class="card border-0 shadow-sm rounded-lg">
+        <div class="card-body p-4">
+            <a th:href="@{/term}" class="btn btn-primary me-2">Add New Term</a>
+            <a th:href="@{/getAllTerms}" class="btn btn-outline-primary me-2">View/Edit Term</a>
+            <a th:href="@{/getAllTerms}" class="btn btn-warning">Manage Assessment Weeks</a>
+        </div>
+    </div>
+</div>
+<div th:fragment="StudentPortalTerm">
+    <div class="modal fade" id="StudentAssessmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Assessments</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="StudentAssessment" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Academic Year</th>
+                                <th>Term Name</th>
+                                <th>Class</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function ViewTerms() {
+            $('#StudentAssessment').dataTable().fnDestroy();
+            document.getElementById("StudentAssessment").classList.remove("d-none");
+            $("#StudentAssessmentModal").modal('show');
+            $.ajax({
+                url: "/StudentGetAllTerms",
+                type: "GET",
+                dataType: 'JSON',
+                success: function (data) {
+                    $('#StudentAssessment').DataTable({
+                        "data": data,
+                        "columns": [
+                            {"data": "academicYear"},
+                            {"data": "termName"},
+                            {"data": "studentClass"},
+                            {
+                                "data": null,
+                                "render": function (data, type, row) {
+                                    return '<button class="viewAssessment btn btn-success" data-id="' + data.termId + '"data-StudentId="' + data.studentId + '">View Assessment</button><span>';
+                                }
+                            }
+                        ]
+                    });
+                    document.getElementById("assessment").classList.add("d-none");
+                    document.getElementById("bills").classList.add("d-none");
+                },
+                error: function (xhr, status, error) {
+                    console.error(status + ": " + error + xhr);
+                    document.getElementById("msg").classList.remove("d-none");
+                }
+            });
+
+            $('#StudentAssessment').on('click', '.viewAssessment', function() {
+                var id = $(this).data('id');
+                var StudentId = $(this).data('StudentId');
+                window.location = "/StudentPortal/Assessment/" + id;
+            });
+        }
+    </script>
+</div>

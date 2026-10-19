@@ -1,0 +1,38 @@
+<div th:fragment="defaulter">
+    <Label class="bg-white text-justify">Defaulters</label>
+<div class="jumbotron bg-white" > 
+  <p>  <a th:href="@{/PriDefaulters/}" class="btn btn-outline-secondary">Print</a>   </p>
+            
+         
+<table class="table table-info " id="mydata">
+                  <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Class</th>
+                        <th>Amount Paid(GHC)</th>
+                        <th>Balance(GHC)</th>
+                     </tr>
+                </thead>
+    
+                <tbody>
+                     <tr th:each="p:${defaulters}">
+                         <td><span th:text="${p.Student.surname}"/>
+                         <span th:text="${p.Student.LastName}"/>
+                         <span th:text="${p.Student.FirstName}"/>
+                          </td>
+                          <td th:text="${p.Student.studentklass.ClassName}"></td>
+                          <td th:text="${p.Amount}"></td>
+                         <td th:text="${p.Remaining}"></td> 
+                          
+                        </tr>
+                    <tr class="bg-info text-white">
+                        <td>Total Amount Owing: (GHC)<span th:text="${Amout_not_Paid}"></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                        <td><span></span></td>
+                     </tr>
+                
+                </tbody>
+              </table>
+             </div>
+    </div>

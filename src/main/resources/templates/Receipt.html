@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org">
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+          <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{css/PrintPageCss.css}" rel="stylesheet" type="text/css"/>
+    
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        
+       <div th:if="${ReceiptStudDetails}">
+                      <div th:replace="receipt/BillReceipt::ReceiptStudDetails">  
+                      </div> 
+           </div> 
+          <div th:if="${receipts_}">
+                      <div th:replace="receipt/BillReceipt::receipts">  
+                      </div> 
+           </div> 
+ 
+          <div th:if="${defaulters}">
+                        <div th:replace="defaulters/defaultersPritPage::defaulter"></div> 
+                        
+                    </div>
+        
+         <div th:if="${appForm}">
+                        <div th:replace="Admission/ApplicationForm::appForm">
+
+                        </div>
+                        
+                    </div>
+    </body>
+</html>

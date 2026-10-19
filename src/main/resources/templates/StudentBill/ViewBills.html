@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+StudentdentBills/{id}
+-->
+<div th:fragment="StudentBills" class="col-12"> 
+    <div class="modal fade" id="StudentBills" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Student Bill</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="StudentBillsT" class="table table-info ">
+                        <thead>
+                            <tr>
+                                <th>Academic Year</th>
+                                <th>Term Name</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div></div>    </div>    </div>
+    
+    
+    
+    
+    <div th:fragment="EditBill" class="col-12"> 
+    <div class="modal fade" id="EditBill" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title " id="exampleModalLabel" >Edit Bill</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                       <form id="business">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Academic Year:</label>
+            <input type="text" class="form-control" id="academicYear"  required="true">
+             
+                                    
+          </div>
+              <div class="form-group">
+            <label for="recipient-name" class="col-form-label">StudentId:</label>
+            <input type="text" class="form-control" id="StudentId"  required="true">
+             
+                                    
+          </div>              
+                 
+           <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Term Name:</label>
+            <input type="text" class="form-control" id="termName"  required="true">
+              <input type="hidden" th:value="@{/saveBusiness}" id="route">
+                                    
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Amount:</label>
+            <input type="text" class="form-control" id="amount" required="true">
+              <input type="hidden" class="form-control" id="bill" required="true">
+      </div>
+                      
+        </form>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-primary" onclick="saveEditBill();" id="upload">Edit Bill</button>
+         <button  class="btn btn-primary d-none" id="loading" type="button">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        Uploading.................
+                                    </button>
+      </div>
+                </div></div>    </div>    </div>
+
+
+    <script>
+        function GetStudentBills(id) {
+//document.getElementById("StudentAssessment").classList.remove("d-none");
+
+            $('#StudentBillsT').dataTable().fnDestroy();
+            //alert("The id is from store side boosu"+id);
+            //  var url=id;
+            // private String TermName;
+            //     private String StartDate;
+            // private String EndDate;
+            // document.getElementById("StudentAssessment").classList.remove("d-none");
+            //private Academic academicyear;
+            
+      var StudentId=id;
+        $.ajax({
+            url: "/FinancePortal/StudentdentBills/" + id,
+            type: "GET",
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);
+               $("#StudentBills").modal('show');
+                 
+                 $('#StudentBillsT').DataTable({
+                 
+                 "data": data,
+                 
+                 "columns": [
+                 {"data": "academicYear"},
+                 {"data":"termName" },
+                 {"data": "amount"},
+                 {"data": "description"},
+                 
+                 {
+                 "data": null,
+                 "render": function (data, type, row) {
+                 return '<button class="viewEditBill btn btn-success" data-id="' + data.billId + '"data-StudentId="' + data.billId + '" >Edit</button><span>';
+                 
+                 }
+                 
+                 }
+                 ]
+                 });
+              //  document.getElementById("assessment").classList.add("d-none");
+               // document.getElementById("bills").classList.add("d-none");
+
+
+            },
+            error: function (xhr, status, error) {
+
+                // $("#msg").append("<b>Error Reload </b>" + error);
+                // $("#info").modal('show');
+                console.error(status + ": " + error + xhr);
+                //document.getElementById("msg").classList.remove("d-none");
+                //  $("#error").append("<b>   Unssucessful operation sorry !</b>" + data);
+
+            }
+
+        });
+
+        $('#StudentBillsT').on('click', '.viewEditBill', function() {
+         $("#StudentBills").modal('hide');
+         
+              var id = $(this).data('id'); //alert(id);
+         $.ajax({
+            url: "/GetStudentBill/"+id,
+            type: "GET",
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);
+             //  $("#StudentBills").modal('show');
+                 
+       // alert(id);
+      //{BillId}
+        $("#EditBill").modal('show');
+      document.getElementById('academicYear').value=data.academicYear;
+         document.getElementById('termName').value=data.termName;
+      document.getElementById('amount').value=data.amount;
+       document.getElementById('bill').value=data.billId; 
+       document.getElementById('StudentId').value=StudentId;
+       //  window.location = "/StudentPortal/Assessment/" + id;
+                // alert(id);alert(StudentId);
+        },
+            error: function (xhr, status, error) {
+
+                // $("#msg").append("<b>Error Reload </b>" + error);
+                // $("#info").modal('show');
+                console.error(status + ": " + error + xhr);
+                //document.getElementById("msg").classList.remove("d-none");
+                //  $("#error").append("<b>   Unssucessful operation sorry !</b>" + data);
+
+            }   });
+        });}
+    </script>
+
+</div>
+<div th:fragment="StudentBillTermly" class="col-12"> 
+    <div class="modal fade" id="StudentBillsTermly" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Termly Bill (<span id="StudentName"> </span>)</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="StudentBillsT" class="table table-info ">
+                        <thead>
+                            <tr>
+                               
+                                <th>Outstanding GHC </th>
+                                <th>Current Term Bill GHC</th>
+                                <th>Payment (Current Term) GHC</th>
+                                
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <tr>
+                                <td id="outstanding"></td>
+                               <td id="currentBill"></td>
+                                   <td id="termlyPayment"></td>
+                                </tr>
+                                <tr>
+                                   <td></td> <td></td>
+                                    <td >Total: &nbsp;&nbsp;
+                                        <span id="Total"></span></td>
+                                   
+                                    </tr>
+                        </tbody>
+                    </table>
+                </div></div>    </div>    </div>
+    <script>
+
+function GetStudentTermlyBills() {
+//document.getElementById("StudentAssessment").classList.remove("d-none");
+ $("#StudentBillsTermly").modal('show');
+ 
+           // $('#StudentBillsT').dataTable().fnDestroy();
+            //alert("The id is from store side boosu"+id);
+            //  var url=id;
+            // private String TermName;
+            //     private String StartDate;
+            // private String EndDate;
+            // document.getElementById("StudentAssessment").classList.remove("d-none");
+            //private Academic academicyear;currentBill
+
+            
+      
+        $.ajax({
+            url: "/StudentPortal/getBills" ,
+            type: "GET",
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);
+            document.getElementById("StudentName").innerHTML=data.studentName;
+            document.getElementById("termlyPayment").innerHTML=data.termlyPayment;
+            document.getElementById("outstanding").innerHTML=data.outstanding;
+            document.getElementById("currentBill").innerHTML=data.currentBill;
+                document.getElementById("Total").innerHTML=data.total;
+            
+    }
+        
+        });
+    }
+    </script>      
+
+</div>
+    

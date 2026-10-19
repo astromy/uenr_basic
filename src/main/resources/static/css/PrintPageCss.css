@@ -1,0 +1,56 @@
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 29, 2022, 7:10:34 PM
+    Author     : HP
+*/
+@import url(/fonts? family=Roboto+Condensed:weight@300;400;700&display=swap);
+body{
+    margin:0px;
+    padding:0px;
+    font-size:1px;
+    font-weight: 300;
+    width:100%;
+    background: #fff;
+    font-family: 'Roboto Comdensed', sans-serif;
+}
+h2,h4,p{
+    margin:0; 
+  }
+  .pagePrint{
+    
+    display: block;
+    nargin:3rem auto 3rem auto;
+    position:relative;
+    box-shadow:0 0 5px rgba(0,0,0,0.1);
+    font-size: 25;
+      
+  }
+  @media print{
+     .top-section{
+      
+       padding: 20px;
+       height: 115px;
+      
+       -webkit-print-color-adjust:exact     
+   }  
+      
+  }
+  .pagePrint[size="A4"]{
+     width: 21cm;
+     height:29.7 cm;
+      overflow-x:hidden;
+      font-size: 25;
+   }
+   .top-section{
+       color:#fff;
+       padding: 20px;
+       height: 115px;
+       background-color:#0b5ed7; 
+       -webkit-print-color-adjust:exact     
+   }
+   

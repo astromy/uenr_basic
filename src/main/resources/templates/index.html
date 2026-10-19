@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>SMS - Administration Portal</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+        <!-- Bootstrap core CSS -->
+        <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/css/portal.css}" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <link th:href="@{/css/datatables.css}" rel="stylesheet" type="text/css"/>
+    </head>
+
+    <body class="bg-light">
+        <script th:src="@{/script/jquery.min.js}"></script>
+        <script th:src="@{/script/datatables.js}" type="text/javascript"></script>
+        <script th:src="@{/script/bootstrap.min.js}" type="text/javascript"></script>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top border-bottom">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+                    <img th:src="@{/pro-pics/UENR.PNG}" height="42" class="me-2">
+                    <div>
+                        <div class="brand-title">School Management System</div>
+                        <small class="brand-subtitle">Administration Portal</small>
+                    </div>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav  ms-auto align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/updateUser}">Update User</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/Defaulters/}">Defaulters</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/GellSubjects}">Subjects</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/Performance/}">Performance Analytics</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/SearchForm/}">Payment</a>
+                        </li>
+                        <li class="nav-item" s>
+                            <a class="nav-link" th:href="@{/showAcademicForm}">Academic Year</a>
+                        </li>
+                        <li class="nav-item d-flex align-items-center me-3">
+                            <input type="text" placeholder="Search.." name="search" id="search"
+                                   class="form-control form-control-sm me-2" />
+                            <button onclick="searchStudent();" class="btn btn-outline-primary btn-sm me-3">
+                                <span class="fa fa-search"></span> Search
+                            </button>
+                        </li>
+
+                        <li class="nav-item me-3">
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger ">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div class="container-fluid px-4">
+            <div class="row" style="margin-top: 96px;">
+                <div class="col-lg-3 mb-4">
+                    <div class="card border-0 shadow-sm rounded-lg sticky-top" style="top: 100px;">
+                        <div class="card-body p-3">
+                            <div th:replace="sideNav::sideNavigation"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- /.col-lg-3 -->
+
+                <div class="col-lg-9">
+                    <div class="alert alert-success" th:if="${msg}" th:text="${msg}"></div>
+                    <div class="alert alert-danger" th:if="${err}" th:text="${err}"></div>
+
+                    <!-- Dashboard Section -->
+                    <div th:if="${dashboard}">
+                        <div th:replace="dash_oard::dash_oard"></div>
+                    </div>
+
+                    <!-- Activity Logs Section -->
+                    <div th:if="${activityLogs}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0">Recent Activity Logs</h5>
+                                    <small class="text-muted">User sign-in activity on the admin dashboard</small>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <label for="pageSize" class="mb-0 text-muted small">Show:</label>
+                                    <select id="pageSize" class="form-select form-select-sm" style="width: auto;">
+                                        <option value="5">5</option>
+                                        <option value="10" selected>10</option>
+                                        <option value="20">20</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0" id="activityLogsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Role</th>
+                                                <th>Login Time</th>
+                                                <th>Logout Time</th>
+                                                <th>IP Address</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="activityLogsBody">
+                                            <tr>
+                                                <td colspan="6" class="text-center">
+                                                    <div class="spinner-border text-primary" role="status"></div>
+                                                    <p class="mt-2">Loading activity logs...</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <nav id="activityLogsPagination" class="mt-3 d-flex justify-content-between align-items-center">
+                                    <button id="prevPage" class="btn btn-sm btn-outline-primary" disabled>Previous</button>
+                                    <span id="pageInfo" class="text-muted small"></span>
+                                    <button id="nextPage" class="btn btn-sm btn-outline-primary">Next</button>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Analytics Section -->
+                    <div th:if="${performance}">
+                        <div th:replace="Performance/performanceCharts::performanceCharts"></div>
+                    </div>
+
+                    <div th:if="${defaulters}">
+                        <div th:replace="defaulters/defaulters::defaulter"></div> 
+
+                    </div>
+                    <!--payment form--> 
+
+                    <div th:if="${Terms}">
+                        <div th:replace="Term::AllTerm">
+
+                        </div>
+
+                    </div>
+
+                    <div th:if="${AcademicForm}">
+                        <div th:replace="AcademicYear/adacemic::AcademicForm">
+
+                        </div>
+
+                    </div>
+                    <div th:if="${EditAcademicyear}">
+                        <div th:replace="AcademicYear/adacemic::EditAcademicyear">
+
+                        </div>
+
+                    </div>
+
+
+                    <div th:if="${allAcademicYears}">
+                        <div th:replace="AcademicYear/adacemic::AcadmicYears">
+
+                        </div>
+
+                    </div>
+
+                    <!--REVIEWING STUDENT DATA -->
+                    <div th:if="${Review}">
+                        <div th:replace="Student/StudentDetails::Review">
+
+                        </div>
+                    </div>
+
+                    <div th:replace="Student/AllStudent::SearchStudent">
+
+                    </div>
+
+                    <div th:if="${SubjectsInschool}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-body p-4">
+                                <div th:replace="Subject/AllSubjects::Subjects"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Courses Section -->
+                    <div th:if="${courses}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-body p-4">
+                                <div th:replace="Course/AllCourses::AllCourses"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${newCourse}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-header bg-white border-0 pt-4 px-4">
+                                <h5 class="mb-0">Add Course</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form th:method="post" th:action="@{/SaveCourse}" th:object="${newCourse}">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label>Course Name</label>
+                                                <input type="text" th:field="*{courseName}" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label>Subject</label>
+                                                <select th:field="*{subject}" class="form-control" required>
+                                                    <option value="">Select Subject</option>
+                                                    <option th:each="subject:${subjects}"
+                                                            th:value="${subject.id}"
+                                                            th:text="${subject.SubjectName}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Class</label>
+                                        <select name="classId" class="form-control">
+                                            <option value="">Select Class (Optional)</option>
+                                            <option th:each="klass:${Courseklasses}"
+                                                    th:value="${klass.className}"
+                                                    th:text="${klass.className}">
+                                            </option>
+                                        </select>
+                                        <small class="form-text text-muted">
+                                            For Basic classes (e.g., Basic1A), the course will be automatically assigned to all sections (Basic1A through Basic1F).
+                                        </small>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Description</label>
+                                        <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Notes</label>
+                                        <textarea th:field="*{notes}" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Term Week</label>
+                                        <select name="termWeekId" class="form-control">
+                                            <option value="">Select Term Week (Optional)</option>
+                                            <option th:each="termWeek:${termWeeks}"
+                                                    th:value="${termWeek.termWeekId}"
+                                                    th:text="${termWeek.term.termName + ' - ' + termWeek.weekName}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Course</button>
+                                    <a th:href="@{/Courses}" class="btn btn-secondary">Cancel</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${updateCourse}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-header bg-white border-0 pt-4 px-4">
+                                <h5 class="mb-0">Update Course</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form th:method="post" th:action="@{/UpdateCourse}" th:object="${updateCourse}">
+                                    <input type="hidden" th:field="*{courseId}">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label>Course Name</label>
+                                                <input type="text" th:field="*{courseName}" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label>Subject</label>
+                                                <select th:field="*{subject}" class="form-control" required>
+                                                    <option value="">Select Subject</option>
+                                                    <option th:each="subject:${subjects}"
+                                                            th:value="${subject.id}"
+                                                            th:text="${subject.SubjectName}"
+                                                            th:selected="${updateCourse.subject != null && updateCourse.subject.id == subject.id}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Class</label>
+                                        <select name="classId" class="form-control">
+                                            <option value="">Select Class (Optional)</option>
+                                            <option th:each="klass:${Courseklasses}"
+                                                    th:value="${klass.className}"
+                                                    th:text="${klass.className}">
+                                            </option>
+                                        </select>
+                                        <small class="form-text text-muted">
+                                            For Basic classes (e.g., Basic1A), the course will be automatically assigned to all sections (Basic1A through Basic1F).
+                                        </small>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Description</label>
+                                        <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Notes</label>
+                                        <textarea th:field="*{notes}" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Term Week</label>
+                                        <select name="termWeekId" class="form-control">
+                                            <option value="">Select Term Week (Optional)</option>
+                                            <option th:each="termWeek:${termWeeks}"
+                                                    th:value="${termWeek.termWeekId}"
+                                                    th:text="${termWeek.term.termName + ' - ' + termWeek.weekName}"
+                                                    th:selected="${updateCourse.termWeekName != null && updateCourse.termWeekName == (termWeek.term.termName + ' - ' + termWeek.weekName)}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update Course</button>
+                                    <a th:href="@{/Courses}" class="btn btn-secondary">Cancel</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review-->
+                    <div th:if="${users}">
+                        <div th:replace="users/view::usersList">
+
+                        </div>
+
+                    </div>
+                    <div th:if="${updateUser}">
+                        <div th:replace="users/AddUser::updateUser">
+
+                        </div>
+
+                    </div>
+                    <div th:if="${StudentAssessment}">
+                        <div th:replace="Assessment/Assessment::StudentAssessment">
+
+                        </div>
+
+                    </div>
+                    <div th:if="${klassMasters}">
+                        <div th:replace="Klasses/View::klassMasters">
+
+                        </div>
+
+                    </div>
+                    <div th:if="${UpdateSubject}">
+                        <div th:replace="Subject/UpdateSubject::UpdateSubject">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div th:if="${UpdateTeacherForm}">
+                        <div th:replace="UpdateTeacher::Updateteacher">
+
+                        </div>
+
+                    </div>
+                    <div th:if="${searchfss}">
+                        <div th:replace="payment/payment::searchPss">
+
+                        </div>
+                    </div>
+                    <div th:if="${Payments}">
+                        <div th:replace="payment/payment::payments">
+
+                        </div>
+                    </div>
+
+                    <div th:if="${UpdateTerm}">
+                        <div th:replace="Term::UpdateTerm">
+
+                        </div>
+                    </div>
+                    <div th:if="${addTermWeek}">
+                        <div th:replace="TermWeek::AddTermWeek">
+
+                        </div>
+                    </div>
+                    <div th:if="${viewTermWeeks}">
+                        <div th:replace="TermWeek::ViewTermWeeks">
+
+                        </div>
+                    </div>
+                    <div th:if="${editTermWeek}">
+                        <div th:replace="TermWeek::EditTermWeek">
+
+                        </div>
+                    </div>
+                    <div th:if="${generalM}">
+                        <div th:replace="MockDetails/GeneralAction::GeneralAction">
+
+                        </div>
+                    </div>
+                    <div th:if="${generalS}">
+                        <div th:replace="Student/GeneralAction::GeneralAction">
+
+                        </div>
+                    </div>
+                    <div th:if="${generalT}">
+                        <div th:replace="Term/GeneralAction::GeneralAction">
+
+                        </div>
+                    </div>
+                    <div th:if="${generalTeach}">
+                        <div th:replace="Teacher/GeneralAction::GeneralAction">
+
+                        </div>
+                    </div>
+                    <div th:if="${generalUser}">
+                        <div th:replace="users/GeneralAction::GeneralAction">
+
+                        </div>
+                    </div>
+                    <div th:if="${generalCourse}">
+                        <div th:replace="Course/GeneralAction::GeneralAction">
+
+                        </div>
+                    </div>
+                    <div th:if="${MockDetailsform}">
+                        <div th:replace="MockDetails/AddMockDetails::MockDetailsform">
+
+                        </div>
+                    </div>
+                    <div th:if="${allmocks}">
+                        <div th:replace="MockDetails/AllMockDetails::allmocks">
+
+                        </div>
+                    </div>
+                    <div th:replace ="Teacher::TeacherManagement"/>
+
+                    <!-- Adding a new student form-->
+                    <div th:if="${newStudent}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-header bg-white border-0 pt-4 px-4">
+                                <h5 class="mb-0">Add Student</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form th:method="post" id="form" th:action="@{/SaveStudent}" th:object="${newStudent}" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="form-group ">
+                                                        <label for="text">Student Id</label>
+                                                        <input type="text" class="form-control" th:field="*{StudentId}" readonly="true">
+
+
+                                                        <div class="form-group ">
+                                                            <label for="inputAddress">First Name</label>
+                                                            <input type="text" class="form-control"  th:field="*{FirstName}">
+                                                        </div>
+                                                        <div class="form-group ">
+                                                            <label for="inputAddress">Sur Name</label>
+                                                            <input type="text" class="form-control"  th:field="*{surname}">
+                                                        </div>
+
+                                                        <div class="form-group ">
+                                                            <label for="inputAddress2">Other Name</label>
+                                                            <input type="text" class="form-control"   th:field="*{LastName}">
+                                                        </div>
+                                                        <div class="form-group  ">
+                                                            <label for="inputAddress">Sex</label>
+                                                            <select th:field="*{Sex}" class="form-control">
+                                                                <option value="Male"  >Male</option>
+                                                                <option value="Female"  >Female</option>
+
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group  ">
+                                                            <label for="inputAddress2">Date of Birth</label>
+                                                            <input type="date" class="form-control"   th:field="*{dateOfBirth}" id="dob" onchange="calculateAge();"/>
+                                                            <span> current age: <span id="result"></span> </span>
+                                                        </div>
+
+                                                        <div class="form-group ">
+                                                            <label for="inputState">Class</label>
+                                                            <select  id="class" class="form-control" th:field="*{studentklass}">
+                                                                <option id="class" th:each="klass:${StudentClass}"   th:value="${klass.ClassName}" th:text="${klass.ClassName}">kg1</option>
+
+                                                            </select>
+                                                        </div>  <div class="form-group ">
+                                                            <label for="inputState">physical Disability</label>
+                                                            <select class="form-control" th:field="*{physicalDisability}">
+                                                                <option th:value="No" >No</option>
+                                                                <option th:value="Yes">Yes</option>
+                                                            </select>
+                                                        </div>  </div></div> <div class ="col-6">
+
+
+
+                                                    <div class="form-group ">
+                                                        <label for="inputState">New Student</label>
+                                                        <select class="form-control" id="NewStudent" name="NewStudent">
+                                                            <option th:value="No" id="NewStudent" name="NewStudent">No</option>
+                                                            <option th:value="Yes" id="NewStudent" name="NewStudent">Yes</option>
+                                                        </select>
+                                                    </div>   
+
+                                                    <div class="form-group">
+                                                        <label for="inputState">Select Category</label>
+                                                        <select class="form-control" th:field="*{ParentCategory}"   onchange="ShowTextField()">
+                                                            <option th:value="Junior-Staff">  Junior-Staff</option>
+                                                            <option th:value="Senior-Staff"> Senior-Staff</option>
+
+                                                            <option th:value="Non-Staff">Non-Staff</option>
+
+                                                            <script>
+                                                                function ShowTextField() {
+                                                                    if (((document.getElementById("ParentCategory").value == "Senior-Staff") ||
+                                                                            (document.getElementById("ParentCategory").value == "Junior-Staff")) ||
+                                                                            (document.getElementById("ParentCategory").value == "Senior-Member")) {
+                                                                        document.getElementById("staff").classList.remove("d-none");
+                                                                    }
+                                                                    if (((document.getElementById("ParentCategory").value == "Non-Staff"))) {
+                                                                        document.getElementById("staff").classList.add("d-none");
+
+                                                                    }
+                                                                }
+                                                            </script>
+                                                        </select>
+                                                    </div>
+
+
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">NHIS Card number</label>
+                                                        <input type="text" class="form-control"   th:field="*{NHISCardumber}">
+                                                    </div>
+
+
+
+
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Guardian Name</label>
+                                                        <input type="text" class="form-control"   th:field="*{GuadiaName}">
+                                                    </div>
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Guardian GH. card number</label>
+                                                        <input type="text" class="form-control"   th:field="*{GhanaCardNumber}">
+                                                    </div>
+
+                                                    <hr /> 
+                                                    <div class="form-group  d-none"  id="staff">
+                                                        <label for="inputAddress2">(Only Staff )staff Id</label>
+                                                        <input type="text" class="form-control"   th:field="*{staffId}">
+
+                                                    </div> 
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Guardian Number</label>
+                                                        <input type="tel"     pattern="[0-9]{3}[0-9]{3}[0-9]{4}" 
+                                                               required class="form-control"  th:field="*{parentNumber}">
+
+
+                                                    </div>
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Occupation</label>
+                                                        <input type="text" class="form-control"  th:field="*{Occupation}">
+
+                                                    </div>
+                                                </div> </div></div>
+                                        <div class="col-3 ">
+
+                                            <label for="lable">Student Picture</label>
+                                            <input type="file" class="form-control form-control-file" th:id="file-image" th:name="file-image"  onchange="showImageThumbnail(this)"/>
+                                            <p>
+                                                <img id="thumbnail" alt="logo-preview" class="d-none img-thumbnail">
+                                            </p> 
+
+
+                                            <div >
+
+                                                <input type="submit" class="btn  btn-primary" value="Save Student" id="upload_btn" th:onclick="spinOnload()" >
+
+
+                                                <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                    Uploading.................
+                                                </button>
+
+                                            </div>   
+                                            <button class="btn btn-secondary d-none" id="cancel_btn" type="button">Cancel Button</button>
+
+                                        </div>
+
+
+
+
+                                    </div>
+
+
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${UpdateStudent}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-header bg-white border-0 pt-4 px-4">
+                                <h5 class="mb-0">Update Student</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form th:method="post" id="form" th:action="@{/update}" th:object="${UpdateStudent}" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="form-group ">
+                                                        <label for="text">Student Id</label>
+                                                        <input type="text" class="form-control" th:field="*{StudentId}" readonly="true">
+
+
+                                                        <div class="form-group ">
+                                                            <label for="inputAddress">First Name</label>
+                                                            <input type="text" class="form-control"  th:field="*{FirstName}">
+                                                        </div>
+                                                        <div class="form-group ">
+                                                            <label for="inputAddress">Sur Name</label>
+                                                            <input type="text" class="form-control"  th:field="*{surname}">
+                                                        </div>
+
+                                                        <div class="form-group ">
+                                                            <label for="inputAddress2">Other Name</label>
+                                                            <input type="text" class="form-control"   th:field="*{LastName}">
+                                                        </div>
+                                                        <div class="form-group  ">
+                                                            <label for="inputAddress">Sex</label>
+                                                            <select th:field="*{Sex}" class="form-control">
+                                                                <option value="Male"  >Male</option>
+                                                                <option value="Female"  >Female</option>
+
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group  ">
+                                                            <label for="inputAddress2">Date of Birth</label>
+                                                            <input type="date" class="form-control"   th:field="*{dateOfBirth}">
+                                                        </div>
+
+                                                        <div class="form-group ">
+                                                            <label for="inputState">Class</label>
+                                                            <input type="text" class="form-control" th:field="*{studentklass.className}"  >
+
+                                                        </div>
+                                                        <div class="form-group ">
+                                                            <label for="inputState">physical Disability</label>
+                                                            <select class="form-control" th:field="*{physicalDisability}">
+                                                                <option th:value="No" >No</option>
+                                                                <option th:value="Yes">Yes</option>
+                                                            </select>
+                                                        </div> </div></div> <div class ="col-6">
+
+
+                                                    <div class="form-group ">
+                                                        <label for="inputState">New Student</label>
+                                                        <select class="form-control" id="NewStudent" name="NewStudent">
+                                                            <option th:value="No" id="NewStudent" name="NewStudent">No</option>
+                                                            <option th:value="Yes" id="NewStudent" name="NewStudent">Yes</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="inputState">Select Category</label>
+                                                        <select class="form-control" th:field="*{ParentCategory}"   onchange="ShowTextField()">
+                                                            <option th:value="Junior-Staff">  Junior-Staff</option>
+                                                            <option th:value="Senior-Staff"> Senior-Staff</option>
+
+                                                            <option th:value="Non-Staff">Non-Staff</option>
+                                                            <script>
+                                                                function ShowTextField() {
+                                                                    if (((document.getElementById("ParentCategory").value == "Senior-Staff") ||
+                                                                            (document.getElementById("ParentCategory").value == "Junior-Staff")) ||
+                                                                            (document.getElementById("ParentCategory").value == "Senior-Member")) {
+                                                                        document.getElementById("staff").classList.remove("d-none");
+                                                                    }
+                                                                    if (((document.getElementById("ParentCategory").value == "Non-Staff"))) {
+                                                                        document.getElementById("staff").classList.add("d-none");
+
+                                                                    }
+                                                                }
+                                                            </script>
+                                                        </select>
+                                                    </div>
+
+
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">NHIS Card number</label>
+                                                        <input type="text" class="form-control"   th:field="*{NHISCardumber}">
+                                                    </div>
+
+
+
+
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Guardian Name</label>
+                                                        <input type="text" class="form-control"   th:field="*{GuadiaName}">
+                                                    </div>
+
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Guardian GH. card number</label>
+                                                        <input type="text" class="form-control"   th:field="*{GhanaCardNumber}">
+                                                    </div>
+                                                    <hr /> 
+                                                    <div class="form-group  d-none"  id="staff">
+                                                        <label for="inputAddress2">(Only Staff )staff Id</label>
+                                                        <input type="text" class="form-control"   th:field="*{staffId}">
+
+                                                    </div> 
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Guardian Number</label>
+                                                        <input type="tel"     pattern="[0-9]{3}[0-9]{3}[0-9]{4}" 
+                                                               required class="form-control"  th:field="*{parentNumber}">
+
+
+                                                    </div>
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Occupation</label>
+                                                        <input type="text" class="form-control"  th:field="*{Occupation}">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-3 ">
+                                            <!--div>
+                                             <label for="lable">Student Picture</label>
+                                             <input type="file" class="form-control form-control-file" required th:id="file-image" th:name="file-image"  onchange="showImageThumbnail(this)"/>
+                                             <p>
+                                                 <img id="thumbnail" alt="logo-preview" class="d-none img-thumbnail">
+                                             </p> 
+         
+                                              <div---->
+                                            <div >
+
+                                                <input type="submit" class="btn  btn-primary" value="Save Student" id="upload_btn" th:onclick="spinOnload()" >
+
+
+                                                <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                    Uploading.................
+                                                </button>
+
+                                            </div>   
+                                            <button class="btn btn-secondary d-none" id="cancel_btn" type="button">Cancel Button</button>
+
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+                    <div th:if="${UpdateStudentPicture}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-header bg-white border-0 pt-4 px-4">
+                                <h5 class="mb-0">Update Student</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form th:method="post" id="form" th:action="@{/updateWithPicture}" th:object="${UpdateStudentPicture}" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="form-group ">
+                                                        <label for="text">Student Id</label>
+                                                        <input type="text" class="form-control" th:field="*{StudentId}">
+
+
+                                                        <div class="form-group ">
+                                                            <label for="inputAddress">First Name</label>
+                                                            <input type="text" class="form-control"  th:field="*{FirstName}">
+                                                        </div>
+                                                        <div class="form-group ">
+                                                            <label for="inputAddress">Sur Name</label>
+                                                            <input type="text" class="form-control"  th:field="*{surname}">
+                                                        </div>
+
+                                                        <div class="form-group ">
+                                                            <label for="inputAddress2">Other Name</label>
+                                                            <input type="text" class="form-control"   th:field="*{LastName}">
+                                                        </div>
+                                                        <div class="form-group  ">
+                                                            <label for="inputAddress">Sex</label>
+                                                            <select th:field="*{Sex}" class="form-control">
+                                                                <option value="Male"  >Male</option>
+                                                                <option value="Female"  >Female</option>
+
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group  ">
+                                                            <label for="inputAddress2">Date of Birth</label>
+                                                            <input type="date" class="form-control"   th:field="*{dateOfBirth}">
+                                                        </div>
+
+                                                        <div class="form-group ">
+                                                            <label for="inputState">Class</label>
+                                                            <input type="text" class="form-control"   th:field="*{studentklass.className}" >
+
+                                                        </div> </div></div> <div class ="col-6">
+
+
+                                                    <div class="form-group ">
+                                                        <label for="inputState">physical Disability</label>
+                                                        <select class="form-control" th:field="*{physicalDisability}">
+                                                            <option th:value="No" >No</option>
+                                                            <option th:value="Yes">Yes</option>
+                                                        </select>
+                                                    </div>      
+
+                                                    <div class="form-group">
+                                                        <label for="inputState">Select Category</label>
+                                                        <select class="form-control" th:field="*{ParentCategory}"   onchange="ShowTextField()">
+                                                            <option th:value="Junior-Staff">  Junior-Staff</option>
+                                                            <option th:value="Senior-Staff"> Senior-Staff</option>
+
+                                                            <option th:value="Non-Staff">Non-Staff</option>
+                                                            <script>
+                                                                function ShowTextField() {
+                                                                    if (((document.getElementById("ParentCategory").value == "Senior-Staff") ||
+                                                                            (document.getElementById("ParentCategory").value == "Junior-Staff")) ||
+                                                                            (document.getElementById("ParentCategory").value == "Senior-Member")) {
+                                                                        document.getElementById("staff").classList.remove("d-none");
+                                                                    }
+                                                                    if (((document.getElementById("ParentCategory").value == "Non-Staff"))) {
+                                                                        document.getElementById("staff").classList.add("d-none");
+
+                                                                    }
+                                                                }
+                                                            </script>
+                                                        </select>
+                                                    </div>
+
+
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">NHIS Card number</label>
+                                                        <input type="text" class="form-control"   th:field="*{NHISCardumber}">
+                                                    </div>
+
+
+
+
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Guardian Name</label>
+                                                        <input type="text" class="form-control"   th:field="*{GuadiaName}">
+                                                    </div>
+
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Guardian GH. card number</label>
+                                                        <input type="text" class="form-control"   th:field="*{GhanaCardNumber}">
+                                                    </div>
+                                                    <hr /> 
+                                                    <div class="form-group  d-none"  id="staff">
+                                                        <label for="inputAddress2">(Only Staff )staff Id</label>
+                                                        <input type="text" class="form-control"   th:field="*{staffId}">
+
+                                                    </div> 
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Guardian Number</label>
+                                                        <input type="tel"     pattern="[0-9]{3}[0-9]{3}[0-9]{4}" 
+                                                               required class="form-control"  th:field="*{parentNumber}">
+
+
+                                                    </div>
+                                                    <div class="form-group ">
+                                                        <label for="inputAddress2">Occupation</label>
+                                                        <input type="text" class="form-control"  th:field="*{Occupation}">
+
+                                                    </div>
+                                                </div> </div></div>
+                                        <div class="col-3 ">
+
+                                            <label for="lable">Student Picture</label>
+                                            <input type="text" th:field='*{productPicturePath}'>
+                                            <input type="file" class="form-control form-control-file" required th:id="file-image" th:name="file-image"  onchange="showImageThumbnail(this)"/>
+                                            <p>
+                                                <img id="thumbnail" alt="logo-preview" class="d-none img-thumbnail">
+                                            </p> 
+
+
+                                            <div >
+
+                                                <input type="submit" class="btn  btn-primary" value="Save Student" id="upload_btn" th:onclick="spinOnload()" >
+
+
+                                                <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                    Uploading.................
+                                                </button>
+
+                                            </div>   
+                                            <button class="btn btn-secondary d-none" id="cancel_btn" type="button">Cancel Button</button>
+
+                                        </div>
+
+
+
+
+                                    </div>
+
+
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+                    <!--Student List BasedOnClass -->   
+                    <div th:if="${StudentList}" >
+                        <a th:href="@{/DownloadStudentExcelSheet/{ClassId} (ClassId=${classId})}" class="btn btn-primary">
+                            Download Student File
+                        </a>    
+                        <table class="table table-striped table-responsive-md table-primary shadow" >
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Student Reference</th>
+                                    <th>First Name</th>
+                                    <th>Other  Name</th>
+                                    <th>Sur Name</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="student:${StudentList}"> 
+                                    <td th:text="${student.StudentId}"></td>
+                                    <td th:text="${student.StudentReference}"></td>
+                                    <td th:text="${student.FirstName}"></td>
+                                    <td th:text="${student.LastName}"></td>
+                                    <td th:text="${student.surname}"></td>
+                                    <TD>   <img th:src="@{${student.productPicturePath}}" class=" img-thumbnail img-fluid "/></td>
+
+                                    <td><a th:href="@{/StudentDetails/{id}(id=${student.StudentId})}" class="btn btn-primary ">Details</a></td>
+                                    <td><button  class="btn btn-danger"
+
+                                                 th:onclick="SaveBusiness('[[${student.StudentId}]]','[[${classId}]]')"> Stopped </button ></td>
+
+
+                                </tr>
+
+                                <!-- payment form -->
+                                   </tbody>
+                          
+                                 
+
+                           
+                       
+                        
+                       
+                        </table>
+                         <nav th:if="${studentPage.totalPages > 1}">
+                                <ul class="pagination justify-content-center">
+
+                                    <li class="page-item" th:classappend="${studentPage.first} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/Studentlist/{id}(id=${classId}, page=${studentPage.number - 1}, size=${studentPage.size})}">
+                                            Previous
+                                        </a>
+                                    </li>
+
+                                    <li class="page-item"
+                                        th:each="i : ${#numbers.sequence(0, studentPage.totalPages - 1)}"
+                                        th:classappend="${i == studentPage.number} ? 'active'">
+
+                                        <a class="page-link"
+                                           th:href="@{/Studentlist/{id}(id=${classId}, page=${i}, size=${studentPage.size})}"
+                                           th:text="${i + 1}">
+                                        </a>
+                                    </li>
+
+                                    <li class="page-item" th:classappend="${studentPage.last} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/Studentlist/{id}(id=${classId}, page=${studentPage.number + 1}, size=${studentPage.size})}">
+                                            Next
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </nav>
+                        <div class="modal fade" id="StoppedAction" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background-color:#002752; color:#fff ">
+                                        <h5 class="modal-title" id="exampleModalLabel">Info </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p >Do you want to perform  this operation </p>
+                                        <input type="text" hidden="true" id="studIdModal" value=""></span>
+                                        <input type="text" hidden="true" id="studClassModal" value=""></span>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger" onclick="submitDropStudent()">Approve</button>
+                                    </div> 
+                                </div>
+                            </div>
+                            <script>
+                                function submitDropStudent() {
+                                    var studentId = document.getElementById("studIdModal").value;
+                                    var ClassId = document.getElementById("studClassModal").value;
+                                    var url = '/FlagStudent/' + studentId + '/' + ClassId;
+                                    // alert(url);
+                                    $.ajax({
+                                        url: url, // Replace this with your actual API endpoint
+                                        method: 'Get',
+                                        success: function (data) {
+                                            //  alert(data);
+                                            window.location.reload();
+                                        },
+                                        //   document.getElementById("msg").classList.remove("d-none");
+                                        //   document.getElementById("myTable").classList.add("d-none");
+
+
+
+                                        error: function (xhr, status, error) {
+                                            console.error(status + ": " + error + xhr);
+                                            alert(error + "  -- " + xhr + " --- " + status);
+                                            window.location.reload();
+                                            // $("#info").modal('show');
+                                        }
+                                    });
+                                }
+
+                            </script>
+                        </div>
+
+                    </div>
+
+                    <div th:if="${payment}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-header bg-white border-0 pt-4 px-4">
+                                <h5 class="mb-0">Payment</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form th:object="${payment}" th:method="post" th:action="@{/SavePayment}">
+                                    <table class="table table-hover mb-0">
+                                        <tr>
+                                        <p th:text="${info}" class="text-info alert-info">
+
+                                        </p>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><input type="hidden" readonly="true" th:field="*{Student}" ></td>
+                                            <td><label class="form-control">Amount:</label></td>
+                                            <td><input type="text" th:field="*{Amount}" class="form-control"></td>
+                                            <td><input type="text" readonly="true" th:field="*{paymentType}" class="form-control"></td>
+                                            <td><input type="hidden" readonly="true" th:field="*{term}" >
+
+                                                <label class="form-control" th:text="${payment.term.TermName}">Amount:</label>
+                                            </td>
+                                            <td><input type="submit" class="btn btn-primary " value="Save Payment" id="upload_btn" th:onclick="spinOnload()"></td>
+                                        <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            Uploading.................
+                                        </button>
+
+
+                                        </tr>
+
+                                    </table>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--List Of Klasses -->
+                    <div th:if="${klasses}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0" id="mydata">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Classes:</th>
+
+                                        </tr>
+                                    </thead></tbody>
+                                    <tr th:each="klass:${klasses}">
+                                        <td><a th:href="@{/Studentlist/{classId} (classId=${klass.ClassName})}" th:text="${klass.ClassName}" class="h8 text-justify text-primary"></a></td>
+
+
+                                    </tr>  
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--School Fees Form -->
+                    <div th:if="${Fees}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-header bg-white border-0 pt-4 px-4">
+                                <h5 class="mb-0">School Fees</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form th:method="post" id="form" th:action="@{/savefees}" th:object="${Fees}">
+
+                                    <div class="form-group col-md-4">
+                                        <label for="text">Amount (GHC)</label>
+                                        <input type="text" class="form-control" th:field="*{Amount}">
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        <label for="text">Specification</label>
+                                        <select class="form-control" id="" th:field="*{FeeSpecification}">
+                                            <option th:value="Junior-Staff">  Junior-Staff</option>
+                                            <option th:value="Senior-Staff"> Senior-Staff</option>
+
+                                            <option th:value="Non-Staff">Non-Staff</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="text">Term</label>
+                                        <select class="form-control" id="" th:field="*{term}">
+                                            <option th:Each="t:${terms}" th:value="${t.id}" th:text="${t.TermName}">Staff</option>
+
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="form-control btn btn-primary" id="upload_btn" th:onclick="spinOnload()" >Save Fee</button>
+
+                                    <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        Uploading.................
+                                    </button>
+                                    <button class="btn btn-secondary d-none" id="cancel_btn" type="button">Cancel Button</button>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Term -->
+                    <div th:if="${newterm}">
+                        <div class="col-md-6 offset-md-1">
+                            <div class="card border-0 shadow-sm rounded-lg">
+                                <div class="card-header bg-white border-0 pt-4 px-4">
+                                    <h5 class="mb-0">Add Term</h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <form method="post" id="form" th:action="@{/saveTerm}" th:object="${newterm}">
+                                        <div class="form-group ">
+                                            <label for="inputState">Term Name</label>
+                                            <select class="form-control" th:field="*{TermName}">
+                                                <option th:value="FirstTerm" >First Term</option>
+                                                <option th:value="SecondTerm">Second Term</option>
+                                                <option th:value="ThirdTerm">Third  Term</option>
+
+                                            </select>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label for="text">Starting Date</label>
+                                            <input type="date" class="form-control" th:field="*{StartDate}">
+                                        </div>   
+                                        <div class="form-group ">
+                                            <label for="text">Ending Date</label>
+                                            <input type="date" class="form-control" th:field="*{EndDate}">
+                                        </div>
+                                        <div class="form-group ">
+                                            <label for="text">Academic Year</label>
+                                            <select class="form-control" th:field="*{academicyear}">
+                                                <option id="class" th:each="AY:${years}"   th:value="${AY.Id}" th:text="${AY.AcademicName}">kg1</option>
+
+
+
+                                            </select>
+
+                                            <button type="submit"class=" btn btn-primary"id="upload_btn" th:onclick="spinOnload()" >Save Term</button>     
+                                            <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                Uploading.................
+                                            </button>
+                                        </div> 
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- PTA form -->
+
+
+                    <div th:if="${pta}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-header bg-white border-0 pt-4 px-4">
+                                <h5 class="mb-0">Add PTA Dues</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form th:method="post" id="form" th:action="@{/SavePTA}" th:object="${pta}">
+
+                                    <div class="form-group col-md-4">
+                                        <label for="text">Amount (GHC)</label>
+                                        <input type="text" class="form-control" th:field="*{Amount}">
+                                    </div>
+
+
+                                    <div class="form-group col-md-4">
+                                        <label for="text">Term</label>
+                                        <select class="form-control" id="" th:field="*{term}">
+                                            <option th:Each="t:${pTaTerm}" th:value="${t.id}" th:text="${t.TermName}">Staff</option>
+
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary" th:onclick="spinOnload()">Save PTA</button>
+                                    <button class="btn btn-primary d-none" id="loading_btn" type="button">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        Saving.................
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Details-->
+                    <div th:if="${StudentDetails}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0">
+                                    <tr>
+                                        <th> First Name  </th> 
+                                        <th>  Other Name </th>
+                                        <th>Surname </th>
+                                        <th>    Date Of Birth </th>
+                                        <th>   Sex </th>
+                                        <th>  NHIS Card Number </th>
+                                        <th>   Guardian Name </th>
+
+                                        <th>  Parent Category </th>
+                                        <th>Phone Number </th>
+                                        <th> residential Address </th>
+                                    </tr> <tr>
+                                    <tr >
+                                        <td th:text="${StudentDetails.FirstName}"></td>
+                                        <td th:text="${StudentDetails.LastName}"></td>
+                                        <td th:text="${StudentDetails.surname}"></td>
+                                        <td th:text="${StudentDetails.dateOfBirth}"></td>
+                                        <td th:text="${StudentDetails.Sex}"></td>
+
+                                        <td th:text="${StudentDetails.NHISCardumber}"></td>
+                                        <td th:text="${StudentDetails.GuadiaName}"></td>
+                                        <td th:text="${StudentDetails.ParentCategory}"></td>
+                                        <td th:text="${StudentDetails.parentNumber}"></td>
+                                        <td th:text="${StudentDetails.residentialAddress}"></td>   
+                                    </tr>
+
+
+
+                                </table>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <a th:href="@{/UpdateDetailsPicture/{id}(id=${StudentDetails.StudentId})}" class="btn btn-primary btn-sm me-2">Update Student Records</a>
+                            <a th:href="@{/StudentBill/{id}(id=${StudentDetails.StudentId})}" class="btn btn-outline-primary btn-sm me-2">Student Bills</a>
+                            <a th:href="@{/UpdateDetails/{id}(id=${StudentDetails.StudentId})}" class="btn btn-outline-secondary btn-sm">Update Student Without Picture</a>
+                        </div>
+                    </div>
+
+                    <div th:if="${Studentbills}" class='card'>
+                        <p class="alert-info text-info">Bill for student <b><div th:text="${studentname}"></div></b> </p>
+                        <table class="table table-info" id="mydata" >
+                            <thead>
+                                <TR><th>Term</th>
+                                    <th>PTA</th>
+                                    <th>SCHOOL FEES</th>
+                                    <th>Academic Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <TR th:each="bill:${Studentbills}">
+                                    <td th:text="${bill.term.TermName}"></td>
+                                    <td th:text="${bill.pta.Amount}"></td>
+                                    <td th:text="${bill.fee.Amount}"></td>
+                                    <td th:text="${bill.fee.term.academicyear.AcademicYear}"></td>
+
+                                </tr>
+                                <tr>
+
+                                    <td></td>    
+                                    <td></td>
+                                    <td>Total Fees:</td><td th:text="${totalBillFees}"></td>  
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                    <!--form for uploading excel file-->
+                    <div th:if="${SelectExcelFileToUpload}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-body p-4">
+                                <a th:href="@{/ShowExcelForm}" class="btn btn-primary me-2">Upload Excel From Finance</a>
+                                <a th:href="@{/ShowStudentsDataExcelForm}" class="btn btn-outline-primary">Upload Student Data</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${excel}">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-body p-4">
+                                <lable>Please upload excel file (Finance)</lablE>
+                                <form th:method="post" class="form-inline" id="form" th:action="@{/GetFile}" enctype="multipart/form-data">
+
+                                    <input type="file" class="form-control "  th:name="file" >&nbsp; &nbsp;
+                                    <button type="submit" class="btn btn-primary" id="upload_btn" th:onclick="spinOnload()">Upload File</button>
+                                </form>
+                                <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                    <span class="spinner-border spinner-border" role="status" aria-hidden="true"></span>
+                                    Loading.................
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Student Classes from excel File-->
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div th:if="${StudentClasses}">
+                                <div class="card border-0 shadow-sm rounded-lg">
+                                    <div class="card-body p-4">
+
+                                        <table class="table table-responsive-sm table-bordered table-striped">
+                                            <tr>
+                                                <th>Select Class</th>
+                                                <th></th>
+                                            </tr>
+                                            <tr th:each="class:${StudentClasses}">
+                                                <td >
+                                                    <a th:href="@{/StudetBillingsExcel/{ClassName}(ClassName=${class})}" th:text="${class}">
+
+                                                    </a></td>
+
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${StudentBills}" class="col-md-8" id="ExcelForm">
+                            <div class="card border-0 shadow-sm rounded-lg">
+                                <div class="card-body p-4">
+                                    <button onClick="saveBill();" id="saveButton" class="btn btn-success" style="margin-bottom: 20px;">SaveData</button>
+                                    <p class="d-none" id="feeLoader">Please Wait<span class="spinner-border spinner-border-sm" style="color: #7abaff" role="status" aria-hidden="true"></span>
+                                    <table class="table table-striped table-bordered table-primary " id="mydata">
+                                        <thead>
+                                            <tr>
+                                                <th>Student Id</th>
+                                                <th>parentCategory</th>
+                                                <th>Out Standing Balance </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="studentBil:${StudentBills}">
+                                                <td th:text="${studentBil.studentId}"> </td>
+                                                <td th:text="${studentBil.parentCategory}"> </td>
+                                                <td th:text="${studentBil.OutstandingBalace}"> </td> 
+                                            </tr>
+
+
+                                        </tbody>
+                                    </table><script>
+                                        function saveBill() {
+                                            document.getElementById("feeLoader").classList.remove("d-none");
+                                            document.getElementById("saveButton").classList.add("d-none");
+                                            $.ajax({
+                                                url: "/saveExcelBill",
+                                                type: "GET",
+                                                dataType: 'JSON',
+                                                success: function (data) {
+                                                    Alert(data);
+                                                    document.getElementById("ExcelForm").classList.add("d-none");
+                                                    document.getElementById("feeLoader").classList.add("d-none");
+
+                                                },
+                                                error: function (xhr, status, error) {
+                                                    document.getElementById("feeLoader").classList.add("d-none");
+                                                    console.error(status + ": " + error + xhr);
+                                                    alert(error + "  -- " + xhr + " --- " + status);
+                                                    //window.location.reload();
+                                                    // $("#info").modal('show');
+                                                }
+                                            });
+                                        }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${sms}">
+                            <div class="card border-0 shadow-sm rounded-lg">
+                                <div class="card-header bg-white border-0 pt-4 px-4">
+                                    <h5 class="mb-0">Send SMS</h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <form th:object="${sms}" th:action="@{/sendSms}" th:method='post'>
+                                        <div class="form-group ">
+                                            <label for="text">Type message</label>
+                                            <textarea th:field="*{message}" class="form-control" rows="5" cols="50">
+                                            </textarea>
+                                        </div>
+                                        <div class="form-group col-md-4">
+
+                                            <input type="submit" class="btn btn-primary" id="upload_btn" th:onclick="spinOnload()" value="Send SMS">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!--upload excel file into database--->
+
+                        <div th:if="${StudentExcelData}">
+                            <div class="card border-0 shadow-sm rounded-lg">
+                                <div class="card-body p-4">
+                                    <p>Please upload excel file (Student Data)</p>
+                                    <div class=" form-group mb-7">
+                                        <div class="custom-file">
+                                            <form th:method="post" class="form-inline" id="form" th:action="@{/GetStudentsDataExcelFile}" enctype="multipart/form-data">
+
+                                                <input type="file" class="custom-file-input "  th:name="file" id="file" oninput="input_filename()">&nbsp; &nbsp;
+                                                <lable id="file_input_lablel" class="custom-file-label">upload</lable>
+                                                <input type="hidden" th:value="@{/GetStudentsDataExcelFile}" id="route">
+                                                <hr />
+                                                <button type="submit" class="btn btn-primary" id="upload_btn" th:onclick="upload()" >Upload File</button>
+
+
+                                                <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                    Uploading.................
+                                                </button>
+                                                <button class="btn btn-secondary d-none" id="cancel_btn" type="button">Cancel Button</button>
+                                                <div id="progress_wrapper" class="d-none">
+                                                    <label id="progress_status"></label>
+                                                    <div class="progress mb-3">
+                                                        <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" area-valuemin="0" area-valuemax="100">
+                                                        </div>
+                                                    </div> 
+
+                                                </div>
+                                                <div id="alert_wrapper"></div></form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Add Teacher Form-->
+                        <div th:if="${TeacherForm}" class="col-8">
+                            <div class="card border-0 shadow-sm rounded-lg">
+                                <div class="card-header bg-white border-0 pt-4 px-4">
+                                    <h5 class="mb-0">Add Teacher</h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <form th:method="post" id="form" th:action="@{/saveTeacher}" th:object="${teacher}">
+
+                                        <div class="form-group ">
+                                            <label for="text"> First Name</label>
+                                            <input type="text"  class="form-control" th:field="*{FirstName}" required="true">
+                                        </div>
+
+
+
+
+                                        <div class="form-group ">
+                                            <label for="inputAddress">Last Name</label>
+                                            <input type="text" class="form-control"  th:field="*{LastName}" required="true">
+                                        </div>
+
+                                        <div class="form-group ">
+                                            <label for="inputAddress">*Staff ID</label>
+                                            <input type="text" class="form-control"  th:field="*{StaffId}" required="true">
+                                        </div>
+
+
+                                        <div class="form-group  ">
+                                            <label for="inputAddress">Sex</label>
+                                            <select th:field="*{sex}" class="form-control">
+                                                <option value="Male"  >Male</option>
+                                                <option value="Female"  >Female</option>
+
+                                            </select>
+                                        </div>
+
+
+                                        <div class="form-group ">
+                                            <label for="inputAddress2">* Phone Number</label>
+                                            <input type="tel" class="form-control "  th:field="*{PhoneNumber}" required="true">
+
+                                        </div>
+                                        <div class="form-group " style="margin-top:10px; ">
+
+                                            <input type="submit" class="btn  btn-primary" value="Add Teacher" id="upload_btn" th:onclick="spinOnload()">
+                                            <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                Saving .................
+                                            </button>
+                                            <hr />&nbsp;&nbsp;
+                                            <button class="btn btn-secondary d-none" id="cancel_btn" type="button">Cancel Button</button>
+
+                                        </div>     
+
+
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Displaying all the teachers we have in the school-->
+                        <div th:if='${teachersList}'>
+                            <div class="card border-0 shadow-sm rounded-lg">
+                                <div class="card-body p-0">
+                                    <table class="table table-striped " id="mydata">
+                                        <thead>
+                                            <tr>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Phone Number</th>
+                                                <th>Teacher Id</th><th></th><th></th><th></th><th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="teacher:${teachersList}">
+
+                                                <td th:text="${teacher.FirstName}"></td>
+                                                <td th:text="${teacher.LastName}"></td>
+                                                <td th:text="${teacher.PhoneNumber}"></td>
+                                                <td th:text="${teacher.PhoneNumber}"></td>
+                                                <td th:text="${teacher.StaffId}"></td>
+                                                <td><a th:href="@{/TeacherDatils/{TeacherId}(TeacherId=${teacher.TeacherId})}" class="btn btn-primary ">
+                                                        Details</a></td>  
+                                                <td><a th:href="@{/ShowUpdateTeacherForm/{id}(id=${teacher.TeacherId})}" class="btn  btn-danger fa fa-edit">
+                                                        UPDATE</a></td>    
+
+                                                <td><a th:href="@{/AssignClassToTeacher/{TeacherId}(TeacherId=${teacher.TeacherId})}" class="btn btn-secondary ">
+                                                        Assign Class</a></td>
+
+
+                                            </tr>
+
+
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!--Showing teachers Details -->
+
+
+                        <!--Adding new User to the System
+                        
+                        model.addAttribute("NewUser",new users());
+            model.addAttribute("Roles",US.FindUserRoles().remove("Student"));
+            
+                        -->
+                        <div th:if="${NewUser}">
+                            <div class="card border-0 shadow-sm rounded-lg">
+                                <div class="card-header bg-white border-0 pt-4 px-4">
+                                    <h5 class="mb-0">Add User</h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <form th:method="post" th:action="@{/addUserAdminFinance}" th:object="${NewUser}">
+
+
+                                        <div class="form-group col-md-7">
+                                            <label for="text">Staff Id</label>
+                                            <input type="text"  class="form-control" th:field="*{username}" required="true">
+                                        </div>
+                                        <div class="form-group col-md-7">
+                                            <label for="text">First Name</label>
+                                            <input type="text"  class="form-control" th:field="*{firstname}">
+                                        </div>
+                                        <div class="form-group col-md-7">
+                                            <label for="text">Last Name</label>
+                                            <input type="text"  class="form-control" th:field="*{lastname}">
+                                        </div>
+                                        <div class="form-group col-md-7">
+                                            <label for="text">Phone Number</label>
+                                            <input type="text"  class="form-control" th:field="*{phonnumber}" required="true">
+                                        </div>
+                                        <div class="form-group col-md-7">
+                                            <label for="text">Select Role</label>
+                                            <select class="form-control" th:field="*{roles}">
+                                                <option th:each="role:${Roles}" th:text="${role.name}" th:value="${role.id}" 
+                                                        class="form-control" />
+                                            </select>
+                                        </div><div class="form-group col-md-6 ">
+                                            <input type="submit" class="btn btn-primary shadow" value="Add User" id="upload_btn" th:onclick="spinOnload()">
+
+                                            <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                Saving.................
+                                            </button>
+                                        </div>    
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div th:if="${StudentAssessmentKlass}">
+                            <div class="card border-0 shadow-sm rounded-lg">
+                                <div class="card-body p-0">
+
+
+
+
+                                    <table class="table  table-bordered  table-primary " id="mydata">
+                                        <thead>
+                                            <tr>
+                                                <th>Classes:</th>
+
+                                            </tr>
+                                        </thead></tbody>
+                                        <tr th:each="klass:${StudentAssessmentKlass}">
+                                            <td><a th:href="@{/GetClassAssessment/{classId}/{TermId}
+                                                   (classId=${klass.ClassName},TermId=${TermId})}"
+                                                   th:text="${klass.ClassName}" class="btn btn-link"></a></td>
+                                        </tr>  
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    <div class="row">
+                        <div th:if="${ClassAssessment}" class="col-12">
+                            <div class="card border-0 shadow-sm rounded-lg">
+                                <div class="card-body p-0">
+
+
+                                    <div class="row"><div class="col-2">
+                                            <a th:href="@{/ApproveAssessment/{KlassId}(KlassId=${classIDAssessment})}"
+                                               th:object="${AllStudentAssessment}" CLASS="btn shadow btn-secondary" >
+                                                APPROVE </a></div><div class="col-4">
+                                            <a th:href="@{/Get/StudentsCurrentTermPDF/{KlassId}/{TermId}(KlassId=${classIDAssessment},TermId=${TermId})}"
+                                               class="btn shadow btn-success">  BATCH DOWNLOAD  </a></div></div>
+
+                                    <table class=" table    table-primary table-bordered  table-striped table-responsive" style="font-size: 12px;" id="mydata"><tr>
+                                        <thead><tr>
+
+                                                <TH>First Name</TH>
+                                                <TH>Middle Name</TH>
+                                                <TH>Sur Name</TH>
+                                        <th:block th:each="S:${Subjects}">
+                                            <th th:text="${S}"></th>
+
+                                        </th:block>
+                                        <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="Tassement:${ClassAssessment}">
+
+                                        <th:block th:each="assement:${Tassement}">
+                                            <td><a th:href="@{/StudentAssessment/Assessment/{StudentId}(StudentId=${assement.key.StudentId})}" class="text-dark link  " th:text="${assement.key.FirstName}"/></td>
+                                            <td  th:text="${assement.key.LastName}">
+                                            </td> <td  th:text="${assement.key.surname}">
+                                            </td>
+
+
+                                            <th:block th:each="ass:${assement.value}">
+                                                <td th:text="${ass.TotalScore}"></td>
+
+
+
+
+
+
+
+                                            </th:block>
+                                            <td>
+                                                <a th:href="@{/Get/StudentAssessmentCurrentTermPDF/{StudentId}/{TermId}
+                                                   (StudentId=${assement.key.StudentId},TermId=${TermId})}" class="btn btn-link">Download Report</a>
+
+
+                                            </td>     </tr>
+                                        </th:block>
+
+
+                                        </tbody></table>
+
+                                </div>
+
+
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- /.row -->
+
+                <!-- /.container -->
+
+
+                <!-- Footer -->
+                <footer class="footer text-center text-muted py-3 mt-auto border-top">
+                    <small>Powered by <strong>Quantum Publications</strong></small>
+                </footer>
+            </div>  
+            <!-- Bootstrap core JavaScript -->
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#mydata').DataTable();
+                });
+
+
+
+            </script>
+            <script>
+                function showImageThumbnail(fileInput) {
+                    var thumbanil = document.getElementById('thumbnail');
+                    thumbanil.classList.remove("d-none");
+
+                    file = fileInput.files[0];
+                    reader = new FileReader();
+                    reader.onload = function (e) {
+
+                        $('#thumbnail').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+
+                }
+
+            </script>
+            <script>
+                function calculateAge() {
+                    const dobInput = document.getElementById('dob').value;
+
+                    if (!dobInput) {
+                        document.getElementById('result').innerHTML = 'Please select a date of birth.';
+                        return;
+                    }
+
+                    const dob = new Date(dobInput);
+                    const today = new Date();
+
+                    let years = today.getFullYear() - dob.getFullYear();
+                    let months = today.getMonth() - dob.getMonth();
+                    let days = today.getDate() - dob.getDate();
+
+                    // Adjust days and months
+                    if (days < 0) {
+                        months--;
+                        const previousMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                        days += previousMonth.getDate();
+                    }
+
+                    if (months < 0) {
+                        years--;
+                        months += 12;
+                    }
+
+                    document.getElementById('result').innerHTML =
+                            years + ' years, ' + months + ' months, ' + days + ' days';
+                }
+                function SaveBusiness(id, classid) {
+                    // let lengthID =id.length;
+                    // alert(lengthID);
+                    // let lengthClassId =classid.length;
+                    // classid=  classid.slice(0,lengthID);
+                    // alert(classid);
+
+//   $('#example').DataTable({                     text.length
+                    // Configure DataTables options here
+//  });                                         // th:href="@{/FlagStudent/{studentId}/{classId}(studentId=${student.StudentId},classId=${classId})}"
+                    //var upload_btn = document.getElementById("upload");
+                    // var loading = document.getElementById("loading");
+                    //  var url = document.getElementById("route").value;
+                    // upload_btn.classList.add("d-none");
+                    //  loading.classList.remove("d-none");
+                    // var data = $("#business").serialize();
+
+                    //console.log("the actual"+data);  console.log("the actual"+url);
+//AJAX request
+                    // $.ajax({
+                    //   url: url, // Replace this with your actual API endpoint
+                    //   method: 'POST',
+                    //  dataType: 'json',
+                    //  data: data,
+                    // success: function (data) {
+                    // Populate DataTable with retrieved data
+                    //   document.getElementById("msg").classList.remove("d-none");
+                    //   document.getElementById("myTable").classList.add("d-none");
+                    $("#StoppedAction").modal('show');
+                    document.getElementById("studIdModal").value = id;
+                    document.getElementById("studClassModal").value = classid;
+                    //  upload_btn.classList.remove("d-none");
+                    //  loading.classList.add("d-none");
+                    // document.getElementById("bform").classList.add("d-none");
+                    // getData();
+                    // $("#msg").append("<b>Successfully Saved  Data!</b>"+ data);
+
+                    //     $('#example').DataTable().clear().rows.add(data).draw();
+                    //  },
+                    // error: function (xhr, status, error) {
+                    //     console.error(status + ": " + error + xhr);
+                    //    document.getElementById("msg").classList.remove("d-none");
+
+                    //   $("#info").modal('show');
+                    // }
+                    //  });
+                }</script>
+
+        </div>
+
+        <script>
+            let currentPage = 0;
+            let currentSize = 10;
+
+            // Load activity logs when the page has finished loading
+            document.addEventListener("DOMContentLoaded", function () {
+                loadActivityLogs();
+
+                document.getElementById("prevPage")?.addEventListener("click", function () {
+                    if (currentPage > 0) {
+                        currentPage--;
+                        loadActivityLogs();
+                    }
+                });
+
+                document.getElementById("nextPage")?.addEventListener("click", function () {
+                    currentPage++;
+                    loadActivityLogs();
+                });
+
+                document.getElementById("pageSize")?.addEventListener("change", function () {
+                    currentSize = parseInt(this.value);
+                    currentPage = 0;
+                    loadActivityLogs();
+                });
+            });
+
+            function loadActivityLogs() {
+                const tbody = document.getElementById("activityLogsBody");
+                if (!tbody) return;
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2">Loading activity logs...</p>
+                        </td>
+                    </tr>`;
+
+                $.ajax({
+                    url: "/api/activity-logs/recent",
+                    type: "GET",
+                    data: {
+                        page: currentPage,
+                        size: currentSize
+                    },
+                    dataType: "JSON",
+                    success: function (response) {
+                        const logs = response.content || [];
+                        const totalPages = response.totalPages || 0;
+                        const totalElements = response.totalElements || 0;
+
+                        if (logs.length === 0) {
+                            tbody.innerHTML = `
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">
+                                        No activity logs found.
+                                    </td>
+                                </tr>`;
+                            document.getElementById("pageInfo").textContent = "Page 0 of 0";
+                            document.getElementById("prevPage").disabled = true;
+                            document.getElementById("nextPage").disabled = true;
+                            return;
+                        }
+
+                        let html = "";
+                        logs.forEach(log => {
+                            const statusBadge = log.isActive
+                                ? '<span class="badge bg-success">Active</span>'
+                                : '<span class="badge bg-secondary">Logged Out</span>';
+
+                            const logoutTime = log.logoutTime
+                                ? new Date(log.logoutTime).toLocaleString()
+                                : '<span class="text-muted">-</span>';
+
+                            html += `
+                                <tr>
+                                    <td>
+                                        <strong>${log.fullName || log.username}</strong>
+                                        <br><small class="text-muted">${log.username}</small>
+                                    </td>
+                                    <td><span class="badge bg-primary">${log.role}</span></td>
+                                    <td>${new Date(log.loginTime).toLocaleString()}</td>
+                                    <td>${logoutTime}</td>
+                                    <td>${log.ipAddress || 'Unknown'}</td>
+                                    <td>${statusBadge}</td>
+                                </tr>`;
+                        });
+
+                        tbody.innerHTML = html;
+                        document.getElementById("pageInfo").textContent =
+                            `Page ${currentPage + 1} of ${totalPages} (${totalElements} total)`;
+                        document.getElementById("prevPage").disabled = currentPage === 0;
+                        document.getElementById("nextPage").disabled = currentPage >= totalPages - 1;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error loading activity logs:", error);
+                        if (tbody) {
+                            tbody.innerHTML = `
+                                <tr>
+                                    <td colspan="6" class="text-center text-danger">
+                                        Failed to load activity logs.
+                                    </td>
+                                </tr>`;
+                        }
+                    }
+                });
+            }
+        </script>
+
+    </body>
+
+</html>

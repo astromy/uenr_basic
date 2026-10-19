@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+
+
+-->
+
+
+<div th:fragment="MockDetailsform">
+   
+    <div class="col-6 shadow text-info jumbotron bg-white table table-bordered">
+ <p class="  h5 " STYLE="font-family:gilsans mt ; ">
+        ADD MOCK EXAMS <hr /></p>  
+
+        <form th:method="post" th:action="@{/SaveUpdateMockDetails}" th:object="${MockDetailsform}" class="form" >
+
+            <div class="form-group ">
+                <label for="inputAddress">Mock Name*</label>
+                <input type="text" class="form-control"  th:field="*{mockName}" required="true">
+            </div>
+            <div class="form-group ">
+                <label for="inputAddress">Start Date*</label>
+                <input type="date" class="form-control"  th:field="*{startDate}" required="true">
+            </div>
+            <div class="form-group ">
+                <label for="inputAddress">End Date*</label>
+                <input type="date" class="form-control"  th:field="*{endDate}" required="true">
+            </div>
+           
+            
+            <div class="row">
+                <div class="col-4"> 
+                    <input type="submit" class="btn  btn-primary" value="Save" id="upload_btn" th:onclick="spinOnload()" >
+
+                </div>
+
+
+
+                <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Uploading.................
+                </button>
+
+            </div>   
+            <button class="btn btn-secondary d-none" id="cancel_btn" type="button">Cancel Button</button>
+                  </form>
+    </div>
+</div>

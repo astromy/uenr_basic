@@ -1,0 +1,128 @@
+ <div th:fragment="Review" class="jumbotron " style="background-color:#9fcdff; "> 
+
+                        <label class="h4">Add Student </label>
+
+                        <form th:method="post" id="form" th:action="@{/update}" th:object="${Review}" 
+                              style="margin-left: 4px;  font-size: 12px;  " enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group ">
+                                                <label for="text">Student Id</label>
+                                                <input type="text" class="form-control" th:field="*{StudentId}" readonly="true">
+
+
+                                                <div class="form-group ">
+                                                    <label for="inputAddress">First Name</label>
+                                                    <input type="text" class="form-control"  th:field="*{FirstName}">
+                                                </div>
+                                                <div class="form-group ">
+                                                    <label for="inputAddress">Sur Name</label>
+                                                    <input type="text" class="form-control"  th:field="*{surname}">
+                                                </div>
+
+                                                <div class="form-group ">
+                                                    <label for="inputAddress2">Other Name</label>
+                                                    <input type="text" class="form-control"   th:field="*{LastName}">
+                                                </div>
+                                                <div class="form-group  ">
+                                                    <label for="inputAddress">Sex</label>
+                                                    <select th:field="*{Sex}" class="form-control">
+                                                        <option value="Male"  >Male</option>
+                                                        <option value="Female"  >Female</option>
+
+                                                    </select>
+                                                </div>
+                                                <div class="form-group  ">
+                                                    <label for="inputAddress2">Date of Birth</label>
+                                                    <input type="date" class="form-control"   th:field="*{dateOfBirth}">
+                                                </div>
+
+                                                <div class="form-group ">
+                                                    <label for="inputState">Class</label>
+                                                    <Input type="text"  th:field="*{studentklass}" />
+                                                        
+                                                </div> </div></div> <div class ="col-6">
+
+
+                                            <div class="form-group ">
+                                                <label for="inputState">physical Disability</label>
+                                                <Input type="text" th:field="*{physicalDisability}">
+                                            </div>   
+                                            
+                                                <div class="form-group ">
+                                                <label for="inputState">New Student</label>
+                                                <Input type="text" class="form-control" id="NewStudent"/>
+  
+                                            </div>   
+                                           
+                                            <div class="form-group">
+                                                <label for="inputState">Select Category</label>
+                                                <Input type="text" class="form-control" th:field="*{ParentCategory}"   onchange="ShowTextField()">
+                                                     
+                                                
+                                            </div>
+
+
+                                            <div class="form-group ">
+                                                <label for="inputAddress2">NHIS Card number</label>
+                                                <input type="text" class="form-control"   th:field="*{NHISCardumber}">
+                                            </div>
+
+
+
+
+                                            <div class="form-group ">
+                                                <label for="inputAddress2">Guardian Name</label>
+                                                <input type="text" class="form-control"   th:field="*{GuadiaName}">
+                                            </div>
+
+
+                                            <hr /> 
+                                            <div class="form-group ">
+                                                <label for="inputAddress2">Guardian Number</label>
+                                                <input type="tel"     pattern="[0-9]{3}[0-9]{3}[0-9]{4}" 
+                                                       required class="form-control"  th:field="*{parentNumber}">
+
+
+                                            </div>
+                                            <div class="form-group ">
+                                                <label for="inputAddress2">Occupation</label>
+                                                <input type="text" class="form-control"  th:field="*{Occupation}">
+
+                                            </div>
+                                        </div> </div></div>
+                                <div class="col-3 ">
+
+                                    <label for="lable">Student Picture</label>
+                                  
+                                         <img th:src="@{${student.productPicturePath}}" 
+                                              class=" img-thumbnail img-fluid "/> </p> 
+
+
+                                    <div >
+
+                                        <input type="submit" class="btn  btn-primary" value="Save Student" id="upload_btn" th:onclick="spinOnload()" >
+
+
+                                        <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            Uploading.................
+                                        </button>
+
+                                    </div>   
+                                    <button class="btn btn-secondary d-none" id="cancel_btn" type="button">Cancel Button</button>
+
+                                </div>
+
+
+
+
+                            </div>
+
+
+
+                        </form>
+                    </div>
+

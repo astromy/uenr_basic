@@ -1,0 +1,34 @@
+ <div th:fragment="UpdateSubject">
+                        <div class="offset-md-1 col-md-6 jumbotron table-bordered">
+                            <div class="bg-info text-white">
+                                <CENTER><p> Edit Subject</p></center>
+                            </div> 
+                            <form method="get" id="form" th:action="@{/EditSubject}" th:object="${UpdateSubject}" >
+                           
+                                <input type="hidden" class="form-control" th:field="*{id}">
+                           
+                                <div class="form-group ">
+                                    <label for="text">name</label>
+                                    <input type="text" class="form-control" th:field="*{SubjectName}" required="true">
+                                </div>   
+                                
+                                <div class="form-group ">
+                                     <button type="submit"class=" btn btn-primary"id="upload_btn" th:onclick="spinOnload()" >Edit Subject</button>     
+                                    <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        Uploading.................
+                                    </button>
+                                </div> 
+                            </form>
+
+                        </div> 
+
+
+
+                    </div><!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+

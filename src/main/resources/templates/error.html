@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Error | Application</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #333;
+        }
+
+        .error-container {
+            width: 90%;
+            max-width: 650px;
+            background: white;
+            padding: 50px 40px;
+            text-align: center;
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .error-icon {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            background: #fee2e2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #dc2626;
+            font-size: 45px;
+            font-weight: bold;
+        }
+
+        .error-code {
+            font-size: 72px;
+            font-weight: 800;
+            color: #1f4e79;
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        .error-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #222;
+        }
+
+        .error-message {
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .error-details {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .error-details div {
+            margin-bottom: 7px;
+        }
+
+        .error-details div:last-child {
+            margin-bottom: 0;
+        }
+
+        .error-details strong {
+            color: #374151;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #1f4e79;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #163a5c;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 600px) {
+
+            .error-container {
+                padding: 35px 20px;
+            }
+
+            .error-code {
+                font-size: 55px;
+            }
+
+            .error-title {
+                font-size: 23px;
+            }
+
+            .error-message {
+                font-size: 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="error-container">
+
+    <div class="error-icon">
+        !
+    </div>
+
+    <!-- Error Code -->
+    <div class="error-code"
+         th:text="${status != null ? status : 'Error'}">
+        500
+    </div>
+
+    <!-- Error Title -->
+    <div class="error-title"
+         th:if="${status == 404}">
+        Page Not Found
+    </div>
+
+    <div class="error-title"
+         th:if="${status == 403}">
+        Access Denied
+    </div>
+
+    <div class="error-title"
+         th:if="${status == 500}">
+        Something Went Wrong
+    </div>
+
+    <div class="error-title"
+         th:if="${status != 404 and status != 403 and status != 500}">
+        An Error Occurred
+    </div>
+
+
+    <!-- Message -->
+
+    <div class="error-message">
+
+        <span th:if="${status == 404}">
+            Sorry, the page you are looking for
+            could not be found.
+        </span>
+
+        <span th:if="${status == 403}">
+            You do not have permission to access
+            this page.
+        </span>
+
+        <span th:if="${status == 500}">
+            An unexpected error occurred while
+            processing your request. Please try again.
+        </span>
+
+        <span th:if="${status != 404 and status != 403 and status != 500}">
+            We were unable to process your request.
+            Please try again later.
+        </span>
+
+    </div>
+
+
+    <!-- Error Details -->
+
+    <div class="error-details">
+
+        <div>
+            <strong>Status:</strong>
+
+            <span th:text="${status}">
+                500
+            </span>
+        </div>
+
+        <div th:if="${error != null}">
+            <strong>Error:</strong>
+
+            <span th:text="${error}">
+                Internal Server Error
+            </span>
+        </div>
+
+        <div th:if="${message != null and message != ''}">
+            <strong>Message:</strong>
+
+            <span th:text="${message}">
+                Something went wrong
+            </span>
+        </div>
+
+        <div th:if="${path != null}">
+            <strong>Path:</strong>
+
+            <span th:text="${path}">
+                /
+            </span>
+        </div>
+
+        <div th:if="${timestamp != null}">
+            <strong>Time:</strong>
+
+            <span th:text="${timestamp}">
+                -
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- Buttons -->
+
+    <div class="buttons">
+
+        <a href="/"
+           class="btn btn-primary">
+            ← Back to Home
+        </a>
+
+        <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="history.back()">
+            Go Back
+        </button>
+
+    </div>
+
+
+    <div class="footer">
+        © <span id="year"></span> Your Application.
+        All rights reserved.
+    </div>
+
+</div>
+
+
+<script>
+
+    document.getElementById("year").textContent =
+        new Date().getFullYear();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<div th:fragment="klassMasters">
+    <div class="jumbotron  shadow">
+        <table class="table table-primary bg-white shadow" id="mydata">
+    <tr>
+        <th>Class Name</th>
+        <th>Class Teacher</th>
+        <th>Telephone</th>
+
+    </tr>
+    <tr th:each="t:${klassMasters}">
+      <th:block th:each="k:${t.value}">
+          <td th:text="${k.ClassName}"></td>
+          <td th:text="${t.key.FirstName}"><span> </span> <span th:text="${t.key.LastName}"></span></td>
+         <td th:text="${t.key.StaffId}"></td>
+          
+      </th:block>
+    </tr>
+    
+    </table>
+    </div>
+</div>
+<div th:fragment="edit_class">
+    <div class="modal fade" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true" id="ClassModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title"  id="exampleModalLabel"> Edit Class
+                      </h5>
+                    <button type="button" class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="class-name" class="col-form-label">Class Name</label>
+                            <input type="text"
+                                   id="class-name"
+                                   class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="class_level" class="col-form-label">Class Level</label>
+                            <input type="text" class="form-control"
+                                   id="class_level" name="class_level"
+                                   required="true" readonly>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="floral_name" class="col-form-label">Floral Name</label>
+                            <input type="text" class="form-control"
+                                   id="floral_name" name="floral_name"
+                                   required="true">
+
+                        </div>
+
+                    </form>
+                    <div>
+                        <button  class="btn btn-success"  id="saveClass" type="button">
+                       Save
+                        </button>
+
+                        <button  class="btn btn-success d-none" id="loadingT" name="finalSave" type="button">
+                            <span class="spinner-border spinner-border-sm"
+                                  role="status" aria-hidden="true"></span>
+                            Uploading.................
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+

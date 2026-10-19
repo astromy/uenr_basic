@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SMS - Teacher Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/portal.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link th:href="@{/css/datatables.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top border-bottom">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/TeacherPortal/}">
+                <img th:src="@{/pro-pics/UENR.PNG}" height="42" class="me-2">
+                <div>
+                    <div class="brand-title">School Management System</div>
+                    <small class="brand-subtitle">Teacher Portal</small>
+                </div>
+            </a>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container-fluid px-4">
+        <div class="row" style="margin-top: 96px;">
+            <div class="col-lg-3 mb-4">
+                <div class="sidenav">
+                    <a th:href="@{/TeacherPortal/Detail/}" class="nav-link">
+                        <i class="bi bi-person-circle me-2"></i>Personal Info
+                    </a>
+                    <hr class="sidebar-divider">
+
+                    <a th:href="@{/updateUser}" class="nav-link">
+                        <i class="bi bi-pencil-square me-2"></i>Update User Details
+                    </a>
+                    <hr class="sidebar-divider">
+
+                    <a th:href="@{/TeacherPortal/Classes/}" class="nav-link">
+                        <i class="bi bi-journal-text me-2"></i>Assessment
+                    </a>
+                    <hr class="sidebar-divider">
+
+                    <div th:if="${Attendance}">
+                        <a th:href="@{/TeacherPortal/AttendanceForm/{ClassId}(ClassId=${ClassId})}" class="nav-link">
+                            <i class="bi bi-clipboard-check me-2"></i>Attendance Sheet
+                        </a>
+                        <hr class="sidebar-divider">
+                    </div>
+
+                    <div th:if="${LinkMock}">
+                        <a th:href="@{/TeacherPortal/mockgeneralTeacherPortal/{ClassId}(ClassId=${ClassId})}" class="nav-link">
+                            <i class="bi bi-file-earmark-bar-graph me-2"></i>Mock
+                        </a>
+                        <hr class="sidebar-divider">
+                    </div>
+
+                    <div th:if="${assignedClass}">
+                        <a th:href="@{/TeacherPortal/Students/{ClassId}(ClassId=${assignedClass})}" class="nav-link">
+                            <i class="bi bi-people-fill me-2"></i>Student List
+                        </a>
+                        <hr class="sidebar-divider">
+                    </div>
+
+                    <div th:if="${assignedClass}">
+                        <a th:href="@{/TeacherPortal/GetClassAssessmentTeahcer/{ClassId}(ClassId=${assignedClass})}" class="nav-link">
+                            <i class="bi bi-clipboard-data me-2"></i>Exam Report
+                        </a>
+                        <hr class="sidebar-divider">
+                    </div>
+                </div>
+            </div>
+            <!-- /.col-lg-3 -->
+
+            <div class="col-lg-9">
+                <div class="alert alert-danger" th:if="${err}" th:text="${err}"></div>
+                <div class="alert alert-success" th:if="${msg}" th:text="${msg}"></div>
+
+                <div th:if="${updateUser}">
+                    <div th:replace="~{users/AddUser::updateUser}"></div>
+                </div>
+
+                <div th:if="${LinkMocks}">
+                    <div th:replace="~{MockDetails/GeneralAction::TeacherPortalGeneralAction}"></div>
+                </div>
+                <div th:if="${StudentList}">
+                    <div th:replace="~{Student/AllStudent::StudentListTeacher}"></div>
+                </div>
+
+                <div th:if="${Teacher_Assessment}">
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> Assessment is based on the current term. Thank you!
+                    </div>
+                    <div th:replace="~{Assessment/ClassGeneralAssessment::classAssessment}"></div>
+                </div>
+
+                <div th:if="${MockExcelTerm}">
+                    <div th:replace="~{Excel/AddExcelFile::MockExcelFile}"></div>
+                </div>
+
+                <div class="row " th:if="${Teacher}" id="Teacher">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm rounded-lg">
+                            <div class="card-body">
+                                <table class="table table-hover mb-0">
+                                    <tr>
+                                        <td><strong>First Name</strong></td>
+                                        <td th:text="${Teacher.FirstName}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Other Name</strong></td>
+                                        <td th:text="${Teacher.LastName}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Staff Id</strong></td>
+                                        <td th:text="${Teacher.StaffId}"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Displaying The classes taught by teacher and also displaying attendance sheet form for class teachers-->
+                <div th:if="${TeacherKlass}">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="mb-0">My Classes</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div th:if="${Attendance}">
+                                <div class="p-3">
+                                    <a th:href="@{/TeacherPortal/AttendanceForm/{ClassId}(ClassId=${ClassId})}" class="btn btn-outline-primary btn-sm">Attendance Sheet</a>
+                                </div>
+                            </div>
+                            <table class="table table-hover mb-0" id="mydata">
+                                <thead>
+                                    <tr>
+                                        <th>Class Name</th>
+                                        <th>Floral Name</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="klass:${TeacherKlass}">
+                                        <td th:text="${klass.ClassName}"></td>
+                                        <td th:text="${klass.floralName}"></td>
+                                        <td>
+                                            <a th:href="@{/TeacherPortal/Subject/{ClassId}(ClassId=${klass.ClassName})}" class="btn btn-primary btn-sm">Add Assessment</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${TeacherStudents}">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="mb-0">Students</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover mb-0" id="mydata">
+                                <thead>
+                                    <tr>
+                                        <th>Student Id</th>
+                                        <th>First Name</th>
+                                        <th>Other Name</th>
+                                        <th>Sur Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="student:${TeacherStudents}">
+                                        <td th:text="${student.StudentId}"></td>
+                                        <td th:text="${student.FirstName}"></td>
+                                        <td th:text="${student.LastName}"></td>
+                                        <td th:text="${student.surname}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${TeacherSubjects}">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-body">
+                            <table class="table table-hover mb-0">
+                                <tr>
+                                    <td>
+                                        <a th:href="@{/DownloadStudentAseessmentExcelSheet/{ClassId}(ClassId=${ClassId})}" class="btn btn-secondary btn-sm">
+                                            Download Student Assessment Sheet
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/TeacherPortal/uploadExcel/}" class="btn btn-outline-success btn-sm">Upload Assessment File</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Subject Name</th>
+                                </tr>
+                                <tr th:each="subject:${TeacherSubjects}">
+                                    <td th:text="${subject.SubjectName}"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${TermExcel}">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="mb-0">Upload Student Excel File</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form th:method="post" th:action="@{/TeacherPortal/GetAssessmentExcelFile}" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Term</label>
+                                        <input type="hidden" th:value="${SubjectId}" id="SubjectId" th:name="SubjectId">
+                                        <input type="text" readonly="true" th:value="${TermExcel.TermName}" class="form-control">
+                                        <input type="hidden" th:value="${TeacherId}" id="TeacherId" th:name="TeacherId">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Select File</label>
+                                        <input type="file" class="form-control" th:name="file">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="btn btn-primary" id="upload_btn" th:onclick="spinOnload()">Upload File</button>
+                                        <button class="btn btn-primary d-none" id="loading_btn" type="button">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            Loading.................
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${Assessment}">
+                    <th:block th:each="ass:${Assessment}">
+                        <div class="card border-0 shadow-sm rounded-lg mb-3">
+                            <div class="card-header bg-white border-0 pt-4 px-4">
+                                <h5 class="mb-0 text-capitalize" th:text="${ass.key}"></h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0" id="mydata">
+                                    <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Other Name</th>
+                                            <th>Sur Name</th>
+                                            <th>Test Score Average 50</th>
+                                            <th>Exam Score 100</th>
+                                            <th>Exam Average 50%</th>
+                                            <th>Total Score (50+50)</th>
+                                            <th>Position</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="assement:${ass.value}">
+                                            <td th:text="${assement.student.FirstName}"></td>
+                                            <td th:text="${assement.student.LastName}"></td>
+                                            <td th:text="${assement.student.surname}"></td>
+                                            <td th:text="${assement.TotalTestScoreAverage}"></td>
+                                            <td th:text="${assement.ExamScores}"></td>
+                                            <td th:text="${assement.ExamsAverage}"></td>
+                                            <td th:text="${assement.TotalScore}"></td>
+                                            <td th:text="${assement.position}"></td>
+                                            <td th:text="${assement.Remarks}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </th:block>
+                    <div th:if="${AssessmentButton}">
+                        <a th:href="@{/TeacherPortal/SaveAssessment}" class="btn btn-primary" id="saveAss" onclick="loading();">Save Students Results</a>
+                        <button id="loadAss" class="btn btn-primary d-none">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Saving.................
+                        </button>
+                        <script>
+                            function loading() {
+                                document.getElementById("saveAss").classList.add("d-none");
+                                document.getElementById("loadAss").classList.remove("d-none");
+                            }
+                        </script>
+                    </div>
+                    <div th:if="${MockButton}">
+                        <a th:href="@{/TeacherPortal/SaveMock/{mockDetails}(mockDetails=${mockdetails})}" class="btn btn-primary">Save Mock Results</a>
+                    </div>
+                </div>
+
+                <!---Attendance Form--->
+                <div th:if="${AttendanceForm}">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="mb-0">Attendance</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="form" th:action="@{/DownloadStudentAttendanceExcelSheet/}" th:method="post">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Total Days</label>
+                                        <input type="number" th:min="10" th:max="150" th:name="NumberOfDays" required="true" id="NumberOfDays" class="form-control">
+                                        <input type="hidden" th:name="ClassId" th:value="${ClassId}" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="btn btn-primary" id="upload_btn" th:onclick="spinOnload()">Download File</button>
+                                        <button class="btn btn-primary d-none" id="loading_btn" type="button">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            Downloading.................
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <p class="mt-3">
+                                <a th:href="@{/TeacherPortal/UploadAttendanceFile}" class="btn btn-outline-primary btn-sm">Upload Attendance File</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!---Upload Attendance Form--->
+                <div th:if="${AttendanceUploadForm}">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="mb-0">Upload Attendance Excel File</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="form" th:action="@{/TeacherPortal/GetAttendanceFile}" th:method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Select File</label>
+                                        <input type="file" class="form-control" th:name="file">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="btn btn-primary" id="upload_btn" th:onclick="spinOnload()">Upload File</button>
+                                        <button class="btn btn-primary d-none" id="loading_btn" type="button">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            Uploading.....
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${Attendances}">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-body p-0">
+                            <div class="p-3">
+                                <a th:href="@{/TeacherPortal/SaveAttendance}" class="btn btn-primary btn-sm">Approve</a>
+                            </div>
+                            <table class="table table-hover mb-0" id="mydata">
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Other Name</th>
+                                        <th>Sur Name</th>
+                                        <th>Total Days</th>
+                                        <th>Days In School</th>
+                                        <th>Interest</th>
+                                        <th>Conduct</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="assement:${Attendances}">
+                                        <td th:text="${assement.student.FirstName}"></td>
+                                        <td th:text="${assement.student.LastName}"></td>
+                                        <td th:text="${assement.student.surname}"></td>
+                                        <td th:text="${assement.TotalNumberOfDays}"></td>
+                                        <td th:text="${assement.StudentAttendedDays}"></td>
+                                        <td th:text="${assement.Conduct}"></td>
+                                        <td th:text="${assement.Interest}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="footer text-center text-muted py-3 mt-auto border-top">
+            <small>Powered by <strong>Quantum Publications</strong></small>
+        </footer>
+    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <script th:src="@{/script/jquery.min.js}"></script>
+    <script th:src="@{/script/datatables.js}" type="text/javascript"></script>
+    <script th:src="@{/script/bootstrap.min.js}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#mydata').DataTable();
+        });
+    </script>
+
+    </body>
+
+</html>

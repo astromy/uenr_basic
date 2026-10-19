@@ -1,0 +1,79 @@
+<div th:fragment="searchPss" class="jumbotron bg-white "  >
+                <div class="bg-info h5 text-center text-white">
+                    <label> Daily Payment (s)</label>
+                </div>
+                <center>
+                    <form method="get"  th:action="@{/Payments/}" class="shadow bg-light" >
+                        <div class="form-group col-8" style="margin-top:5px; ">
+                            <label for="inputAddress">Start Date</label>
+                            <input type="date"  class="form-control"  id="sdate" name="sdate"  th:required="true">
+                        </div>
+                        <div class="form-group col-8" style="margin-top:5px; ">
+                            <label for="inputAddress">End Date</label>
+                            <input type="date"  class="form-control"  id="Edate" name="Edate"  th:required="true">
+                        </div>
+                        <div class="form-group col-8" style="margin-top:5px; ">
+                            <input type="submit" class="form-control btn btn-outline-success"  value="Search" id="upload_btn" th:onclick="spinOnload()">   
+                        </div>
+                        <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Uploading.................
+                        </button>
+                    </form>
+                </center>
+
+            </div>
+<div th:fragment="payments">
+        
+                       <div class="row jumbotron" style="background-color:#fff; font-size:11px; ">
+                            <div class="col-md-11 ">
+                           
+                           <table class="table table-info" id="mydata">
+                               <thead>
+                                    <tr>
+                                       <th>Student Id</th><th>Name</th><th>Amount Paid (GHC)</th><th>Discount (GHC)</th>
+                                       <th>Balance (GHC) </th><th> Payment Date </th><th> Payment Type </th>
+                                       <th> Description </th>
+                                       <th>Term</th><th>Academic Year</th>
+                                       
+                 
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   <tr th:each="STP:${Payments}">
+                                       <td th:text="${STP.Student.StudentId}"></td>
+                                    
+                                       
+    <td><span th:text="${STP.Student.surname}"></span>&nbsp;<span th:text="${STP.Student.FirstName}"></span></td>
+                                        <td th:text="${STP.Amount}"></td>
+                                         <td th:text="${STP.discount}"></td>
+                                       <td th:text="${STP.Remaining}"></td>
+                                       <td th:text="${STP.date}"></td> 
+                                       <td th:text="${STP.transactionSpecialId}"></td>
+                                       <td th:text="${STP.paymentType}"></td>
+                                       <td th:text="${STP.term.TermName}"></td>
+                                      
+                                       <td th:text="${STP.term.academicyear.AcademicYear.getYear()}"></td>
+                                      
+                                   </tr>
+                                   <tr class="bg-info text-white">
+                                       <th>Total: (GHC) </th><th th:text="${TotalPayments }"></th>
+                                       <th> </th><th>  </th>
+                                       <th></th><th></th><th></th><th></th><th></th><th></th>
+                                   </tr>
+                                  
+                               </tbody>
+                           </table>
+                        
+                        
+                        
+                            </div>
+                        
+                    </div>
+                
+                
+                
+                
+                
+                
+        </div>

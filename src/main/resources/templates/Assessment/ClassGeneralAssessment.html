@@ -1,0 +1,57 @@
+
+
+
+<div th:fragment="classAssessment">
+<div class="col-11 offset-1">
+
+    <!--form th:method="post" th><!--form th:method="post" th:action="@{/ApproveAssessment}" th:object="${AllStudentAssessment}" >
+
+        <input type="submit" value="Approve Assessment" class="btn btn-success">
+    </form--->
+        <div class="row jumbotron-fluid bg-white shadow">
+            <div class="">
+                <table class=" table  shadow  table-primary table-bordered  table-striped table-responsive" style="font-size: 12px;" id="mydata"><tr>
+                    <thead><tr>
+                    <TH>Student Id</TH>
+                    <TH>First Name</TH>
+                    <TH>Middle Name</TH>
+                    <TH>Sur Name</TH>
+                    <th:block th:each="S:${Subjects}">
+                        <th th:text="${S}"></th>
+
+                    </th:block>
+                    <th></th>
+                </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="Tassement:${Teacher_Assessment}">
+                        <th:block th:each="assement:${Tassement}">
+                            <td  th:text="${assement.key.StudentId}">
+                            </td>
+                            <td  th:text="${assement.key.FirstName}"></td>
+                            <td  th:text="${assement.key.LastName}">
+                            </td> <td  th:text="${assement.key.surname}">
+                        </td>
+
+
+                            <th:block th:each="ass:${assement.value}">
+                                <td th:text="${ass.TotalScore}"></td>
+
+                         </th:block>
+                            <td>
+                                <a th:href="@{/Get/StudentAssessmentCurrentTermPDF/{StudentId}/{TermId}
+                                           (StudentId=${assement.key.StudentId},TermId=${TermId})}" class="btn btn-link">Download Report</a>
+
+
+                            </td>
+                    </tr>
+                    </th:block>
+
+
+                    </tbody></table>
+            </div>
+
+
+        </div>
+
+    </div></div>

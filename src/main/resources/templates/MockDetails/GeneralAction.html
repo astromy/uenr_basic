@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<div th:fragment="GeneralAction">
+    <div class="card border-0 shadow-sm rounded-lg">
+        <div class="card-body p-4">
+            <a th:href="@{/AddMockDetailsForm}" class="btn btn-primary me-2">Add Mock Details</a>
+            <a th:href="@{/AllMockDetails}" class="btn btn-outline-primary">View All Mock Details</a>
+        </div>
+    </div>
+</div>
+<div th:fragment="TeacherPortalGeneralAction">
+    <div class="card border-0 shadow-sm rounded-lg">
+        <div class="card-body p-4">
+            <a th:href="@{/TeacherPortal/mockgeneralTeacherPortal/{ClassId}(ClassId=${ClassId})}" class="btn btn-primary me-2">Add Mock</a>
+            <a th:href="@{/TeacherPortal/AllMocks/{ClassId}(ClassId=${ClassId})}" class="btn btn-outline-primary">View Mocks</a>
+        </div>
+    </div>
+</div>

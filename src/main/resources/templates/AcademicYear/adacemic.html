@@ -1,0 +1,147 @@
+<div th:fragment="AcademicForm">
+    
+    <div class="offset-md-1 col-md-6">
+        <a th:href="@{/AllAcademicYears}" class="btn btn-link"> Academic Years</a>
+    <form method="post" id="form" th:action="@{/SaveAca}"  class="jumbotron bg-white shadow">
+                   <label class="h4">Add Academic Year</label>
+                                <div class="form-group ">
+                                    <label for="text">Start Date</label>
+                                    <input type="date" class="form-control shadow" id="sDate" name="sDate" required>
+                                </div>   
+                                <div class="form-group ">
+                                    <label for="text">End Date</label>
+                                    <input type="date" class="form-control shadow" id="eDate" name="eDate" required>
+                                </div>
+                                <div class="form-group ">
+                                 <button type="submit"class=" btn btn-primary shadow"id="upload_btn" 
+                                            th:onclick="spinOnload()" >Save Academic Year</button>     
+                                    <button  class="btn btn-primary d-none" id="loading_btn" 
+                                             type="button">
+                                        <span class="spinner-border spinner-border-sm" 
+                                              role="status" aria-hidden="true"></span>
+                                        Uploading.................
+                                    </button>
+                                </div> 
+                            </form>
+
+                        </div>
+    
+    
+    
+</div>
+<div th:fragment="EditAcademicyear">
+    
+    <div class="offset-md-1 col-md-6">
+        <a th:href="@{/AllAcademicYears}" class="btn btn-link"> Academic Years</a>
+    <form method="post" id="form" th:action="@{/EditAcademicYear}"  class="jumbotron bg-white shadow">
+                   <label class="h4">Update<span th:text="${EditAcademicyear.AcademicName}"> </span> Academic Year</label>
+                   <hr/>            
+                   <div class="form-group ">
+                                    <label for="text">Start Date</label>
+                                    <input type="date" class="form-control shadow" id="sDate" name="sDate"
+                                           th:value="${EditAcademicyear.startDate}">
+                                </div>   
+                    
+                                <div class="form-group ">
+                                    <label for="text">End Date</label>
+                                    
+                                    <input type="date" class="form-control shadow" id="eDate" name="eDate"
+                                           th:value="${EditAcademicyear.endDate}">
+                               <input type="hidden" class="form-control" id="ID" name="ID" 
+                                       th:value="${EditAcademicyear.Id}" >
+                          
+                                </div>
+                                <div class="form-group ">
+                                 <button type="submit"class=" btn btn-primary shadow"id="upload_btn" 
+                                            th:onclick="spinOnload()" >Edit Academic Year</button>     
+                                    <button  class="btn btn-primary d-none" id="loading_btn" 
+                                             type="button">
+                                        <span class="spinner-border spinner-border-sm" 
+                                              role="status" aria-hidden="true"></span>
+                                        Uploading.................
+                                    </button>
+                                </div> 
+                            </form>
+
+                        </div>
+    
+    
+    
+</div>
+<div th:fragment="AcadmicYears" class="jumbotron shadow bg-white">
+
+
+          <table class="table table-striped table-hover table-success shadow" id="mydata">
+          <thead class="thead-dark">
+              <tr>
+                  <th>ACADEMIC NAME</th>
+                  <th>ACADEMIC YEAR</th>
+                  <th>START DATE</th>
+                   <th>END DATE</th>
+                  <th>SUCCESSOR YEAR</th>
+                  <th>ACTION</th>
+                  
+                 
+              </tr>
+          </thead><tbody>
+              <tr th:each="academic:${allAcademicYears}">
+                    <td th:text="${academic.AcademicName}"></td>
+                   <td th:text="${academic.AcademicYear.year}"></td>
+                    
+                     <td th:text="${academic.startDate}"></td>
+                     <td th:text="${academic.endDate}"></td>
+                     <td th:text="${academic.SuccessorAcademicYear}"></td>
+                   <td>
+                    <a th:href="@{/EditAcademicYear/{id}(id=${academic.Id})}" 
+                       class="btn btn-info shadow"><span class="fa fa-edit "></span>Edit</a>
+                    <a th:href="@{/DeleteAcademicYear/{id}(id=${academic.Id})}" 
+                       class="btn btn-danger shadow"
+                       onclick="return confirm('Are you sure you want to delete this academic year?');"><span class="fa fa-trash"></span>Delete</a>
+                   </td>
+                
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(allAcademicYears)}">
+                        <td colspan="6" class="text-center text-muted">No academic years found.</td>
+                    </tr>
+          </tbody>
+          </table>
+
+          <!-- Pagination Controls -->
+          <div th:if="${totalPages > 1}" class="pagination justify-content-center">
+              <ul class="pagination">
+                  <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                      <a class="page-link"
+                         th:href="@{/AllAcademicYears?page=0&size=${size}}">First</a>
+                  </li>
+                  <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                      <a class="page-link"
+                         th:href="@{/AllAcademicYears?page=${currentPage - 1}&size=${size}}">Previous</a>
+                  </li>
+                  <li class="page-item"
+                      th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                      th:classappend="${i == currentPage ? 'active' : ''}">
+                      <a class="page-link"
+                         th:href="@{/AllAcademicYears?page=${i}&size=${size}}"
+                         th:text="${i + 1}">1</a>
+                  </li>
+                  <li class="page-item"
+                      th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                      <a class="page-link"
+                         th:href="@{/AllAcademicYears?page=${currentPage + 1}&size=${size}}">Next</a>
+                  </li>
+                  <li class="page-item"
+                      th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                      <a class="page-link"
+                         th:href="@{/AllAcademicYears?page=${totalPages - 1}&size=${size}}">Last</a>
+                  </li>
+              </ul>
+          </div>
+
+          <div class="text-center text-muted mt-2" th:if="${totalItems > 0}">
+              <span th:text="${totalItems}"></span> total academic year(s) &mdash;
+              Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span>
+          </div>
+ </div>
+
+    
+</div>

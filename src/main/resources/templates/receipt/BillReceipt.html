@@ -1,0 +1,180 @@
+-<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<div th:fragment="ReceiptStudDetails">
+    <div class="row offset-4" >
+        <div class="col-2">  
+            <a class="btn btn-secondary" id="button"  
+               th:onclick="printData();">PRINT&nbsp;<span class="fa fa-print"></span></a>   
+        </div>
+        <div class="col-2"> 
+
+            <a class="btn btn-primary" th:href="@{/FinancePortal/}" id="home" >HOME&nbsp;<span class="fa fa-home"></span></a>   
+
+        </div> 
+
+    </div>
+    <div style="margin-bottom:60px;">
+
+        <div class="pagePrint shadow" 
+             style="font-family:times new roman; font-size:14px; margin-top:10px;  ">
+
+            <th:block th:each="RS:${ReceiptStudDetails}">
+
+
+
+                <div class="bg-primary text-white" > 
+                    <div class="row">
+
+                        <img th:src="@{/pro-pics/RECEIPT.jpg}" height="140" class="col-12" >
+                    </div>
+                    <p class="bg-dark text-white  " > OFFICIAL RECEIPT  <span class="offset-6">R_ID:&nbsp;&nbsp;</span><span th:text="${receiptId}" ></span></p>
+                </div>
+
+                <DIV CLASS="row ">
+
+                    <table class="table  table-responsive col-12"> 
+                        <tr><TD></TD><td>DATE : &nbsp;&nbsp;<span th:text="${YEAR}"/></TD></TR>
+
+                        <tr><td>RECEIVED FROM : &nbsp;&nbsp;<span th:text="${ReceiptStudDetails.stud.FirstName}">
+
+                                </span>&nbsp;&nbsp;<span th:text="${ReceiptStudDetails.stud.surname}"></span>
+                                &nbsp;&nbsp;   <span th:text="${ReceiptStudDetails.stud.LastName}"></span></td></TR>
+                        <TR>
+                            <td>THE SUM OF &nbsp;&nbsp;GHC: <span th:text="${CurrentPayment}"></span>&nbsp;&nbsp;&nbsp;&nbsp;<span>DISCOUNT: &nbsp;&nbsp;GHC:</span><span th:text="${Dsct}"></span></td>
+                            <td>BALANCE: &nbsp;&nbsp;GHC:<span th:text="${Bal_carry_forward}"></span></td>
+
+                        </tr>
+                        <tr>
+                           <td>BEING: &nbsp;&nbsp; PAYMENT OF  <span th:text="${RS.payment.paymentType}">SCHOOL FEES </span> FOR  <span th:text="${RS.payment.term.TermName}"></span> ACADEMIC YEAR  
+                                  <span th:text="${term.academicyear.AcademicYear.getYear}"/>,                        
+                                <!--span th:text="${term.academicyear.AcademicYear.getMonth}"/--> .
+
+                           </td>
+
+                        </tr>
+
+                        <TR>
+                            <td>RECEIVED BY &nbsp;&nbsp; <!--span th:text="${RS.payment.user.firstname}"-->  <!--span th:text="${RS.payment.user.lasttname}"--><!--/span><br/--><span>Prudential Bank ______________________</span></td>
+
+                        </tr>
+
+
+                    </table>
+
+
+
+                </div>
+
+
+
+            </th:block>
+
+
+        </div> 
+
+        <script>
+
+            function printData() {
+                document.getElementById("button").classList.add("d-none");
+                document.getElementById("home").classList.add("d-none");
+
+                window.print();
+                document.getElementById("button").classList.remove("d-none");
+                document.getElementById("home").classList.remove("d-none");
+
+            }
+        </script> </div></div>
+
+
+
+<div th:fragment="receipts">
+    <div class="row offset-4" >
+        <div class="col-2">  
+            <a class="btn btn-secondary" id="button"  
+               th:onclick="printData();">PRINT&nbsp;<span class="fa fa-print"></span></a>   
+        </div>
+        <div class="col-2"> 
+
+            <a class="btn btn-primary" th:href="@{/FinancePortal/}" id="home" >HOME&nbsp;<span class="fa fa-home"></span></a>   
+
+        </div> 
+
+    </div>
+    <div class="col-8 offset-2" style="margin-bottom:60px;">
+
+        <div class="pagePrint shadow" size="A4" 
+             style="font-family:times new roman; font-size:14px; margin-top:10px;  ">
+
+            <th:block th:each="RS:${receipts_}">
+
+
+
+                <div class="bg-primary text-white" > 
+                    <div class="row">
+
+                        <img th:src="@{/pro-pics/RECEIPT.jpg}" height="140" class="col-12" >
+                    </div>
+                    <p class="bg-dark text-white  " > OFFICIAL RECEIPT 
+                        <span class="offset-6">R_ID:&nbsp;&nbsp;</span><span th:text="${RS.id}" ></span></p>
+                </div>
+
+                <DIV CLASS="row ">
+
+                    <table class="table  table-responsive col-12"> 
+                        <tr><TD></TD><td>DATE : &nbsp;&nbsp;<span th:text="${RS.date}"/></TD></TR>
+
+                        <tr><td>RECEIVED FROM : &nbsp;&nbsp;<span th:text="${RS.stud.FirstName}">
+
+                                </span>&nbsp;&nbsp;<span th:text="${RS.stud.surname}"></span>
+                                &nbsp;&nbsp;   <span th:text="${RS.stud.LastName}"></span></td></TR>
+                        <TR>
+                            <td>THE SUM OF &nbsp;&nbsp;GHC: <span th:text="${RS.payment.Amount}"></span></span>&nbsp;&nbsp;&nbsp;&nbsp;<span>DISCOUNT: &nbsp;&nbsp;GHC:</span><span th:text="${RS.payment.discount}"></span></td>
+                            <td>BALANCE: &nbsp;&nbsp;<span th:text="${RS.payment.remaining}"></span></td>
+
+                        </tr>
+                        <tr>
+                            <td>BEING: &nbsp;&nbsp; PAYMENT OF  <span th:text="${RS.payment.paymentType}">SCHOOL FEES </span> FOR  <span th:text="${RS.payment.term.TermName}"></span> ACADEMIC YEAR  
+                                <span th:text="${RS.payment.term.academicyear.AcademicYear.getYear}"/>,                        
+                                <!--span th:text="${RS.payment.term.academicyear.AcademicYear.getMonth}"/--> .
+
+
+
+                            </td>
+
+                        </tr>
+                        <TR>
+                            <td>RECEIVED BY &nbsp;&nbsp; <!--span th:text="${RS.payment.user.firstname}"-->  <!--span th:text="${RS.payment.user.lasttname}"--><!--/span><br/--><span>Prudential Bank ______________________</span></td>
+
+                        </tr>
+
+
+                    </table>
+
+
+
+                </div>
+
+
+
+            </th:block>
+
+
+        </div> 
+
+        <script>
+
+            function printData() {
+                document.getElementById("button").classList.add("d-none");
+                document.getElementById("home").classList.add("d-none");
+
+                window.print();
+                document.getElementById("button").classList.remove("d-none");
+                document.getElementById("home").classList.remove("d-none");
+
+            }
+        </script> </div></div>
+

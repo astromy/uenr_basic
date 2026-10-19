@@ -1,0 +1,658 @@
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentService.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentService.java
+index 8c2f3dd..5e733e4 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentService.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentService.java
+@@ -7,6 +7,7 @@ package com.UBSDB.UnerBasicSchoolFinancialSystem.Assessment;
+ 
+ 
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Excel.ExcelServices;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Notification.NotificationService;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.RestController.student;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentService;
+@@ -56,6 +57,8 @@ public class AssessmentService {
+     @Autowired
+     private TermService TS;
+     private @Autowired ExcelServices ES;
++    @Autowired
++    private NotificationService notificationService;
+ 
+     public AssessmentService() {
+     }
+@@ -75,14 +78,21 @@ public class AssessmentService {
+                 tempAssessment.setTotalTestScore(assessment.getTotalTestScore());
+                 tempAssessment.setPosition(assessment.getPosition());
+                 tempAssessment.setHighestScore(assessment.getHighestScore());
+-                System.out.println(((Assessment)this.AR.save(tempAssessment)).getStudent().getIdSpecia());
++                Assessment savedAssessment = (Assessment)this.AR.save(tempAssessment);
++                System.out.println(savedAssessment.getStudent().getIdSpecia());
++
++                // Create notification for assessment update
++                createAssessmentNotification(savedAssessment, "updated");
+                 return "Updated Successfully";
+ 
+         } else {
+                 assessment.setStudentClass(assessment.getStudent().getStudentklass());
+                 assessment.setHeadMasterApproval("false");
+-                System.out.println(assessment.getStudent().getFirstName() + assessment.getSubject().getSubjectName() + "found==>saved");
+-                System.out.println(this.AR.save(assessment));
++                Assessment savedAssessment = this.AR.save(assessment);
++                System.out.println(savedAssessment.getStudent().getFirstName() + savedAssessment.getSubject().getSubjectName() + "found==>saved");
++
++                // Create notification for new assessment
++                createAssessmentNotification(savedAssessment, "loaded");
+                 return "Successfully saved";
+             }
+         } catch (Exception var3) {
+@@ -92,6 +102,61 @@ public class AssessmentService {
+         }
+     }
+ 
++    private void createAssessmentNotification(Assessment assessment, String action) {
++        try {
++            Student student = assessment.getStudent();
++            if (student == null || student.getStudentklass() == null) {
++                return;
++            }
++
++            String title = "Assessment " + action;
++            String message = String.format(
++                    "Your %s assessment for %s has been %s. Term: %s. Please check your portal for details.",
++                    assessment.getSubject() != null ? assessment.getSubject().getSubjectName() : "Unknown",
++                    student.getStudentklass().getClassName(),
++                    action,
++                    assessment.getTerm() != null ? assessment.getTerm().getTermName() : "Unknown"
++            );
++
++            notificationService.createNotification(
++                    student,
++                    title,
++                    message,
++                    "ASSESSMENT",
++                    assessment.getId(),
++                    "Assessment"
++            );
++
++            // Also notify all students in the same class about the assessment being loaded
++            if ("loaded".equals(action) && student.getStudentklass() != null) {
++                List<Student> classStudents = student.getStudentklass().getStudents().stream()
++                        .filter(s -> "in School".equals(s.getStudentStatus()))
++                        .toList();
++
++                for (Student classStudent : classStudents) {
++                    if (!classStudent.getStudentId().equals(student.getStudentId())) {
++                        String classNotificationMessage = String.format(
++                                "New assessment has been loaded for %s - %s. Subject: %s. Please check your portal.",
++                                student.getStudentklass().getClassName(),
++                                assessment.getTerm() != null ? assessment.getTerm().getTermName() : "Unknown",
++                                assessment.getSubject() != null ? assessment.getSubject().getSubjectName() : "Unknown"
++                        );
++                        notificationService.createNotification(
++                                classStudent,
++                                "New Assessment Available",
++                                classNotificationMessage,
++                                "ASSESSMENT",
++                                assessment.getId(),
++                                "Assessment"
++                        );
++                    }
++                }
++            }
++        } catch (Exception e) {
++            log.error("Failed to create assessment notification: {}", e.getMessage(), e);
++        }
++    }
++
+     public List<Assessment> FindAll() {
+         return this.AR.findAll();
+     }
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/Bill.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/Bill.java
+index ba45694..92210df 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/Bill.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/Bill.java
+@@ -35,6 +35,7 @@ public class Bill {
+         mappedBy = "bill"
+     )
+     private List<BillEdit> BillEdits;
++
+     @OneToMany(mappedBy = "bill")
+     private List<SchoolFees> fee;
+     @OneToOne
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/BillController.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/BillController.java
+index b13a150..e4920b9 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/BillController.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/BillController.java
+@@ -5,6 +5,7 @@
+  */
+ package com.UBSDB.UnerBasicSchoolFinancialSystem.Bill;
+ 
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBill;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.FeePayment.Payment;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.FeePayment.PaymentService;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Receipt.ReceiptService;
+@@ -98,7 +99,7 @@ public class BillController {
+         this.KS.FindKlass(classId).getStudents().stream().forEach((c) -> {
+             double outcome = (Double)c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (b, o) -> {
+                 return b + o;
+-            }) - (Double)c.getStudentBills().stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g) -> {
++            }) - (Double)c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g) -> {
+                 return s + g;
+             });
+             if (outcome < 0.0) {
+@@ -113,7 +114,7 @@ public class BillController {
+             p.setAmount(c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (v, g) -> {
+                 return v + g;
+             }));
+-            p.setRemaining(p.getAmount() - c.getStudentBills().stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t) -> {
++            p.setRemaining(p.getAmount() - c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t) -> {
+                 return r + t;
+             }));
+             p.setPaymentType("fees");
+@@ -129,7 +130,7 @@ public class BillController {
+         this.SS.AALLStudents().stream().forEach((c) -> {
+             double outcome = (Double)c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (b, o) -> {
+                 return b + o;
+-            }) - (Double)c.getStudentBills().stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g) -> {
++            }) - (Double)c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g) -> {
+                 return s + g;
+             });
+             if (outcome < 0.0) {
+@@ -144,7 +145,7 @@ public class BillController {
+             p.setAmount(c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (v, g) -> {
+                 return v + g;
+             }));
+-            p.setRemaining(p.getAmount() - c.getStudentBills().stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t) -> {
++            p.setRemaining(p.getAmount() - c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t) -> {
+                 return r + t;
+             }));
+             p.setPaymentType("fees");
+@@ -187,10 +188,11 @@ public class BillController {
+     public List<Bill> getAllStudentBills(@PathVariable("StudentId") String studentId) {
+         Optional<Student> studentOpt = this.SS.findOptionalStudent(studentId);
+         if (studentOpt.isPresent()) {
+-            return studentOpt.get().getStudentBills();
++            return studentOpt.get().getStudentBills().stream().map(StudentBill::getBill).toList();
+         }
+         Optional<Student> refStudentOpt = this.SS.findOptionalStudentByReference(studentId);
+-        return refStudentOpt.map(Student::getStudentBills).orElse(new ArrayList<>());
++
++        return studentOpt.get().getStudentBills().stream().map(StudentBill::getBill).toList();
+     }
+ 
+     @GetMapping({"/GetStudentBill/{BillId}"})
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/BillEdit/EditBillServiceImpl.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/BillEdit/EditBillServiceImpl.java
+index 549f488..8beab01 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/BillEdit/EditBillServiceImpl.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/BillEdit/EditBillServiceImpl.java
+@@ -35,7 +35,10 @@ public class EditBillServiceImpl implements EditBillService{
+         Student stud = SS.findStudent(BE.getStud());
+         Bill SB=BS.FindstudentBill(BE.getBill().getId()).get();
+         System.out.println(SB.getId()+" sbill ID");
+-      SchoolFees sc =SFS.findSchoolFees(SB.getFee());
++        var fee=SB.getFee().stream().filter(c->c.getBill().getId()
++                ==BE.getBill().getId());
++
++      var sc =SFS.findSchoolFees(fee.findFirst().get());
+         System.out.println(sc.getAmount()+"--- fees amount "+sc.getId()+" fessID ID "+ BE.getAmount());
+      
+       BE.setPreviousAmount((float) sc.getAmount());
+@@ -44,15 +47,15 @@ public class EditBillServiceImpl implements EditBillService{
+       SchoolFees  TempFees=new SchoolFees(sc.getTerm(), sc.getKlass(), sc.getFeesDate(), sc.getFeeType(),
+               sc.getMoth(), true, BE.getAmount(), 
+               sc.getFeeSpecification());
++
+     TempFees=  SFS.updateFees(TempFees);
+         
+-   Bill bill = new Bill(null, TempFees, TempFees.getTerm());
+-       bill =BS.saveBill(bill);
+-            StudentBill studentBill = StudentBill
+-                    .builder().bill(bill)
+-                            .student(stud). build();
+-
+-            studentBillervice.saveStudentBill(studentBill);
++//    bill =BS.saveBill(bill);
++//            StudentBill studentBill = StudentBill
++//                    .builder().bill(bill)
++//                            .student(stud). build();
++//
++//            studentBillervice.saveStudentBill(studentBill);
+         };r3.run();
+         //System.out.println(BE.getBill().getId());
+    return EBR.save(BE);
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/StudentBill/StudentBillRepository.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/StudentBill/StudentBillRepository.java
+index def6605..f290823 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/StudentBill/StudentBillRepository.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Bill/StudentBill/StudentBillRepository.java
+@@ -7,6 +7,7 @@ package com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill;
+ 
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.Bill;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
+ import java.util.List;
+ import java.util.UUID;
+ import org.springframework.data.jpa.repository.JpaRepository;
+@@ -17,8 +18,8 @@ import org.springframework.stereotype.Repository;
+  * @author enock
+  */
+ @Repository
+-public interface StudentRepository extends JpaRepository<StudentBill, UUID> {
++public interface StudentBillRepository extends JpaRepository<StudentBill, UUID> {
+     List<StudentBill> findByStudent(Student student);
+     List<StudentBill> findByBill(Bill bill);
+-    List<StudentBill> findByStudent_StudentId(String studentId);
++    boolean existsByStudentAndBillAndTerm(Student student, Bill bill, Term term);
+ }
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/FeePayment/PaymentController.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/FeePayment/PaymentController.java
+index 2e28884..ae18ec4 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/FeePayment/PaymentController.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/FeePayment/PaymentController.java
+@@ -128,7 +128,7 @@ public class PaymentController {
+           -  stud.getPayments().
+                     stream().map(Payment::getAmount)
+                     .reduce(0.0,(k,h)->k+h)+(stud.getStudentBills().stream()
+-            .flatMap(bill -> bill.getFee().stream())
++            .flatMap(bill -> bill.getBill().getFee().stream())
+             .map(SchoolFees::getAmount)
+             .reduce(0.0,(a,d)->a+d))-stud.getPayments().stream().map(Payment::getDiscount)
+                     .reduce(0.f,(k,h)->k+h));
+@@ -159,7 +159,7 @@ public class PaymentController {
+   @GetMapping("/GetStudentPayments/{id}")
+   public String GetStudentPayments(Model model ,@PathVariable("id")String id){
+      model.addAttribute("studentPayments",PS.payments(id));
+-     model.addAttribute("StudentBills",SS.findStudent(id).getStudentBills().stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0,(a, f)->a+f));
++     model.addAttribute("StudentBills",SS.findStudent(id).getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0,(a, f)->a+f));
+      model.addAttribute("stud",SS.findStudent(id));
+     model.addAttribute("class",SS.findStudent(id).getStudentklass().getClassName());
+    model.addAttribute("balance",BS.totalBillAmount(SS.findStudent(id)));
+@@ -198,7 +198,7 @@ public class PaymentController {
+    
+    KS.FindKlass(classId).getStudents().stream().forEach(c->{
+   double outcome =c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (b,o)->b+o)-
+-  c.getStudentBills().stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g)->s+g);
++  c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g)->s+g);
+   if(outcome<0){
+   students.add(c);
+   }
+@@ -211,7 +211,7 @@ public class PaymentController {
+   
+   p.setRemaining(p.getAmount()-
+           SS.FindstudentById(c).get().getStudentBills().stream()
+-                  .flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t)->r+t));
++                  .flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t)->r+t));
+    p.setPaymentType("fees");
+    payments.add(p);
+    }); 
+@@ -228,7 +228,7 @@ public class PaymentController {
+    
+    SS.AALLStudents().stream().forEach(c->{
+   double outcome =c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (b,o)->b+o)-
+-  c.getStudentBills().stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g)->s+g);
++  c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g)->s+g);
+   if(outcome<0){
+   students.add(c);
+   }
+@@ -241,7 +241,7 @@ public class PaymentController {
+   
+   p.setRemaining(p.getAmount()-
+           SS.FindstudentById(c).get().getStudentBills().stream()
+-                  .flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t)->r+t));
++                  .flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t)->r+t));
+    p.setPaymentType("fees");
+    payments.add(p);
+    }); 
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/FeePayment/PaymentObjectBillingResponse.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/FeePayment/PaymentObjectBillingResponse.java
+index f214c20..f27ede2 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/FeePayment/PaymentObjectBillingResponse.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/FeePayment/PaymentObjectBillingResponse.java
+@@ -6,10 +6,12 @@
+ package com.UBSDB.UnerBasicSchoolFinancialSystem.FeePayment;
+ 
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.Bill;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBill;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
+ import java.util.List;
++import java.util.Objects;
+ import java.util.stream.Collectors;
+ import org.springframework.stereotype.Component;
+ 
+@@ -65,27 +67,21 @@ public class PaymentObjectBillingResponse {
+     }
+ 
+     public PaymentObjectBillingResponse(Student stud, Term t) {
+-        List<Bill> bills = stud.getStudentBills();
++        List<Bill> bills = stud.getStudentBills().stream().map(StudentBill::getBill).toList();
+         List<Bill> Previousbills = stud.getStudentBills().stream().filter((c) -> {
+-            return c.getTerm().getId() != t.getId();
+-        }).collect(Collectors.toList());
++            return !Objects.equals(c.getTerm().getId(), t.getId());
++        }).map(StudentBill::getBill).toList();
+         List<Payment> PreviousPayments = stud.getPayments().stream().filter((c) -> {
+             return c.getTerm().getId() != t.getId();
+-        }).collect(Collectors.toList());
++        }).toList();
+         this.StudentName = stud.getFullName();
+         this.termlyPayment = ((Double)stud.getPayments().stream().filter((c) -> {
+             return c.getTerm().getId() == t.getId();
+-        }).map(Payment::getAmount).reduce(0.0, (a, b) -> {
+-            return a + b;
+-        })).toString();
+-        this.outstanding = Previousbills.stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (a, b) -> {
+-            return a + b;
+-        }) - PreviousPayments.stream().map(Payment::getAmount).reduce(0.0, (a, b) -> {
++        }).map(Payment::getAmount).reduce(0.0, Double::sum)).toString();
++        this.outstanding = Previousbills.stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, Double::sum) - PreviousPayments.stream().map(Payment::getAmount).reduce(0.0, (a, b) -> {
+             return a + b;
+         }) + "";
+-        this.Total = stud.getStudentBills().stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (a, b) -> {
+-            return a + b;
+-        }) - stud.getPayments().stream().map(Payment::getAmount).reduce(0.0, (a, b) -> {
++        this.Total = stud.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, Double::sum) - stud.getPayments().stream().map(Payment::getAmount).reduce(0.0, (a, b) -> {
+             return a + b;
+         }) + "";
+         this.currentBill = ((Double)bills.stream().filter((c) -> {
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/PDF/MultipleAssessmentPDFService.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/PDF/MultipleAssessmentPDFService.java
+index cfd8594..5ac16bc 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/PDF/MultipleAssessmentPDFService.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/PDF/MultipleAssessmentPDFService.java
+@@ -291,7 +291,7 @@ private @Autowired TeachrKlassSubjectService TKS;
+         
+            double areas =(stud.getStudentBills().stream().filter(c-> LocalDate.parse(c.getTerm().getEndDate())
+                    .isBefore(LocalDate.parse(t.getEndDate())))
+-                   .flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount)
++                   .flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount)
+                    .reduce(0.0, (b,f)-> b+f)-stud.getPayments().stream().map(Payment::getDiscount).reduce(0.f, (f,s)->f+s))-(stud.getPayments().stream()
+                            .filter(c-> c.getDate()
+                    .isBefore(LocalDate.parse(t
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/SchoolFees/SchoolFeesService.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/SchoolFees/SchoolFeesService.java
+index 99daaf0..669c265 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/SchoolFees/SchoolFeesService.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/SchoolFees/SchoolFeesService.java
+@@ -22,12 +22,15 @@ import java.util.HashSet;
+ import java.util.List;
+ import java.util.Set;
+ import java.util.stream.Collectors;
++
++import lombok.extern.slf4j.Slf4j;
+ import org.springframework.beans.factory.annotation.Autowired;
+ 
+ /**
+  *
+  * @author enock
+  */
++@Slf4j
+ @org.springframework.stereotype.Service
+ public class SchoolFeesService {
+ 
+@@ -225,13 +228,14 @@ public List<klass>SortedListOfKlasses(List<String>level){
+ 
+     public Set<Term> Feeterms() {
+         Set<Term> terms = new HashSet<>();
+-     
+-      if (TS.getCurrentTerm().getTermName().equals("ThirdTerm")){
+-      if (TS.findNextTermBasedOnTerm(TS.getCurrentTerm()).isPresent()){
+-      terms.add(TS.findNextTermBasedOnTerm(TS.getCurrentTerm()).get());
++       var term =TS.getCurrentTerm();
++      if (term.getTermName().equals("ThirdTerm")){
++          log.info("Third term ......"+term.getTermName()+"...."+term.getAcademicyear().getAcademicName());
++      if (TS.findNextTermBasedOnTerm(term).isPresent()){
++      terms.add(TS.findNextTermBasedOnTerm(term).get());
+       }
+       }else{
+-       terms= TS.getCurrentTerm().getAcademicyear().getTerm();
++       terms= term.getAcademicyear().getTerm();
+       }
+         return terms;
+ 
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Student/Student.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Student/Student.java
+index 7f763f0..bacbe8a 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Student/Student.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Student/Student.java
+@@ -357,7 +357,7 @@ public class Student implements Serializable {
+     public void setAssessment(List<Assessment> assessment) {
+         this.assessment = assessment;
+     }
+-         @OneToMany(mappedBy="Student")
++         @OneToMany(mappedBy="student")
+      private List<Payment>payments;
+ 
+     public List<Payment> getPayments() {
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Student/StudentController.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Student/StudentController.java
+index 1e25b4e..ba6611d 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Student/StudentController.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Student/StudentController.java
+@@ -434,7 +434,7 @@ public class StudentController {
+     public String StudentBill(Principal principal, Model model, @PathVariable("id") String id) throws Exception {
+         Student student = this.SS.findOptionalStudent(id).orElse(null);
+         if (student != null) {
+-            Optional<Bill> currentBill = this.BS.BillsBasedOnTerm(this.TS.getCurrentTerm(), student);
++            Optional<Bill> currentBill = this.BS.BillsBasedOnTerm(this.TS.getCurrentTerm(), student).map(StudentBill::getBill);
+             if (currentBill.isPresent() && currentBill.get() != null) {
+                 model.addAttribute("Studentbills", currentBill.get());
+             } else {
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/security/SecurityConfig.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/security/SecurityConfig.java
+index 40c3bf4..2b6f4a3 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/security/SecurityConfig.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/security/SecurityConfig.java
+@@ -9,6 +9,7 @@ package com.UBSDB.UnerBasicSchoolFinancialSystem.security;
+  *
+  * @author enock
+  */
++import com.UBSDB.UnerBasicSchoolFinancialSystem.ActivityLog.CustomAuthenticationSuccessHandler;
+ import org.springframework.context.annotation.*;
+ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+ import org.springframework.security.config.annotation.web.configuration.*;
+@@ -22,9 +23,11 @@ import org.springframework.security.web.SecurityFilterChain;
+ public class SecurityConfig {
+ //security settings
+     private final UserDetailsServiceImpl userDetailsService;
++    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+ 
+-    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
++    public SecurityConfig(UserDetailsServiceImpl userDetailsService, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+         this.userDetailsService = userDetailsService;
++        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+     }
+ 
+     @Bean
+@@ -43,7 +46,7 @@ public class SecurityConfig {
+                 ("/css/**","/script/**","/pro-pics/**","/stud-pics/**").permitAll()
+                 .anyRequest().authenticated()
+                 .and()
+-                .formLogin().loginPage("/login").defaultSuccessUrl("/RouteUser",true).permitAll()
++                .formLogin().loginPage("/login").successHandler(customAuthenticationSuccessHandler).permitAll()
+                 .and()
+                 .logout().permitAll()
+                 .and()
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/ubs.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/ubs.java
+index 3217e71..d5ea10e 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/ubs.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/ubs.java
+@@ -3,8 +3,10 @@ package com.UBSDB.UnerBasicSchoolFinancialSystem;
+ import java.io.IOException;
+ import org.springframework.boot.SpringApplication;
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
++import org.springframework.scheduling.annotation.EnableScheduling;
+ 
+ @SpringBootApplication
++@EnableScheduling
+ public class ubs {
+   	public static void main(String[] args) throws IOException {
+                         SpringApplication.run(ubs.class, args);
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+index 87de89a..c671500 100644
+--- a/src/main/resources/application.properties
++++ b/src/main/resources/application.properties
+@@ -29,3 +29,19 @@ spring.servlet.multipart.max-file-size=30MB
+ spring.servlet.multipart.max-request-size=30MB
+ server.port=8084
+ spring.main.allow-circular-references=true
++
++# Enable Spring Scheduling for automatic daily billing
++spring.task.scheduling.pool.size=2
++
++# Billing Scheduler Configuration
++# Cron expression for daily billing (default: runs at midnight every day)
++# Format: second minute hour day-of-month month day-of-week
++# Example: "0 0 0 * * ?" = every day at midnight
++# Example: "0 0 8 * * MON-FRI" = weekdays at 8:00 AM
++billing.scheduler.cron=0 0 0 * * ?
++
++# Weekly Course Notification Scheduler Configuration
++# Cron expression for weekly course notifications (default: runs every Monday at 8:00 AM)
++# Format: second minute hour day-of-month month day-of-week
++# Example: "0 0 8 ? * MON" = every Monday at 8:00 AM
++notification.weekly.course.cron=0 0 8 ? * MON
+diff --git a/src/main/resources/templates/FinancePortal.html b/src/main/resources/templates/FinancePortal.html
+index fce43d5..241f909 100644
+--- a/src/main/resources/templates/FinancePortal.html
++++ b/src/main/resources/templates/FinancePortal.html
+@@ -430,7 +430,7 @@
+ 
+     
+ 
+-                                            <select  required="true" th:field="*{Moth}" class="form-control">
++                                            <select   th:field="*{Moth}" class="form-control">
+ 
+                                                 <option 
+ 
+diff --git a/src/main/resources/templates/index.html b/src/main/resources/templates/index.html
+index 16b481f..ee34f23 100644
+--- a/src/main/resources/templates/index.html
++++ b/src/main/resources/templates/index.html
+@@ -97,6 +97,40 @@
+                         <div th:replace="dash_oard::dash_oard"></div>
+                     </div>
+ 
++                    <!-- Activity Logs Section -->
++                    <div th:if="${activityLogs}">
++                        <div class="card border-0 shadow-sm rounded-lg">
++                            <div class="card-header bg-white border-0 pt-4 px-4">
++                                <h5 class="mb-0">Recent Activity Logs</h5>
++                                <small class="text-muted">User sign-in activity on the admin dashboard</small>
++                            </div>
++                            <div class="card-body p-4">
++                                <div class="table-responsive">
++                                    <table class="table table-hover mb-0" id="activityLogsTable">
++                                        <thead>
++                                            <tr>
++                                                <th>User</th>
++                                                <th>Role</th>
++                                                <th>Login Time</th>
++                                                <th>Logout Time</th>
++                                                <th>IP Address</th>
++                                                <th>Status</th>
++                                            </tr>
++                                        </thead>
++                                        <tbody id="activityLogsBody">
++                                            <tr>
++                                                <td colspan="6" class="text-center">
++                                                    <div class="spinner-border text-primary" role="status"></div>
++                                                    <p class="mt-2">Loading activity logs...</p>
++                                                </td>
++                                            </tr>
++                                        </tbody>
++                                    </table>
++                                </div>
++                            </div>
++                        </div>
++                    </div>
++
+                     <!-- Performance Analytics Section -->
+                     <div th:if="${performance}">
+                         <div th:replace="Performance/performanceCharts::performanceCharts"></div>
+@@ -1823,7 +1857,74 @@
+                     //  });
+                 }</script>
+ 
+-        </div> 
++        </div>
++
++        <script>
++            // Load activity logs when the page has finished loading
++            document.addEventListener("DOMContentLoaded", function () {
++                loadActivityLogs();
++            });
++
++            function loadActivityLogs() {
++                $.ajax({
++                    url: "/api/activity-logs/recent",
++                    type: "GET",
++                    dataType: "JSON",
++                    success: function (data) {
++                        const tbody = document.getElementById("activityLogsBody");
++                        if (!tbody) return;
++
++                        if (data.length === 0) {
++                            tbody.innerHTML = `
++                                <tr>
++                                    <td colspan="6" class="text-center text-muted">
++                                        No activity logs found.
++                                    </td>
++                                </tr>`;
++                            return;
++                        }
++
++                        let html = "";
++                        data.forEach(log => {
++                            const statusBadge = log.isActive
++                                ? '<span class="badge bg-success">Active</span>'
++                                : '<span class="badge bg-secondary">Logged Out</span>';
++                            
++                            const logoutTime = log.logoutTime
++                                ? new Date(log.logoutTime).toLocaleString()
++                                : '<span class="text-muted">-</span>';
++
++                            html += `
++                                <tr>
++                                    <td>
++                                        <strong>${log.fullName || log.username}</strong>
++                                        <br><small class="text-muted">${log.username}</small>
++                                    </td>
++                                    <td><span class="badge bg-primary">${log.role}</span></td>
++                                    <td>${new Date(log.loginTime).toLocaleString()}</td>
++                                    <td>${logoutTime}</td>
++                                    <td>${log.ipAddress || 'Unknown'}</td>
++                                    <td>${statusBadge}</td>
++                                </tr>`;
++                        });
++
++                        tbody.innerHTML = html;
++                    },
++                    error: function (xhr, status, error) {
++                        console.error("Error loading activity logs:", error);
++                        const tbody = document.getElementById("activityLogsBody");
++                        if (tbody) {
++                            tbody.innerHTML = `
++                                <tr>
++                                    <td colspan="6" class="text-center text-danger">
++                                        Failed to load activity logs.
++                                    </td>
++                                </tr>`;
++                        }
++                    }
++                });
++            }
++        </script>
+ 
+     </body>
+ 
+diff --git a/src/main/resources/templates/sideNav.html b/src/main/resources/templates/sideNav.html
+index 37ce99d..23429a9 100644
+--- a/src/main/resources/templates/sideNav.html
++++ b/src/main/resources/templates/sideNav.html
+@@ -94,6 +94,13 @@
+                     <i class="bi bi-upload me-2"></i>Upload Student File
+                 </a>
+             </li>
++
++            <li class="nav-item mb-1">
++                <a class="nav-link py-2 px-3 rounded sidebar-link"
++                   th:href="@{/Admin/activity-logs}">
++                    <i class="bi bi-activity me-2"></i>Activity Logs
++                </a>
++            </li>
+         </ul>
+ 
+         <hr class="sidebar-divider mt-4" />

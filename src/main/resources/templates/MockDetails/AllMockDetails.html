@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+allmocks
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>TODO write content</div>
+    </body>
+
+private   String hashCode;
+    
+    private int subjects;
+    
+    private  int submitted;
+    private int  totalStudents;
+
+private String StudentsResultsUploaded;
+
+    private String startDate;
+    
+    private String endDate;
+   private String mockName;
+</html-->
+<div th:fragment="allmocks" class="bg-white shadow" >
+            <table class="table table-striped table-responsive-md table-primary shadow  " style="font-size:11.5;" id="mydata">
+    
+                            <thead class="bg-primary text-white shadow">
+                                <tr>
+                                   <td>Name</td>
+                                   <td>Start Date</td>
+                                    <td>End Date </td>
+                                     <td>Subjects </td>
+                                     <td>Submitted </td>
+                                      <td>Total Students </td>
+                                      
+                                    <td>Results</td>
+                                  <td></td>
+                                </tr>
+                            
+                            </thead>
+               <tbody>
+                                <tr th:each="m:${allmocks}">    
+                                    <td th:text="${m.mockName}"></td>
+                                      <td th:text="${m.startDate}"></td>
+                                      <td th:text="${m.endDate}"></td>
+                                      <td th:text="${m.subjects}"></td>
+                                      <td><span th:title="${m.submittedNames}" th:text="${m.submitted}" class="text text-justify"><span th:title="${m.StudentsResultsUploaded}" /></span></td>
+                                         <td th:text="${m.totalStudents}"></td>
+                                      <td>     <form th:method="get" th:action="@{/Get/MockAssessmePDF/}">
+                                                       <input type="submit" class="btn btn-primary" value="Download Report">
+                                                    <input type="hidden" th:value="${m.id}" id="id" name="id">
+                                                
+                                          </form></td>
+                                               <td>
+                                                   <form th:method="get" th:action="@{/}">
+                                                       <input type="submit" class="btn btn-secondary" value="Edit">
+                                                  <input type="hidden" th:value="${m.id}" id="id" name="id">
+                                               </form>
+                                               </td>
+                                        
+                                         </tr>
+             </tbody>
+            </table>
+  
+ <script th:src="@{/js/jquery.js}" type="text/javascript"></script>
+
+  
+<script th:src="@{/js/datatables.js}" type="text/javascript"></script>
+<script th:src="@{/js/ProgressDialog_1.js}" type="text/javascript"></script>
+
+  <script TYPE="text/javascript">
+    $(document).ready(function () {
+        $('#mydata').DataTable();
+    });
+
+
+</script>
+
+
+</div>

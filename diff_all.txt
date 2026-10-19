@@ -1,0 +1,2097 @@
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/Assessment.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/Assessment.java
+index 995d283..6fe9286 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/Assessment.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/Assessment.java
+@@ -67,7 +67,6 @@ public class Assessment implements Serializable {
+ 
+ 
+ 
+-
+     public AssessmentResponse getAsessmentResponse() {
+         return AssessmentResponse.builder()
+                 .examsAverage(getExamsAverage())
+@@ -79,6 +78,7 @@ public class Assessment implements Serializable {
+                 .initials(getInitials())
+                 .position(getPosition())
+                 .remarks(getRemarks())
++
+                 .totalScore(getTotalScore())
+                 .studentName(getStudent().getFirstName()+"_"+getStudent().getLastName()+" ")
+                 .position(getPosition())
+@@ -97,7 +97,7 @@ public class Assessment implements Serializable {
+     }
+ 
+ 
+-    public Assessment getAsessmentResponse(CacheAssessment assessment) {
++    public Assessment getAsessment(CacheAssessment assessment) {
+        return Assessment.builder()
+                .ExamsAverage(assessment.getExamsAverage())
+                .Grade(assessment.getGrade())
+@@ -125,9 +125,4 @@ public class Assessment implements Serializable {
+     }
+ 
+ 
+-
+-    public String toString() {
+-        return "Assessment{id=" + this.id + ", StudentClass=" + this.StudentClass + ", total_exams_exams_score=" + this.total_exams_exams_score + ", student=" + this.student + ", HeadMasterApproval=" + this.HeadMasterApproval + ", TotalScore=" + this.TotalScore + ", ExamScores=" + this.ExamScores + ", subject=" + this.subject + ", Grade=" + this.Grade + ", Remarks=" + this.Remarks + ", TotalTestScore=" + this.TotalTestScore + ", TotalTestScoreAverage=" + this.TotalTestScoreAverage + ", ExamsAverage=" + this.ExamsAverage + ", position=" + this.position + ", initials=" + this.initials + ", headmasterInitial=" + this.headmasterInitial + ", term=" + this.term + '}';
+-    }
+-
+    }
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentRepo.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentRepo.java
+index 65a40ba..57accf4 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentRepo.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentRepo.java
+@@ -21,5 +21,9 @@ public interface AssessmentRepo extends JpaRepository<Assessment,Long>{
+ 
+     @Query("SELECT a FROM Assessment a WHERE a.term.id = :termId AND a.student.StudentId = :studentId")
+     List<Assessment> findByTermAndStudent(@Param("termId") Long termId, @Param("studentId") String studentId);
++    @Query("SELECT a FROM Assessment a WHERE a.term.id = :termId AND a.student.StudentId = :studentId And a.subject.id= :subjectId")
++    List<Assessment> findByTermAndStudentAndSubject(@Param("termId") Long termId,
++                                                    @Param("studentId") String studentId
++                                                     , @Param("subjectId") Long subjectId);
+ 
+ }
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentResponse.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentResponse.java
+index 0fe990b..2ae8f0a 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentResponse.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentResponse.java
+@@ -29,6 +29,7 @@ public class AssessmentResponse {
+     private String headmasterInitial;
+     private float highestScore;
+     private String TeacherName;
++    private Long TermId;
+ 
+     public AssessmentResponse(Assessment a) {
+         this.id = a.getId();
+@@ -52,6 +53,32 @@ public class AssessmentResponse {
+         this.headmasterInitial = a.getHeadmasterInitial();
+         this.highestScore = a.getHighestScore();
+         this.TeacherName = a.getTeacher() != null ? a.getTeacher().getFirstName() : null;
++        this.TermId=a.getTerm().getId();
+     }
+ 
++    @Override
++    public String toString() {
++        return "AssessmentResponse{" +
++                "id=" + id +
++                ", studentId='" + studentId + '\'' +
++                ", studentName='" + studentName + '\'' +
++                ", className='" + className + '\'' +
++                ", subjectName='" + subjectName + '\'' +
++                ", termName='" + termName + '\'' +
++                ", academicYear='" + academicYear + '\'' +
++                ", totalScore=" + totalScore +
++                ", examScores=" + examScores +
++                ", totalTestScore=" + totalTestScore +
++                ", totalTestScoreAverage=" + totalTestScoreAverage +
++                ", examsAverage=" + examsAverage +
++                ", grade='" + grade + '\'' +
++                ", remarks='" + remarks + '\'' +
++                ", position='" + position + '\'' +
++                ", initials='" + initials + '\'' +
++                ", headmasterInitial='" + headmasterInitial + '\'' +
++                ", highestScore=" + highestScore +
++                ", TeacherName='" + TeacherName + '\'' +
++                ", TermId=" + TermId +
++                '}';
++    }
+ }
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentService.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentService.java
+index f4ff27e..8c2f3dd 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentService.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Assessment/AssessmentService.java
+@@ -33,6 +33,8 @@ import java.util.function.Predicate;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ import java.util.stream.Collectors;
++
++import lombok.extern.slf4j.Slf4j;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Service;
+ 
+@@ -40,6 +42,7 @@ import org.springframework.stereotype.Service;
+  *
+  * @author enock
+  */
++@Slf4j
+ @Service
+ public class AssessmentService {
+     @Autowired
+@@ -59,14 +62,10 @@ public class AssessmentService {
+ 
+     public String saveAssessment(Assessment assessment) {
+         try {
+-            if (!this.findAssessmentByDeatials(assessment).isPresent()) {
+-                assessment.setStudentClass(assessment.getStudent().getStudentklass());
+-                assessment.setHeadMasterApproval("false");
+-                System.out.println(assessment.getStudent().getFirstName() + assessment.getSubject().getSubjectName() + "found==>saved");
+-                System.out.println(this.AR.save(assessment));
+-                return "Successfully saved";
+-            } else {
+-                System.out.println("found");
++            Optional<Assessment> CheckAssessmnt =this.findAssessmentByDeatials(assessment);
++            log.info(CheckAssessmnt.isPresent()+":::is present");
++            if (CheckAssessmnt.isPresent()) {
++                AssessmentService.log.info("Updating student assessment because it exist already ....No duplication");
+                 Assessment tempAssessment = (Assessment)this.findAssessmentByDeatials(assessment).get();
+                 System.out.println(tempAssessment.getStudent().getFirstName() + tempAssessment.getSubject().getSubjectName() + "found==> updated");
+                 tempAssessment.setExamScores(assessment.getExamScores());
+@@ -78,6 +77,13 @@ public class AssessmentService {
+                 tempAssessment.setHighestScore(assessment.getHighestScore());
+                 System.out.println(((Assessment)this.AR.save(tempAssessment)).getStudent().getIdSpecia());
+                 return "Updated Successfully";
++
++        } else {
++                assessment.setStudentClass(assessment.getStudent().getStudentklass());
++                assessment.setHeadMasterApproval("false");
++                System.out.println(assessment.getStudent().getFirstName() + assessment.getSubject().getSubjectName() + "found==>saved");
++                System.out.println(this.AR.save(assessment));
++                return "Successfully saved";
+             }
+         } catch (Exception var3) {
+             Exception ex = var3;
+@@ -262,9 +268,11 @@ Assessment newAss = new Assessment();
+     }
+ 
+     public Optional<Assessment> findAssessmentByDeatials(Assessment assessment) {
+-        Optional<Assessment> ass = ((Term)this.TS.findTermById(assessment.getTerm().getId()).get()).getAssessment().stream().filter((newAss) -> {
+-            return newAss.equals(assessment.getDetails());
+-        }).findFirst();
++       List<Assessment>Tempassessment=AR.findByTermAndStudentAndSubject(assessment.getTerm().getId()
++                                                                      , assessment.getStudent().getStudentId()
++                                                                      ,assessment.getSubject().getId());
++
++        Optional<Assessment> ass = Tempassessment.stream().findFirst();
+         return ass;
+     }
+ 
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/Course.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/Course.java
+index 7a692e3..b74076b 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/Course.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/Course.java
+@@ -1,6 +1,8 @@
+ package com.UBSDB.UnerBasicSchoolFinancialSystem.Course;
+ 
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Subject.Subject;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek;
+ import jakarta.persistence.Column;
+ import lombok.AllArgsConstructor;
+ import lombok.Builder;
+@@ -32,10 +34,22 @@ public class Course {
+     @Column(length = 500)
+     private String description;
+ 
++    @Column(length = 2000)
++    private String notes;
++
+     @ManyToOne
+     @JoinColumn(name = "subject_id", nullable = true)
+     private Subject subject;
+ 
++    @ManyToOne
++    @JoinColumn(name = "term_id", nullable = true)
++    private Term term;
++
++    @ManyToOne
++    @JoinColumn(name = "term_week_id", nullable = true)
++    private TermWeek termWeek;
++
++
+     public UUID getCourseId() {
+         return courseId;
+     }
+@@ -60,6 +74,14 @@ public class Course {
+         this.description = description;
+     }
+ 
++    public String getNotes() {
++        return notes;
++    }
++
++    public void setNotes(String notes) {
++        this.notes = notes;
++    }
++
+     public Subject getSubject() {
+         return subject;
+     }
+@@ -68,6 +90,22 @@ public class Course {
+         this.subject = subject;
+     }
+ 
++    public Term getTerm() {
++        return term;
++    }
++
++    public void setTerm(Term term) {
++        this.term = term;
++    }
++
++    public TermWeek getTermWeek() {
++        return termWeek;
++    }
++
++    public void setTermWeek(TermWeek termWeek) {
++        this.termWeek = termWeek;
++    }
++
+     public CourseResponse getCourseResponse() {
+         return new CourseResponse(this);
+     }
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessment.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessment.java
+new file mode 100644
+index 0000000..c3ace97
+--- /dev/null
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessment.java
+@@ -0,0 +1,106 @@
++package com.UBSDB.UnerBasicSchoolFinancialSystem.Course.CourseAssessment;
++/*
++ * To change this license header, choose License Headers in Project Properties.
++ * To change this template file, choose Tools | Templates
++ * and open the template in the editor.
++ */
++
++
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Subject.Subject;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Teacher.Teacher;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.cacheAssessment.CacheAssessment;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klass;
++import lombok.*;
++
++
++import java.io.Serializable;
++import jakarta.persistence.Entity;
++import jakarta.persistence.GeneratedValue;
++import jakarta.persistence.GenerationType;
++import jakarta.persistence.Id;
++import jakarta.persistence.ManyToOne;
++import jakarta.persistence.OneToOne;
++
++/**
++ *
++ * @author enock
++ */
++@Entity
++@AllArgsConstructor
++@Setter
++@Getter
++@NoArgsConstructor
++@Builder
++public class CourseAssessment implements Serializable {
++    @Id
++    @GeneratedValue(
++            strategy = GenerationType.AUTO
++    )
++    private Long id;
++    @ManyToOne
++    private klass StudentClass;
++    private int TotalStudent;
++    private float total_exams_exams_score;
++    @ManyToOne
++    private Student student;
++    private String HeadMasterApproval;
++    private double TotalScore;
++    private double ExamScores;
++    @OneToOne
++    private Subject subject;
++    private String Grade;
++    private String Remarks;
++    private double TotalTestScore;
++    private double TotalTestScoreAverage;
++    private double ExamsAverage;
++    private String position;
++    private String initials;
++    private String headmasterInitial;
++    private float highestScore;
++    @ManyToOne
++    private Teacher teacher;
++    @ManyToOne
++    private Term term;
++    private String details;
++
++
++
++
++    public CourseAssessmentResponse getAsessmentResponse() {
++        return CourseAssessmentResponse.builder()
++                .examsAverage(getExamsAverage())
++                .grade(getGrade())
++                .className(getStudentClass().getClassName())
++                .headmasterInitial(getHeadmasterInitial())
++                .examScores(getExamScores())
++                .highestScore(getHighestScore())
++                .initials(getInitials())
++                .position(getPosition())
++                .remarks(getRemarks())
++                .totalScore(getTotalScore())
++                .studentName(getStudent().getFirstName()+"_"+getStudent().getLastName()+" ")
++                .position(getPosition())
++                .TeacherName(getTeacher().getFirstName() != null ? getTeacher().getFirstName() : "")
++                .termName(getTerm().getTermName())
++                .totalScore(getTotal_exams_exams_score())
++                .examsAverage(getExamsAverage())
++                .subjectName(getSubject().getSubjectName())
++                .totalTestScore(getTotalTestScore())
++                .totalTestScoreAverage(getTotalTestScoreAverage())
++                .academicYear(term.getTermAcademicYear())
++
++                .initials(initials)
++
++                .build();
++    }
++
++
++
++
++    public String toString() {
++        return "Assessment{id=" + this.id + ", StudentClass=" + this.StudentClass + ", total_exams_exams_score=" + this.total_exams_exams_score + ", student=" + this.student + ", HeadMasterApproval=" + this.HeadMasterApproval + ", TotalScore=" + this.TotalScore + ", ExamScores=" + this.ExamScores + ", subject=" + this.subject + ", Grade=" + this.Grade + ", Remarks=" + this.Remarks + ", TotalTestScore=" + this.TotalTestScore + ", TotalTestScoreAverage=" + this.TotalTestScoreAverage + ", ExamsAverage=" + this.ExamsAverage + ", position=" + this.position + ", initials=" + this.initials + ", headmasterInitial=" + this.headmasterInitial + ", term=" + this.term + '}';
++    }
++
++}
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessmentResponse.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessmentResponse.java
+new file mode 100644
+index 0000000..594f6b9
+--- /dev/null
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseAssessment/CourseAssessmentResponse.java
+@@ -0,0 +1,59 @@
++package com.UBSDB.UnerBasicSchoolFinancialSystem.Course.CourseAssessment;
++
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Assessment.Assessment;
++import lombok.AllArgsConstructor;
++import lombok.Builder;
++import lombok.NoArgsConstructor;
++import org.springframework.stereotype.Component;
++
++
++@Component
++@Builder
++@AllArgsConstructor
++@NoArgsConstructor
++public class CourseAssessmentResponse {
++    private Long id;
++    private String studentId;
++    private String studentName;
++    private String className;
++    private String subjectName;
++    private String termName;
++    private String academicYear;
++    private double totalScore;
++    private double examScores;
++    private double totalTestScore;
++    private double totalTestScoreAverage;
++    private double examsAverage;
++    private String grade;
++    private String remarks;
++    private String position;
++    private String initials;
++    private String headmasterInitial;
++    private float highestScore;
++    private String TeacherName;
++
++    public CourseAssessmentResponse(Assessment a) {
++        this.id = a.getId();
++        this.studentId = a.getStudent() != null ? a.getStudent().getStudentId() : null;
++        this.studentName = a.getStudent() != null
++                ? a.getStudent().getFirstName() + "_" + a.getStudent().getLastName() + " "
++                : null;
++        this.className = a.getStudentClass() != null ? a.getStudentClass().getClassName() : null;
++        this.subjectName = a.getSubject() != null ? a.getSubject().getSubjectName() : null;
++        this.termName = a.getTerm() != null ? a.getTerm().getTermName() : null;
++        this.academicYear = a.getTerm() != null ? a.getTerm().getTermAcademicYear() : null;
++        this.totalScore = a.getTotal_exams_exams_score();
++        this.examScores = a.getExamScores();
++        this.totalTestScore = a.getTotalTestScore();
++        this.totalTestScoreAverage = a.getTotalTestScoreAverage();
++        this.examsAverage = a.getExamsAverage();
++        this.grade = a.getGrade();
++        this.remarks = a.getRemarks();
++        this.position = a.getPosition();
++        this.initials = a.getInitials();
++        this.headmasterInitial = a.getHeadmasterInitial();
++        this.highestScore = a.getHighestScore();
++        this.TeacherName = a.getTeacher() != null ? a.getTeacher().getFirstName() : null;
++    }
++
++}
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseController.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseController.java
+index a0c59e0..2d725c8 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseController.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseController.java
+@@ -6,6 +6,8 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.Teacher.Teacher;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Teacher.TeacherService1;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermService;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeekService;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klass;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klassService;
+ import org.springframework.beans.factory.annotation.Autowired;
+@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
+ import org.springframework.web.bind.annotation.RequestParam;
+ 
+ import java.util.List;
++import java.util.UUID;
+ import java.util.stream.Collectors;
+ 
+ @Controller
+@@ -34,6 +37,9 @@ public class CourseController {
+     @Autowired
+     private TermService termService;
+ 
++    @Autowired
++    private TermWeekService termWeekService;
++
+     @Autowired
+     private klassService klassService;
+ 
+@@ -61,6 +67,9 @@ public class CourseController {
+         List<Term> terms = termService.terms();
+         model.addAttribute("terms", terms);
+ 
++        List<TermWeek> termWeeks = termWeekService.getAllTermWeeks();
++        model.addAttribute("termWeeks", termWeeks);
++
+         List<klass> klasses = klassService.AllKlass();
+         model.addAttribute("Courseklasses", klasses);
+ 
+@@ -92,6 +101,9 @@ public class CourseController {
+         List<Term> terms = termService.terms();
+         model.addAttribute("terms", terms);
+ 
++        List<TermWeek> termWeeks = termWeekService.getAllTermWeeks();
++        model.addAttribute("termWeeks", termWeeks);
++
+         List<klass> klasses = klassService.AllKlass();
+         model.addAttribute("klasses", klasses);
+ 
+@@ -123,6 +135,9 @@ public class CourseController {
+         List<Term> terms = termService.terms();
+         model.addAttribute("terms", terms);
+ 
++        List<TermWeek> termWeeks = termWeekService.getAllTermWeeks();
++        model.addAttribute("termWeeks", termWeeks);
++
+         List<klass> klasses = klassService.AllKlass();
+         model.addAttribute("klasses", klasses);
+ 
+@@ -137,17 +152,30 @@ public class CourseController {
+         model.addAttribute("newCourse", new Course());
+         List<Subject> subjects = subjectService.Allsubjects();
+         model.addAttribute("subjectsCourses", subjects);
++        List<TermWeek> termWeeks = termWeekService.getAllTermWeeks();
++        model.addAttribute("termWeeks", termWeeks);
+         return "index";
+     }
+ 
+     @PostMapping({"/SaveCourse"})
+-    public String saveCourse(Model model, Course course, @RequestParam(value = "subjectId", required = false) Long subjectId) {
++    public String saveCourse(Model model, Course course,
++                             @RequestParam(value = "subjectId", required = false) Long subjectId,
++                             @RequestParam(value = "termWeekId", required = false) String termWeekId) {
+         try {
+             if (subjectId != null) {
+                 Subject subject = subjectService.findAParticularSubject(subjectId);
+                 course.setSubject(subject);
+             }
+ 
++            if (termWeekId != null && !termWeekId.isEmpty()) {
++                UUID twId = UUID.fromString(termWeekId);
++                TermWeek termWeek = termWeekService.getWeekById(twId);
++                course.setTermWeek(termWeek);
++                if (termWeek != null && termWeek.getTerm() != null) {
++                    course.setTerm(termWeek.getTerm());
++                }
++            }
++
+             if (courseService.existsByCourseName(course.getCourseName())) {
+                 model.addAttribute("msg", "Course with this name already exists!");
+                 return "redirect:/AddCourseForm";
+@@ -168,14 +196,31 @@ public class CourseController {
+         model.addAttribute("updateCourse", course.getCourseResponse());
+         List<Subject> subjects = subjectService.Allsubjects();
+         model.addAttribute("subjectsCourses", subjects);
++        List<TermWeek> termWeeks = termWeekService.getAllTermWeeks();
++        model.addAttribute("termWeeks", termWeeks);
+         return "index";
+     }
+ 
+     @PostMapping({"/UpdateCourse"})
+-    public String updateCourse(Model model, Course course, @RequestParam("subjectId") Long subjectId) {
++    public String updateCourse(Model model, Course course,
++                               @RequestParam("subjectId") Long subjectId,
++                               @RequestParam(value = "termWeekId", required = false) String termWeekId) {
+         try {
+             Subject subject = subjectService.findAParticularSubject(subjectId);
+             course.setSubject(subject);
++
++            if (termWeekId != null && !termWeekId.isEmpty()) {
++                UUID twId = UUID.fromString(termWeekId);
++                TermWeek termWeek = termWeekService.getWeekById(twId);
++                course.setTermWeek(termWeek);
++                if (termWeek != null && termWeek.getTerm() != null) {
++                    course.setTerm(termWeek.getTerm());
++                }
++            } else {
++                course.setTermWeek(null);
++                course.setTerm(null);
++            }
++
+             courseService.saveCourse(course);
+             model.addAttribute("msg", "Course updated successfully!");
+         } catch (Exception ex) {
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseRepository.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseRepository.java
+index b730a16..2726ba9 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseRepository.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseRepository.java
+@@ -17,21 +17,21 @@ import java.util.UUID;
+ public interface CourseRepository extends JpaRepository<Course, UUID> {
+ 
+     // Optimized query using JOIN FETCH to avoid N+1 problem
+-    @Query("SELECT c FROM Course c LEFT JOIN FETCH c.subject WHERE c.courseName = :courseName")
++    @Query("SELECT c FROM Course c LEFT JOIN FETCH c.subject LEFT JOIN FETCH c.termWeek WHERE c.courseName = :courseName")
+     Optional<Course> findByCourseName(@Param("courseName") String courseName);
+ 
+     // Paginated query with subject entity graph for performance
+-    @EntityGraph(attributePaths = {"subject"})
++    @EntityGraph(attributePaths = {"subject", "termWeek"})
+     @Query("SELECT c FROM Course c")
+     Page<Course> findAllWithSubject(Pageable pageable);
+ 
+     // Search courses by name with pagination
+-    @EntityGraph(attributePaths = {"subject"})
++    @EntityGraph(attributePaths = {"subject", "termWeek"})
+     @Query("SELECT c FROM Course c WHERE LOWER(c.courseName) LIKE LOWER(CONCAT('%', :search, '%'))")
+     Page<Course> searchCourses(@Param("search") String search, Pageable pageable);
+ 
+     // Find courses by subject with pagination
+-    @EntityGraph(attributePaths = {"subject"})
++    @EntityGraph(attributePaths = {"subject", "termWeek"})
+     @Query("SELECT c FROM Course c WHERE c.subject.id = :subjectId")
+     Page<Course> findBySubjectId(@Param("subjectId") Long subjectId, Pageable pageable);
+ 
+@@ -42,6 +42,6 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
+     boolean existsByCourseName(String courseName);
+ 
+     // Find all courses ordered by name (for dropdowns/selects)
+-    @Query("SELECT c FROM Course c LEFT JOIN FETCH c.subject ORDER BY c.courseName ASC")
++    @Query("SELECT c FROM Course c LEFT JOIN FETCH c.subject LEFT JOIN FETCH c.termWeek ORDER BY c.courseName ASC")
+     List<Course> findAllOrderByCourseName();
+ }
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseResponse.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseResponse.java
+index f30dee2..579b556 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseResponse.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Course/CourseResponse.java
+@@ -1,6 +1,7 @@
+ package com.UBSDB.UnerBasicSchoolFinancialSystem.Course;
+ 
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Subject.SubjectResponse;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek;
+ import lombok.Data;
+ 
+ @Data
+@@ -8,25 +9,38 @@ public class CourseResponse {
+     private String courseId;
+     private String courseName;
+     private String description;
++    private String notes;
+     private SubjectResponse subject;
++    private String termWeekName;
+ 
+     public CourseResponse() {
+     }
+ 
+-    public CourseResponse(String courseId, String courseName, String description, SubjectResponse subject) {
++    public CourseResponse(String courseId, String courseName, String description, String notes, SubjectResponse subject, String termWeekName) {
+         this.courseId = courseId;
+         this.courseName = courseName;
+         this.description = description;
++        this.notes = notes;
+         this.subject = subject;
++        this.termWeekName = termWeekName;
+     }
+ 
+     public CourseResponse(Course course) {
+         this.courseId = course.getCourseId().toString();
+         this.courseName = course.getCourseName();
+         this.description = course.getDescription();
++        this.notes = course.getNotes();
+         if (course.getSubject() != null) {
+             this.subject = new SubjectResponse(course.getSubject().getId(), course.getSubject().getSubjectName());
+         }
++        if (course.getTermWeek() != null) {
++            TermWeek tw = course.getTermWeek();
++            if (tw.getTerm() != null) {
++                this.termWeekName = tw.getTerm().getTermName() + " - " + tw.getWeekName();
++            } else {
++                this.termWeekName = tw.getWeekName();
++            }
++        }
+     }
+ 
+     public String getCourseId() {
+@@ -53,6 +67,14 @@ public class CourseResponse {
+         this.description = description;
+     }
+ 
++    public String getNotes() {
++        return notes;
++    }
++
++    public void setNotes(String notes) {
++        this.notes = notes;
++    }
++
+     public SubjectResponse getSubject() {
+         return subject;
+     }
+@@ -60,4 +82,12 @@ public class CourseResponse {
+     public void setSubject(SubjectResponse subject) {
+         this.subject = subject;
+     }
++
++    public String getTermWeekName() {
++        return termWeekName;
++    }
++
++    public void setTermWeekName(String termWeekName) {
++        this.termWeekName = termWeekName;
++    }
+ }
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Excel/AssessmentExcelSheet.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Excel/AssessmentExcelSheet.java
+index fffec56..28ed5dc 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Excel/AssessmentExcelSheet.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Excel/AssessmentExcelSheet.java
+@@ -1,39 +1,39 @@
+-/*
+- * To change this license header, choose License Headers in Project Properties.
+- * To change this template file, choose Tools | Templates
+- * and open the template in the editor.
+- */
+ package com.UBSDB.UnerBasicSchoolFinancialSystem.Excel;
+ 
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentService;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.TKS.TeachrKlassSubject;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
++
+ import java.io.IOException;
+ import java.util.Comparator;
+ import java.util.List;
+ import java.util.stream.Collectors;
++
+ import jakarta.servlet.ServletOutputStream;
+ import jakarta.servlet.http.HttpServletResponse;
++
+ import org.apache.poi.ss.usermodel.Cell;
+ import org.apache.poi.ss.usermodel.CellStyle;
++import org.apache.poi.ss.usermodel.DataValidation;
++import org.apache.poi.ss.usermodel.DataValidationConstraint;
++import org.apache.poi.ss.usermodel.DataValidationHelper;
+ import org.apache.poi.ss.usermodel.Row;
++import org.apache.poi.ss.util.CellRangeAddressList;
+ import org.apache.poi.xssf.usermodel.XSSFFont;
+ import org.apache.poi.xssf.usermodel.XSSFSheet;
+ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
++
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Component;
+ 
+-/**
+- *
+- * @author enock
+- */
+ @Component
+ public class AssessmentExcelSheet {
+- 
+-   // private XSSFSheet sheet;
+-   // private final List<Student> listStudent;
+-    private  List<TeachrKlassSubject>TKS;
++
++    private List<TeachrKlassSubject> TKS;
++
++    @Autowired
++    private StudentService SS;
+ 
+     public List<TeachrKlassSubject> getTKS() {
+         return TKS;
+@@ -43,9 +43,6 @@ public class AssessmentExcelSheet {
+         this.TKS = TKS;
+     }
+ 
+-   
+-
+-   
+     public StudentService getSS() {
+         return SS;
+     }
+@@ -53,131 +50,450 @@ public class AssessmentExcelSheet {
+     public void setSS(StudentService SS) {
+         this.SS = SS;
+     }
+-    /*public  XSSFSheet checkExist(String ClassName){
+-    if(workbook.getNumberOfSheets()==0){
+-             sheet = workbook.createSheet(ClassName);
+-             return sheet;
+-       } else if(workbook.getSheet(ClassName)!=null){
+-           
+-   
+-          if(workbook.getSheet(ClassName).getSheetName().equals(ClassName)){
+-            System.out.println("exist");
+-             
+-            return sheet;
+-          }else{
+-        sheet = workbook.createSheet(ClassName);
+-        return sheet;
+-          }
+-       }else{
+-        if(workbook.getSheet(ClassName).getSheetName().equals(ClassName)){
+-            System.out.println("exist");
+-             
+-            return sheet;
+-        }else{
+-           sheet = workbook.createSheet(ClassName);
+-        return sheet;
+-     
+-       }
+-       }
+-    
+-      
+-    
+-    }*/
+-     private @Autowired StudentService SS;
+-    private void writeHeaderLine(XSSFSheet     sheet,XSSFWorkbook workbook) {
+-        
+-   //sheet  =workbook.createSheet(ClassName);
+-       //checkExist(ClassName);
+-         
++
++    /**
++     * Creates the header row.
++     */
++    private void writeHeaderLine(XSSFSheet sheet, XSSFWorkbook workbook) {
++
+         Row row = sheet.createRow(0);
+-         
++
+         CellStyle style = workbook.createCellStyle();
++
+         XSSFFont font = workbook.createFont();
+         font.setBold(true);
+         font.setFontHeight(16);
++
+         style.setFont(font);
+-         
+-             
+-        createCell(row, 1, "Sur Name", style);       
+-          createCell(row, 2, "First Class Test(15)", style);
+-         createCell(row, 3, "Second Class Test(15)", style);
+-         createCell(row, 4, "Class Work(15)", style);
+-         createCell(row, 5, "Project Work(15)", style);
+-        
+-         createCell(row, 6, "Exam Score(100)", style);
+-         createCell(row, 0, "Student Id", style);
++
++        createCell(row, 0, "Student Id", style);
++        createCell(row, 1, "Sur Name", style);
++        createCell(row, 2, "First Class Test(15)", style);
++        createCell(row, 3, "Second Class Test(15)", style);
++        createCell(row, 4, "Class Work(15)", style);
++        createCell(row, 5, "Project Work(15)", style);
++        createCell(row, 6, "Exam Score(100)", style);
++
++        // Set column widths
++        sheet.setColumnWidth(0, 20 * 256);
++        sheet.setColumnWidth(1, 35 * 256);
++        sheet.setColumnWidth(2, 22 * 256);
++        sheet.setColumnWidth(3, 23 * 256);
++        sheet.setColumnWidth(4, 20 * 256);
++        sheet.setColumnWidth(5, 22 * 256);
++        sheet.setColumnWidth(6, 20 * 256);
+     }
+-     
+-    private void createCell(Row row, int columnCount, Object value, CellStyle style) {
+-       
++
++    /**
++     * Creates a cell.
++     */
++    private void createCell(
++            Row row,
++            int columnCount,
++            Object value,
++            CellStyle style) {
++
+         Cell cell = row.createCell(columnCount);
++
+         if (value instanceof Integer) {
+             cell.setCellValue((Integer) value);
++
++        } else if (value instanceof Double) {
++            cell.setCellValue((Double) value);
++
+         } else if (value instanceof Boolean) {
+             cell.setCellValue((Boolean) value);
+-        }else {
+-            cell.setCellValue((String) value);
++
++        } else {
++            cell.setCellValue(String.valueOf(value));
+         }
++
+         cell.setCellStyle(style);
+     }
+-     
+-
+-     public void export(HttpServletResponse response,String ClassName,Term t) throws IOException {
+-     XSSFWorkbook workbook=new XSSFWorkbook();
+-         TKS.forEach(c->{     
+-         String text =c.getKlas().getClassName()+"_"+c.getSubjects().getSubjectName()+"_"
+-                 +c.getTeacher().getStaffId()+"_"+t.getTermName();
+-           Sheet  Sheet1 = new Sheet();
+-      
+-         XSSFSheet     sheet1 = workbook.createSheet(text);
+-        Sheet1.setSheet(sheet1);
+-         writeHeaderLine(Sheet1.getSheet(),workbook);
+-        writeDataLines(c,Sheet1.getSheet(),workbook);
+-        }
++
++    /**
++     * Adds numeric validation to an Excel column.
++     *
++     * Example:
++     * First Test = 0 to 15
++     * Exam = 0 to 100
++     */
++    private void addScoreValidation(
++            XSSFSheet sheet,
++            int column,
++            int min,
++            int max,
++            int firstRow,
++            int lastRow) {
++
++        DataValidationHelper validationHelper =
++                sheet.getDataValidationHelper();
++
++        DataValidationConstraint constraint =
++                validationHelper.createNumericConstraint(
++                        DataValidationConstraint.ValidationType.INTEGER,
++                        DataValidationConstraint.OperatorType.BETWEEN,
++                        String.valueOf(min),
++                        String.valueOf(max)
++                );
++
++        CellRangeAddressList addressList =
++                new CellRangeAddressList(
++                        firstRow,
++                        lastRow,
++                        column,
++                        column
++                );
++
++        DataValidation validation =
++                validationHelper.createValidation(
++                        constraint,
++                        addressList
++                );
++
++        validation.setShowErrorBox(true);
++        validation.setShowPromptBox(true);
++
++        validation.createErrorBox(
++                "Invalid Score",
++                "Please enter a score between "
++                        + min
++                        + " and "
++                        + max
++                        + "."
++        );
++
++        validation.createPromptBox(
++                "Score",
++                "Enter a score between "
++                        + min
++                        + " and "
++                        + max
++                        + "."
+         );
+-      
+-        ServletOutputStream outputStream = response.getOutputStream();
+-        workbook.write(outputStream);
+-      
+-  
+-       
+-        
+-        outputStream.close();
+-      
+-        workbook.close();
+-       
++
++        sheet.addValidationData(validation);
++    }
++
++    /**
++     * Export assessment Excel file.
++     */
++    public void export(
++            HttpServletResponse response,
++            String ClassName,
++            Term t) throws IOException {
++
++        XSSFWorkbook workbook = new XSSFWorkbook();
++
++        try {
++
++            if (TKS == null || TKS.isEmpty()) {
++                return;
++            }
++
++            for (TeachrKlassSubject c : TKS) {
++
++                String text =
++                        c.getKlas().getClassName()
++                                + "_"
++                                + c.getSubjects().getSubjectName()
++                                + "_"
++                                + c.getTeacher().getStaffId()
++                                + "_"
++                                + t.getTermName();
++
++                /*
++                 * Excel sheet names cannot exceed 31 characters.
++                 */
++                if (text.length() > 31) {
++                    text = text.substring(0, 31);
++                }
++
++                /*
++                 * Remove characters that Excel does not allow
++                 * in sheet names.
++                 */
++                text = text.replace("/", "_")
++                        .replace("\\", "_")
++                        .replace("?", "_")
++                        .replace("*", "_")
++                        .replace("[", "_")
++                        .replace("]", "_")
++                        .replace(":", "_");
++
++                XSSFSheet sheet =
++                        workbook.createSheet(text);
++
++                writeHeaderLine(sheet, workbook);
++
++                writeDataLines(
++                        c,
++                        sheet,
++                        workbook
++                );
++            }
++
++            ServletOutputStream outputStream =
++                    response.getOutputStream();
++
++            workbook.write(outputStream);
++
++            outputStream.flush();
++
++        } finally {
++
++            workbook.close();
++        }
+     }
+-private void writeDataLines(TeachrKlassSubject TKS,XSSFSheet     sheet,XSSFWorkbook workbook) {
++
++    /**
++     * Writes students into the Excel sheet.
++     */
++    private void writeDataLines(
++            TeachrKlassSubject TKS,
++            XSSFSheet sheet,
++            XSSFWorkbook workbook) {
++
+         int rowCount = 1;
+-     List<Student>Students=SS.GetStudents_In_A_Particular_Class(TKS.getKlas());
+-        CellStyle style = workbook.createCellStyle();
+-        XSSFFont font = workbook.createFont();
++
++        List<Student> students =
++                SS.GetStudents_In_A_Particular_Class(
++                        TKS.getKlas()
++                );
++
++        CellStyle style =
++                workbook.createCellStyle();
++
++        XSSFFont font =
++                workbook.createFont();
++
+         font.setFontHeight(14);
++
+         style.setFont(font);
+-       //    int columnCount = 0;  
+-if(Students.isEmpty()){
+-Students.add(new Student("0","","",""));
+-
+-}       
+-       for (Student user : Students.stream().sorted(Comparator.comparing(Student::getSurname)).collect(Collectors.toList())) {
+-      user.setFullName(user.getFirstName()+" "+user.getLastName()+" "+user.getSurname());
+-            Row row = sheet.createRow(rowCount++);
+-          int columnCount = 0;
+-             createCell(row, columnCount++, user.getStudentId(), style);
+-           
+-             createCell(row, columnCount++, user.getFullName(), style);
+-             createCell(row, columnCount++, 0, style);
+-            createCell(row, columnCount++, 0, style);
+-            createCell(row, columnCount++, 0, style);
+-            createCell(row, columnCount++, 0, style);
+-           createCell(row, columnCount++, 0, style);
+-           
+-             
+-        }    
+-    
+-}
+ 
++        /*
++         * If there are no students, create one empty row.
++         */
++        if (students == null || students.isEmpty()) {
++
++            students.add(
++                    new Student(
++                            "0",
++                            "",
++                            "",
++                            ""
++                    )
++            );
++        }
++
++        /*
++         * Sort students by surname.
++         */
++        List<Student> sortedStudents =
++                students.stream()
++                        .sorted(
++                                Comparator.comparing(
++                                        Student::getSurname,
++                                        Comparator.nullsFirst(
++                                                String::compareToIgnoreCase
++                                        )
++                                )
++                        )
++                        .collect(Collectors.toList());
++
++        for (Student student : sortedStudents) {
++
++            String firstName =
++                    student.getFirstName() == null
++                            ? ""
++                            : student.getFirstName();
++
++            String lastName =
++                    student.getLastName() == null
++                            ? ""
++                            : student.getLastName();
+ 
++            String surname =
++                    student.getSurname() == null
++                            ? ""
++                            : student.getSurname();
+ 
++            String fullName =
++                    firstName
++                            + " "
++                            + lastName
++                            + " "
++                            + surname;
+ 
++            Row row =
++                    sheet.createRow(rowCount++);
++
++            int columnCount = 0;
++
++            /*
++             * Column 0
++             * Student ID
++             */
++            createCell(
++                    row,
++                    columnCount++,
++                    student.getStudentId(),
++                    style
++            );
++
++            /*
++             * Column 1
++             * Student Name
++             */
++            createCell(
++                    row,
++                    columnCount++,
++                    fullName.trim(),
++                    style
++            );
++
++            /*
++             * Column 2
++             * First Class Test
++             * Minimum = 0
++             * Maximum = 15
++             */
++            createCell(
++                    row,
++                    columnCount++,
++                    0,
++                    style
++            );
++
++            /*
++             * Column 3
++             * Second Class Test
++             * Minimum = 0
++             * Maximum = 15
++             */
++            createCell(
++                    row,
++                    columnCount++,
++                    0,
++                    style
++            );
++
++            /*
++             * Column 4
++             * Class Work
++             * Minimum = 0
++             * Maximum = 15
++             */
++            createCell(
++                    row,
++                    columnCount++,
++                    0,
++                    style
++            );
++
++            /*
++             * Column 5
++             * Project Work
++             * Minimum = 0
++             * Maximum = 15
++             */
++            createCell(
++                    row,
++                    columnCount++,
++                    0,
++                    style
++            );
++
++            /*
++             * Column 6
++             * Exam
++             * Minimum = 0
++             * Maximum = 100
++             */
++            createCell(
++                    row,
++                    columnCount++,
++                    0,
++                    style
++            );
++        }
++
++        /*
++         * Last student row.
++         *
++         * Row 0 = Header
++         * Row 1 = First student
++         */
++        int lastRow = rowCount - 1;
++
++        /*
++         * FIRST TEST
++         * Column C
++         * 0 - 15
++         */
++        addScoreValidation(
++                sheet,
++                2,
++                0,
++                15,
++                1,
++                lastRow
++        );
++
++        /*
++         * SECOND TEST
++         * Column D
++         * 0 - 15
++         */
++        addScoreValidation(
++                sheet,
++                3,
++                0,
++                15,
++                1,
++                lastRow
++        );
++
++        /*
++         * CLASS WORK
++         * Column E
++         * 0 - 15
++         */
++        addScoreValidation(
++                sheet,
++                4,
++                0,
++                15,
++                1,
++                lastRow
++        );
++
++        /*
++         * PROJECT WORK
++         * Column F
++         * 0 - 15
++         */
++        addScoreValidation(
++                sheet,
++                5,
++                0,
++                15,
++                1,
++                lastRow
++        );
++
++        /*
++         * EXAM
++         * Column G
++         * 0 - 100
++         */
++        addScoreValidation(
++                sheet,
++                6,
++                0,
++                100,
++                1,
++                lastRow
++        );
++    }
+ }
+\ No newline at end of file
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Excel/ExcelController.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Excel/ExcelController.java
+index d279483..831fa80 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Excel/ExcelController.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Excel/ExcelController.java
+@@ -30,6 +30,8 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.mock.MockService;
+ import jakarta.servlet.http.HttpServletRequest;
+ import jakarta.servlet.http.HttpServletResponse;
+ import jakarta.servlet.http.HttpSession;
++
++import java.io.Console;
+ import java.io.IOException;
+ import java.security.Principal;
+ import java.time.LocalDate;
+@@ -37,6 +39,7 @@ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Map;
+ 
++import lombok.extern.slf4j.Slf4j;
+ import org.apache.http.HttpResponse;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Controller;
+@@ -53,6 +56,7 @@ import org.springframework.web.multipart.MultipartFile;
+  * @author enock
+  */
+ @Controller
++@Slf4j
+ public class ExcelController {
+     @Autowired
+     ExcelServices SBFES;
+@@ -261,7 +265,7 @@ return "index";
+    }
+   
+    @GetMapping("/TeacherPortal/SaveAssessment")
+-   public String saveAssessment(Model model,HttpSession session,Principal p){
++   public String saveAssessment(Model model,Principal p){
+     try{
+         Runnable r1=()->{
+        Teacher t =tS.findbyStaffId(p.getName());
+@@ -271,12 +275,13 @@ return "index";
+     //   Map<String,List< Assessment>> assess=(Map<String,List< Assessment>>)session.getAttribute("AssessmentExcelData"+teacherId);
+      
+     t.getCachedAssessments().stream().forEach(c->{
+-     var assessment =new Assessment();assessment.getAsessmentResponse(c);
+-     AS.saveAssessment(assessment);
+-   
+-    
++     var assessment =new Assessment();
++     log.info(c.getStudentClass().getClassName());
++        log.info(c.getTerm().getTermName());
++     assessment= assessment.getAsessment(c);
++      AS.saveAssessment(assessment);
+      });
+-     CAS.deleteAllCachedAssessment(t);
++    // CAS.deleteAllCachedAssessment(t);
+     model.addAttribute("msg",
+             "Successfully saved assessment for"
+                     + " "+t.getStaffId());
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/MountedCourse/MountedCourse.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/MountedCourse/MountedCourse.java
+index 0ec486d..df23a60 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/MountedCourse/MountedCourse.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/MountedCourse/MountedCourse.java
+@@ -4,11 +4,10 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.Course.Course;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Subject.Subject;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Teacher.Teacher;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klass;
+ import jakarta.persistence.Column;
+-import lombok.AllArgsConstructor;
+-import lombok.Builder;
+-import lombok.NoArgsConstructor;
++import lombok.*;
+ 
+ import jakarta.persistence.Entity;
+ import jakarta.persistence.GeneratedValue;
+@@ -22,6 +21,8 @@ import jakarta.persistence.Table;
+ @Entity
+ @AllArgsConstructor
+ @NoArgsConstructor
++@Setter
++@Getter
+ @Builder
+ @Table(name = "mounted_courses", indexes = {
+         @jakarta.persistence.Index(name = "idx_mounted_course_class", columnList = "class_name"),
+@@ -49,10 +50,13 @@ public class MountedCourse {
+     @ManyToOne
+     @JoinColumn(name = "term_id", nullable = false)
+     private Term term;
+-
++    @ManyToOne
++    @JoinColumn(name = "term_id", nullable = false)
++    private TermWeek termWeek;
+     @ManyToOne
+     @JoinColumn(name = "teacher_id")
+     private Teacher teacher;
++    private String notes;
+ 
+     @Column(length = 20)
+     private String status;
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Term/Term.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Term/Term.java
+index 8d129d3..16f9735 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Term/Term.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Term/Term.java
+@@ -4,6 +4,7 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.Academic.Academic;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.Assessment.Assessment;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.FeePayment.Payment;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.mock.Mock;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.mock.MockDetails.mockDetails;
+ import com.UBSDB.UnerBasicSchoolFinancialSystem.stock.stock;
+@@ -15,6 +16,7 @@ import jakarta.persistence.GenerationType;
+ import jakarta.persistence.Id;
+ import jakarta.persistence.ManyToOne;
+ import jakarta.persistence.OneToMany;
++import jakarta.persistence.CascadeType;
+ 
+ 
+ @Entity
+@@ -55,8 +57,12 @@ public class Term {
+     private List<Payment> payments;
+     @OneToMany(
+         mappedBy = "term"
+-    )
++         )
+     List<SchoolFees> schoolFees;
++    @OneToMany(
++        mappedBy = "term"
++         )
++    private List<TermWeek> weeks;
+     private String termAcademicYear;
+ 
+     public List<Video> getVideos() {
+@@ -113,6 +119,14 @@ public class Term {
+         this.schoolFees = schoolFees;
+     }
+ 
++    public List<TermWeek> getWeeks() {
++        return this.weeks;
++    }
++
++    public void setWeeks(List<TermWeek> weeks) {
++        this.weeks = weeks;
++    }
++
+     public List<Payment> getPayments() {
+         return this.payments;
+     }
+diff --git a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Term/TermService.java b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Term/TermService.java
+index a226669..912a090 100644
+--- a/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Term/TermService.java
++++ b/src/main/java/com/UBSDB/UnerBasicSchoolFinancialSystem/Term/TermService.java
+@@ -12,6 +12,10 @@ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Optional;
+ import java.util.Set;
++
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek;
++import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeekService;
++import lombok.extern.slf4j.Slf4j;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Service;
+ 
+@@ -20,128 +24,184 @@ import org.springframework.stereotype.Service;
+  * @author enock
+  */
+ @Service
++@Slf4j
+ public class TermService {
+-   @Autowired
+-   private TermRepository TS;
+-   @Autowired 
+-   private AcademicService AS;
+-    public String SaveTerm(Term term){
+-      //if(LocalDate.parse(term.getStartDate()).getYear()!=LocalDate.now().getYear()||
+-            //  LocalDate.parse(term.getEndDate()).getYear()!=LocalDate.now().getYear()
+-              
+-             // ){ return "please the year input is incorrect please correct it to "+LocalDate.now().getYear();
+-//      } 
+-for (Term t:terms()){
+-    if((t.getAcademicyear().equals(term.getAcademicyear()))&&(t.getTermName().contains(term.getTermName()))){
+-      return "Term has been added already";
+-        } } 
+-term=TS.save(term);  
+-Academic a=term.getAcademicyear();
+-if(term.getTermName().equals("FirstName")){
+-    a.setStartDate(LocalDate.parse(term.getStartDate()));
+-    a.setAcademicName(a.getStartDate().getYear()+"-");
+-    AS.EditAcademic(a);
+-
+-  }if(term.equals("ThirdTerm")){
+-  a.setEndDate(LocalDate.parse(term.getEndDate()));
+-  a.setAcademicName(a.getStartDate().getYear()+"-"+a.getEndDate().getYear());
+-  a.setSuccessorAcademicYear(a.getEndDate().getYear()+"-");
+-      AS.EditAcademic(a);
+-  }
+-   
+-   
+-return "saved Term successfully";
+-    }
+-    
+-      
+-    
+-    
+-    
+-    public List<Term>terms(){
+-     return TS.findAll();
+-    
+-    }
+-    
+-    public Term getCurrentTerm(){
++
++    @Autowired
++    private TermRepository TS;
++    @Autowired
++    private AcademicService AS;
++    @Autowired
++    private TermWeekService termWeekService;
++
++    public String SaveTerm(Term term) {
+         try{
+-    for(Term t:terms()){
+-       if(LocalDate.now().isBefore(LocalDate.parse(t.getStartDate()))||LocalDate.now().
+-               isAfter(LocalDate.parse(t.getEndDate()))==true){
+-       } else {
+-         return t;  
+-        } } }catch (Exception ex){
++        //if(LocalDate.parse(term.getStartDate()).getYear()!=LocalDate.now().getYear()||
++        //  LocalDate.parse(term.getEndDate()).getYear()!=LocalDate.now().getYear()
++
++        // ){ return "please the year input is incorrect please correct it to "+LocalDate.now().getYear();
++//      } 
++        for (Term t : terms()) {
++            if ((t.getAcademicyear().equals(term.getAcademicyear())) && (t.getTermName().contains(term.getTermName()))) {
++                return "Term has been added already";
++            }
++        }
++
++        term = TS.save(term);
++
++        var termWeeks = termWeekService.calculateTermWeeks_(LocalDate.parse(term.getStartDate()),
++                LocalDate.parse(term.getEndDate()));
++        for (var tempTermWeek : termWeeks) {
++            tempTermWeek.setTerm(term);
++            termWeekService.saveTermWeek(tempTermWeek);
++
++        }
++
++        Academic a = term.getAcademicyear();
++        if (term.getTermName().equals("FirstTerm")) {
++            a.setStartDate(LocalDate.parse(term.getStartDate()));
++            a.setAcademicName(a.getStartDate().getYear() + "-");
++            AS.EditAcademic(a);
++
++        }
++        if (term.equals("ThirdTerm")) {
++            a.setEndDate(LocalDate.parse(term.getEndDate()));
++            a.setAcademicName(a.getStartDate().getYear() + "-" + a.getEndDate().getYear());
++            a.setSuccessorAcademicYear(a.getEndDate().getYear() + "-");
++            AS.EditAcademic(a);
++        }
++        }catch (Exception ex){
+         ex.printStackTrace();
+-        }return null;
++        
++        }
++        return "saved Term successfully";
+     }
+-     public Term updateTerm(Term term){
+-     term=TS.save(term);  
+-Academic a=term.getAcademicyear();
+-if(term.getTermName().equals("FirstName")){
+-    a.setStartDate(LocalDate.parse(term.getStartDate()));
+-    a.setAcademicName(a.getStartDate().getYear()+"-");
+-    AS.EditAcademic(a);
+-
+-  }if(term.equals("ThirdTerm")){
+-  a.setEndDate(LocalDate.parse(term.getEndDate()));
+-  a.setAcademicName(a.getStartDate().getYear()+"-"+a.getEndDate().getYear());
+-  a.setSuccessorAcademicYear(a.getEndDate().getYear()+"-");
+-  AS.EditAcademic(a);
+-  }
+-   
+-     return term;
+-     
+-     }
+-    
+-    public List<Term>BasedOnAcademicYear(Academic academic){
+-    List <Term>t=new ArrayList<>();
+-        for(Term term:TS.findAll()){
+-    if(term.getAcademicyear().getAcademicYear().equals(academic.getAcademicYear())){
+-    
+-    t.add(term);
+-    
++
++    public List<Term> terms() {
++        return TS.findAll();
++
+     }
+-    
++
++    public Term getCurrentTerm() {
++        try {
++            for (Term t : terms()) {
++                if (LocalDate.now().isBefore(LocalDate.parse(t.getStartDate())) || LocalDate.now().
++                        isAfter(LocalDate.parse(t.getEndDate())) == true) {
++                } else {
++                    return t;
++                }
++            }
++        } catch (Exception ex) {
++            ex.printStackTrace();
++        }
++        return null;
+     }
+-    return t;
++
++    public Term updateTerm(Term term) {
++        try{
++        term = TS.save(term);
++        var termWeeks = termWeekService.calculateTermWeeks_(LocalDate.parse(term.getStartDate()),
++                LocalDate.parse(term.getEndDate()));
++        var tempTermWeeks = term.getWeeks();
++        if (tempTermWeeks == null) {
++            term = TS.save(term);
++
++            var output = termWeekService.calculateTermWeeks_(LocalDate.parse(term.getStartDate()),
++                    LocalDate.parse(term.getEndDate()));
++
++            for (var tempTermWeek : output) {
++                tempTermWeek.setTerm(term);
++                termWeekService.saveTermWeek(tempTermWeek);
++
++            }
++        }else{
++
++        for (int a=0; a<=termWeeks.size()-1; a++) {
++
++            for (int t=0; t<=tempTermWeeks.size()-1; t++) {
++                if (termWeeks.get(a).getWeekName().equals(tempTermWeeks.get(t).getWeekName())) {
++                    var newTermWeek=tempTermWeeks.get(t);
++                    var updatedTermWeek = termWeeks.get(a);
++                    newTermWeek.setStartDate(updatedTermWeek.getStartDate());
++                    newTermWeek.setEndDate(updatedTermWeek.getEndDate());
++                    newTermWeek.setNumberOfDays(updatedTermWeek.getNumberOfDays());
++                    termWeekService.updateTermWeek( newTermWeek);
++                }
++            }
++
++        }
++        
++        }
++        Academic a = term.getAcademicyear();
++        if (term.getTermName().equals("FirstTerm")) {
++            a.setStartDate(LocalDate.parse(term.getStartDate()));
++            a.setAcademicName(a.getStartDate().getYear() + "-");
++            AS.EditAcademic(a);
++
++        }
++        if (term.equals("ThirdTerm")) {
++            a.setEndDate(LocalDate.parse(term.getEndDate()));
++            a.setAcademicName(a.getStartDate().getYear() + "-" + a.getEndDate().getYear());
++            a.setSuccessorAcademicYear(a.getEndDate().getYear() + "-");
++            AS.EditAcademic(a);
++        }
++        }catch (Exception ex){
++               ex.printStackTrace();
++                }
++        return term;
++
++    }
++
++    public List<Term> BasedOnAcademicYear(Academic academic) {
++        List<Term> t = new ArrayList<>();
++        for (Term term : TS.findAll()) {
++            if (term.getAcademicyear().getAcademicYear().equals(academic.getAcademicYear())) {
++
++                t.add(term);
++
++            }
++
++        }
++        return t;
+     }
+-    
+-    
+-    
+-    public Optional<Term> findTermById(long termId){
+-    
+-    return TS.findById(termId);
++
++    public Optional<Term> findTermById(long termId) {
++
++        return TS.findById(termId);
+     }
+-      public List<Term> DeleteById(long termId){
+-    TS.deleteById(termId);
+-    return TS.findAll();
++
++    public List<Term> DeleteById(long termId) {
++        TS.deleteById(termId);
++        return TS.findAll();
+     }
+-      public  Optional<Term> findNextTermBasedOnTerm(Term term){
+-          
+-          Set<Term>terms=TS.findById(term.getId()).get().getAcademicyear().getTerm();
+-          
+-     System.out.print("term_successor term___[[[]]]----->"
+-             +term.getAcademicyear().getSuccessorAcademicYear());
+-          if(term.getTermName().equals("FirstTerm")){
+-        return terms.stream().filter(c->c.getTermName().equals("SecondTerm")).findFirst();
+-       
+-          }else if(term.getTermName().equals("SecondTerm")){
+-        
+-        return terms.stream().filter(c->c.getTermName().equals("ThirdTerm")).findFirst();
+-        }else {
+-      Optional<Term> t = TS.findAll().stream().filter(c->c.getAcademicyear().getAcademicName()
++
++    public Optional<Term> findNextTermBasedOnTerm(Term term) {
++
++        Set<Term> terms = TS.findById(term.getId()).get().getAcademicyear().getTerm();
++
++        System.out.print("term_successor term___[[[]]]----->"
++                + term.getAcademicyear().getSuccessorAcademicYear());
++        if (term.getTermName().equals("FirstTerm")) {
++            return terms.stream().filter(c -> c.getTermName().equals("SecondTerm")).findFirst();
++
++        } else if (term.getTermName().equals("SecondTerm")) {
++
++            return terms.stream().filter(c -> c.getTermName().equals("ThirdTerm")).findFirst();
++        } else {
++            Optional<Term> t = TS.findAll().stream().filter(c -> c.getAcademicyear().getAcademicName()
+                     .equals((Integer.parseInt(term.getAcademicyear()
+-                            .getSuccessorAcademicYear())-1)+" - "+term.getAcademicyear()
+-                            .getSuccessorAcademicYear()))
+-                    .filter(c->c.getTermName().equals("FirstTerm")).findFirst();
+-      
+-      if (t.isPresent()){
+-      
+-      System.out.println(t.get().getAcademicyear());
+-      }else{
+-      
+-       System.out.println("Not present");
+-      }
+-      return t;
++                            .getSuccessorAcademicYear()) - 1) + " - " + term.getAcademicyear()
++                                    .getSuccessorAcademicYear()))
++                    .filter(c -> c.getTermName().equals("FirstTerm")).findFirst();
++
++            if (t.isPresent()) {
++
++                System.out.println(t.get().getAcademicyear());
++            } else {
++
++                System.out.println("Not present");
++            }
++            return t;
+         }
+-      }
++    }
+ }
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+index 98fec26..87de89a 100644
+--- a/src/main/resources/application.properties
++++ b/src/main/resources/application.properties
+@@ -1,31 +1,31 @@
+ spring.application.name=demo
+-spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/JoyHeartTech
+-spring.datasource.username=postgres
+-spring.datasource.password=password
+-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+-spring.jpa.hibernate.ddl-auto=update
+-spring.jpa.show-sql=true
+-spring.jpa.properties.hibernate.format_sql=true
+-spring.mail.host=smtp.gmail.com
+-spring.mail.port=587
+-spring.mail.username=lynsvangal@gmail.com
+-spring.mail.password=@Enock1234L
+-spring.mail.properties.mail.smtp.auth=true
+-spring.mail.properties.mail.smtp.starttls.enable=true
+-spring.mail.default-encoding=UTF-8
+-spring.mail.properties.mail.debug=true
+-spring.jpa.properties.hibernate.hbm2ddl.auto=update
+-spring.servlet.multipart.max-file-size=30MB
+-spring.servlet.multipart.max-request-size=30MB
+-server.port=8085
+-#spring.web.resources.static-locations=classpath:/META-INF/resources/,classpath:/static/
+-#spring.datasource.url=jdbc:mysql://localhost:3306/ubsfs
+-#spring.datasource.username=root
+-#spring.datasource.password=Enock12345
+-#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+-#spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
++#spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/JoyHeartTech
++#spring.datasource.username=postgres
++#spring.datasource.password=password
++#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
++#spring.jpa.hibernate.ddl-auto=update
++#spring.jpa.show-sql=true
++#spring.jpa.properties.hibernate.format_sql=true
++#spring.mail.host=smtp.gmail.com
++#spring.mail.port=587
++#spring.mail.username=lynsvangal@gmail.com
++#spring.mail.password=@Enock1234L
++#spring.mail.properties.mail.smtp.auth=true
++#spring.mail.properties.mail.smtp.starttls.enable=true
++#spring.mail.default-encoding=UTF-8
++#spring.mail.properties.mail.debug=true
+ #spring.jpa.properties.hibernate.hbm2ddl.auto=update
+ #spring.servlet.multipart.max-file-size=30MB
+ #spring.servlet.multipart.max-request-size=30MB
+-#server.port=8082
++#server.port=8085
++spring.web.resources.static-locations=classpath:/META-INF/resources/,classpath:/static/
++spring.datasource.url=jdbc:mysql://localhost:3306/ubsfs
++spring.datasource.username=root
++spring.datasource.password=Enock12345
++spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
++spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
++spring.jpa.properties.hibernate.hbm2ddl.auto=update
++spring.servlet.multipart.max-file-size=30MB
++spring.servlet.multipart.max-request-size=30MB
++server.port=8084
+ spring.main.allow-circular-references=true
+diff --git a/src/main/resources/templates/Course/AllCourses.html b/src/main/resources/templates/Course/AllCourses.html
+index c7f0435..a2305c5 100644
+--- a/src/main/resources/templates/Course/AllCourses.html
++++ b/src/main/resources/templates/Course/AllCourses.html
+@@ -43,6 +43,8 @@ and open the template in the editor.
+             <tr>
+                 <th>Course Name</th>
+                 <th>Description</th>
++                <th>Notes</th>
++                <th>Term Week</th>
+                 <th>Subject</th>
+                 <th>Actions</th>
+             </tr>
+@@ -51,6 +53,20 @@ and open the template in the editor.
+             <tr th:each="course:${courses}">
+                 <td th:text="${course.courseName}"></td>
+                 <td th:text="${course.description}"></td>
++                <td>
++                    <span th:data-notes="${course.notes != null ? course.notes : ''}"
++                          th:data-course-id="${course.courseId}"
++                          th:data-course-name="${course.courseName}"
++                          th:data-course-description="${course.description}"
++                          th:data-subject-name="${course.subject != null ? course.subject.SubjectName : 'N/A'}"
++                          th:data-term-week="${course.termWeekName != null ? course.termWeekName : 'N/A'}"
++                          class="notes-preview"
++                          style="cursor: pointer;"
++                          onclick="setViewCourseData(this)">
++                        <span th:text="${course.notes != null ? course.notes : 'N/A'}"></span>
++                    </span>
++                </td>
++                <td th:text="${course.termWeekName != null ? course.termWeekName : 'N/A'}"></td>
+                 <td th:text="${course.subject != null ? course.subject.SubjectName : 'N/A'}"></td>
+                 <td>
+                     <div class="dropdown">
+@@ -64,6 +80,8 @@ and open the template in the editor.
+                                    th:data-course-name="${course.courseName}"
+                                    th:data-course-description="${course.description}"
+                                    th:data-subject-name="${course.subject != null ? course.subject.SubjectName : 'N/A'}"
++                                   th:data-term-week="${course.termWeekName != null ? course.termWeekName : 'N/A'}"
++                                   th:data-notes="${course.notes != null ? course.notes : ''}"
+                                    onclick="setViewCourseData(this)">
+                                     View
+                                 </a>
+@@ -84,7 +102,7 @@ and open the template in the editor.
+                 </td>
+             </tr>
+             <tr th:if="${courses.isEmpty()}">
+-                <td colspan="4" class="text-center">No courses found</td>
++                <td colspan="6" class="text-center">No courses found</td>
+             </tr>
+         </tbody>
+     </table>
+@@ -142,6 +160,14 @@ and open the template in the editor.
+                         <label class="col-form-label"><strong>Description:</strong></label>
+                         <p id="viewCourseDescription" class="form-control-plaintext"></p>
+                     </div>
++                    <div class="form-group">
++                        <label class="col-form-label"><strong>Term Week:</strong></label>
++                        <p id="viewTermWeek" class="form-control-plaintext"></p>
++                    </div>
++                    <div class="form-group">
++                        <label class="col-form-label"><strong>Notes:</strong></label>
++                        <p id="viewNotes" class="form-control-plaintext" style="white-space: pre-wrap;"></p>
++                    </div>
+                     <div class="form-group">
+                         <label class="col-form-label"><strong>Subject:</strong></label>
+                         <p id="viewSubjectName" class="form-control-plaintext"></p>
+@@ -175,6 +201,10 @@ and open the template in the editor.
+                             <label for="courseDescription" class="col-form-label">Description</label>
+                             <textarea id="courseDescription" name="description" class="form-control" rows="2"></textarea>
+                         </div>
++                        <div class="form-group">
++                            <label for="courseNotes" class="col-form-label">Notes</label>
++                            <textarea id="courseNotes" name="notes" class="form-control" rows="3"></textarea>
++                        </div>
+                         <div class="form-group">
+                             <label for="courseSubject" class="col-form-label">Subject</label>
+                             <select id="courseSubject" name="subjectId" class="form-select">
+@@ -185,6 +215,16 @@ and open the template in the editor.
+                                 </option>
+                             </select>
+                         </div>
++                        <div class="form-group">
++                            <label for="courseTermWeek" class="col-form-label">Term Week</label>
++                            <select id="courseTermWeek" name="termWeekId" class="form-select">
++                                <option value="">Select Term Week (Optional)</option>
++                                <option th:each="termWeek:${termWeeks}"
++                                        th:value="${termWeek.termWeekId}"
++                                        th:text="${termWeek.term.termName + ' - ' + termWeek.weekName}">
++                                </option>
++                            </select>
++                        </div>
+                     </form>
+                     <div>
+                         <button class="btn btn-primary" id="addCourseBtn" type="button" onclick="submitAddCourseForm()">
+@@ -332,10 +372,14 @@ and open the template in the editor.
+           var courseName = element.getAttribute('data-course-name');
+           var courseDescription = element.getAttribute('data-course-description');
+           var subjectName = element.getAttribute('data-subject-name');
++          var termWeek = element.getAttribute('data-term-week');
++          var notes = element.getAttribute('data-notes');
+ 
+           document.getElementById('viewCourseName').textContent = courseName;
+           document.getElementById('viewCourseDescription').textContent = courseDescription || 'N/A';
+           document.getElementById('viewSubjectName').textContent = subjectName;
++          document.getElementById('viewTermWeek').textContent = termWeek || 'N/A';
++          document.getElementById('viewNotes').textContent = notes || 'N/A';
+       }
+ 
+       function setMountCourseData(element) {
+@@ -345,12 +389,35 @@ and open the template in the editor.
+           document.getElementById('mountCourseName').value = courseName;
+       }
+ 
++      function trimToWordCount(text, maxWords) {
++          if (!text) return '';
++          var words = text.trim().split(/\s+/);
++          if (words.length <= maxWords) {
++              return text;
++          }
++          return words.slice(0, maxWords).join(' ') + '...';
++      }
++
++      function truncateNotes() {
++          var notesElements = document.querySelectorAll('.notes-preview span');
++          notesElements.forEach(function(el) {
++              var fullText = el.textContent || '';
++              if (fullText.trim() === '' || fullText === 'N/A') return;
++              var truncated = trimToWordCount(fullText, 120);
++              if (truncated !== fullText) {
++                  el.textContent = truncated;
++                  el.title = fullText;
++              }
++          });
++      }
++
+       $(document).ready(function () {
+           $('#mydata').DataTable({
+               "pageLength": 10,
+               "ordering": true,
+               "searching": false
+           });
++          truncateNotes();
+       });
+     </script>
+ 
+diff --git a/src/main/resources/templates/HeadTeacherPortal.html b/src/main/resources/templates/HeadTeacherPortal.html
+index 66f8885..0d0d2a6 100644
+--- a/src/main/resources/templates/HeadTeacherPortal.html
++++ b/src/main/resources/templates/HeadTeacherPortal.html
+@@ -151,6 +151,15 @@
+                 <div th:if="${Terms}">
+                     <div th:replace="Term::AllTermHead"></div>
+                 </div>
++                <div th:if="${addTermWeek}">
++                    <div th:replace="TermWeek::AddTermWeek"></div>
++                </div>
++                <div th:if="${viewTermWeeks}">
++                    <div th:replace="TermWeek::ViewTermWeeks"></div>
++                </div>
++                <div th:if="${editTermWeek}">
++                    <div th:replace="TermWeek::EditTermWeek"></div>
++                </div>
+ 
+                 <!--List Of Klasses -->
+                 <div th:if="${klasses}">
+diff --git a/src/main/resources/templates/Term.html b/src/main/resources/templates/Term.html
+index 60aeede..6f42391 100644
+--- a/src/main/resources/templates/Term.html
++++ b/src/main/resources/templates/Term.html
+@@ -26,6 +26,7 @@ and open the template in the editor.
+                   <td><a th:href="@{/EditTerm/{id}(id=${term.id})}" class="btn btn-primary"><span class="fa fa-edit"></span>EDIT</a></td>
+                    <td>
+                     <a th:href="@{Admin/StudentKlassAssessment/{TermId}(TermId=${term.id})}" class="btn btn-info"><span class="fa fa-edit"></span>Assessment</a></td>
++                   <td><a th:href="@{/TermWeek/view/{termId}(termId=${term.id})}" class="btn btn-warning"><span class="fa fa-calendar-week"></span>View Weeks</a></td>
+                    <TD> <a th:href="@{downloadApplicationForm/{term}(term=${term.id})}" class="btn btn-info"><span class="fa fa-edit"></span>Admission Form</a></td>
+              
+                   
+@@ -53,8 +54,9 @@ and open the template in the editor.
+                    <td th:text="${term.academicyear.AcademicYear.year}"></td>
+                   <!---td><a th:href="@{/EditTerm/{id}(id=${term.id})}" class="btn btn-primary"><span class="fa fa-edit"></span>EDIT</a></td-->
+                    <td>
+-                    <a th:href="@{Admin/StudentKlassAssessment/{TermId}(TermId=${term.id})}" 
++                    <a th:href="@{Admin/StudentKlassAssessment/{TermId}(TermId=${term.id})}"
+                        class="btn btn-info"><span class="fa fa-edit"></span>Assessment</a></td>
++                   <td><a th:href="@{/TermWeek/view/{termId}(termId=${term.id})}" class="btn btn-warning"><span class="fa fa-calendar-week"></span>View Weeks</a></td>
+                
+                     </tr></tbody>
+           </table>
+diff --git a/src/main/resources/templates/Term/GeneralAction.html b/src/main/resources/templates/Term/GeneralAction.html
+index bd209e9..ad31c74 100644
+--- a/src/main/resources/templates/Term/GeneralAction.html
++++ b/src/main/resources/templates/Term/GeneralAction.html
+@@ -8,7 +8,8 @@ and open the template in the editor.
+     <div class="card border-0 shadow-sm rounded-lg">
+         <div class="card-body p-4">
+             <a th:href="@{/term}" class="btn btn-primary me-2">Add New Term</a>
+-            <a th:href="@{/getAllTerms}" class="btn btn-outline-primary">View/Edit Term</a>
++            <a th:href="@{/getAllTerms}" class="btn btn-outline-primary me-2">View/Edit Term</a>
++            <a th:href="@{/getAllTerms}" class="btn btn-warning">Manage Assessment Weeks</a>
+         </div>
+     </div>
+ </div>
+diff --git a/src/main/resources/templates/index.html b/src/main/resources/templates/index.html
+index 2ebd113..a58a429 100644
+--- a/src/main/resources/templates/index.html
++++ b/src/main/resources/templates/index.html
+@@ -195,6 +195,20 @@
+                                         <label>Description</label>
+                                         <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
+                                     </div>
++                                    <div class="form-group mb-3">
++                                        <label>Notes</label>
++                                        <textarea th:field="*{notes}" class="form-control" rows="3"></textarea>
++                                    </div>
++                                    <div class="form-group mb-3">
++                                        <label>Term Week</label>
++                                        <select name="termWeekId" class="form-control">
++                                            <option value="">Select Term Week (Optional)</option>
++                                            <option th:each="termWeek:${termWeeks}"
++                                                    th:value="${termWeek.termWeekId}"
++                                                    th:text="${termWeek.term.termName + ' - ' + termWeek.weekName}">
++                                            </option>
++                                        </select>
++                                    </div>
+                                     <button type="submit" class="btn btn-primary">Save Course</button>
+                                     <a th:href="@{/Courses}" class="btn btn-secondary">Cancel</a>
+                                 </form>
+@@ -235,6 +249,21 @@
+                                         <label>Description</label>
+                                         <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
+                                     </div>
++                                    <div class="form-group mb-3">
++                                        <label>Notes</label>
++                                        <textarea th:field="*{notes}" class="form-control" rows="3"></textarea>
++                                    </div>
++                                    <div class="form-group mb-3">
++                                        <label>Term Week</label>
++                                        <select name="termWeekId" class="form-control">
++                                            <option value="">Select Term Week (Optional)</option>
++                                            <option th:each="termWeek:${termWeeks}"
++                                                    th:value="${termWeek.termWeekId}"
++                                                    th:text="${termWeek.term.termName + ' - ' + termWeek.weekName}"
++                                                    th:selected="${updateCourse.termWeekName != null && updateCourse.termWeekName == (termWeek.term.termName + ' - ' + termWeek.weekName)}">
++                                            </option>
++                                        </select>
++                                    </div>
+                                     <button type="submit" class="btn btn-primary">Update Course</button>
+                                     <a th:href="@{/Courses}" class="btn btn-secondary">Cancel</a>
+                                 </form>
+@@ -298,6 +327,21 @@
+ 
+                         </div>
+                     </div>
++                    <div th:if="${addTermWeek}">
++                        <div th:replace="TermWeek::AddTermWeek">
++
++                        </div>
++                    </div>
++                    <div th:if="${viewTermWeeks}">
++                        <div th:replace="TermWeek::ViewTermWeeks">
++
++                        </div>
++                    </div>
++                    <div th:if="${editTermWeek}">
++                        <div th:replace="TermWeek::EditTermWeek">
++
++                        </div>
++                    </div>
+                     <div th:if="${generalM}">
+                         <div th:replace="MockDetails/GeneralAction::GeneralAction">
+ 
+diff --git a/src/main/resources/templates/sideNav.html b/src/main/resources/templates/sideNav.html
+index 4690895..37ce99d 100644
+--- a/src/main/resources/templates/sideNav.html
++++ b/src/main/resources/templates/sideNav.html
+@@ -60,6 +60,13 @@
+                 </a>
+             </li>
+ 
++            <li class="nav-item mb-1">
++                <a class="nav-link py-2 px-3 rounded sidebar-link"
++                   th:href="@{/getAllTerms}">
++                    <i class="bi bi-calendar-week-fill me-2"></i>Assessment Week
++                </a>
++            </li>
++
+             <li class="nav-item mb-1">
+                 <a class="nav-link py-2 px-3 rounded sidebar-link"
+                    th:href="@{/showAcademicForm}">

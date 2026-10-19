@@ -1,0 +1,170 @@
+ <div th:fragment="UpdateFees">
+
+     <div  class="bg-info text-white h5" style="margin-top:30px; ">
+                                  <label > Update Fees</label>
+                                     </div>
+    
+                            <form th:method="Get"  th:action="@{/FinancePortal/SaveUpdateFees}" th:object="${UpdateFees}" class="jumbotron bg-white shadow">
+                                
+                                <div class="form-group">
+                                    <label for="text">Amount (GHC)</label>
+                                    <input type="text" class="form-control " th:field="*{Amount}">
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="text">Specification</label>
+                                    <input type="text" class="form-control"  readonly="true" th:field="*{FeeSpecification}">
+                                        
+                                </div>
+                                <div class="form-group ">
+                                    <label for="text">Type</label>
+                                    <input type="text"  readonly="true" class="form-control"  th:field="*{FeeType}"/>
+                                    <input type="hidden"  readonly="true" class="form-control"  th:field="*{hashCode}"/>
+                                                       
+
+                                </div>
+                                <div class="form-group">
+                                    <label> MONTH </label>
+
+                                    <div class="form-group">
+
+                                      <input type="text" readonly="true" class="form-control"  th:field="*{Moth}"/>
+                                         
+                                    </div>
+                                </DIV>
+                                  
+                                <div class="form-group ">
+                                    <label for="text">Term</label>
+                                    <input type="text" readonly="true" class="form-control"  th:field="*{term}"/>
+                                        
+
+                               
+                                </div>
+
+                                <button type="submit" class="form-control btn btn-primary" id="upload_btn" th:onclick="spinOnload()" >Update Fee</button>
+
+                                <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Saving.................
+                                </button>
+
+                            </form>
+
+                    
+                    </div>
+ <div th:fragment="ApproveFees">
+
+                        <div class="row">
+                            <form th:method="post" id="form" th:action="@{/FinancePortal/savefeesFinal}" th:object="${ApproveFees}" class="jumbotron">
+
+                                <div class="form-group ">
+                                    <label for="text">Amount (GHC)</label>
+                                    <input type="text" class="form-control" th:field="*{Amount}">
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="text">Specification</label>
+                                    <select class="form-control" id="" th:field="*{FeeSpecification}">
+                                        <option th:value="Non-Staff">Non-Staff</option>
+                                        <option th:value="Senior-Member">Senior-Member</option>
+
+                                        <option th:value="Junior-Staff"> Junior-Staff</option>
+                                        <option th:value="Senior-Staff">Senior-Staff</option>
+
+                                    </select>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="text">Type</label>
+                                    <select class="form-control" id="" th:field="*{FeeType}">
+                                        <option th:value="School_Fees">School_Fees</option>
+                                        <option value="New_Admission">new_admission</option>
+                                    </select>
+
+                                </div>
+                                <!--div class="form-group">
+                                    <label>SELECT MONTH </label>
+
+                                    <div class="form-group">
+
+                                        <select  requred="true" th:field="*{Moth}" class="form-control">
+                                            <option 
+                                                th:each="d:${dates}"
+                                                th:value="${d}" th:text="${d}" ></option>
+
+                                        </select>
+                                    </div>
+                                </DIV-->
+                                <div class="form-group ">
+                                    <label for="text">Select Class Levels*: </label>
+                                    <th:block th:each="level:${Classlevel}">
+                                        <input  type="checkbox" th:value="${level}" 
+                                                th:id="levels" th:name="levels" checked="true" >  
+                                        <label th:text="${level}"></label> 
+                                    </th:block>
+
+                                    <hr />
+                                </div>   
+                                <div class="form-group ">
+                                    <label for="text">Term</label>
+                                    <select class="form-control" id="" th:field="*{term}">
+                                        <option th:Each="t:${terms}" 
+                                                th:value="${t.id}" 
+                                                th:text="${t.TermName}">Staff</option>
+
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label> Date </label>
+
+                                    <div class="form-group">
+
+                                        <input type="text" readonly="true" class="form-control"  th:field="*{Moth}"/>
+
+                                    </div>
+                                </DIV>
+                                <button type="submit" class="form-control btn btn-success" id="upload_btn" th:onclick="spinOnload()" >Approve Fee</button>
+
+                                <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Saving.................
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-- PTA form -->
+<div th:fragment="ApproveFees">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@fat">Open modal for @fat</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap">Open modal for @getbootstrap</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Recipient:</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Send message</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div >

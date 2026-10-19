@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+this.amount = amount;
+        this.bill = bill;
+this.id = id;
+        this.amount = amount;
+        this.bill = bill;
+        this.user = user;
+        this.date = date;
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<div th:fragment="EditBill">
+    <script>
+    function saveEditBill(){
+        var sid=document.getElementById("StudentId").value;
+        var EditBillRequest = {
+  "amount":  document.getElementById("amount").value,
+  "billId":document.getElementById("bill").value,
+  "stud":sid
+ 
+  
+};
+
+console.log( EditBillRequest);
+      $.ajax({
+        url:'/saveEditBill',// Replace this with your actual API endpoint
+        method: 'POST',
+        dataType: 'json',
+        data:EditBillRequest,
+        success: function(data) {
+            $("#EditBill").modal('hide');
+            console.log(data);
+          alert("succcefully Ediited");  
+            
+            
+        },
+        error: function(xhr, status, error) {
+           
+          
+            
+            console.error(status + ":EditBill " + error+xhr);
+      alert("Operation Unsuccessful Sorry");  
+        }});   
+    
+    }
+    
+    </script>
+</div>

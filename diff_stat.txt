@@ -1,0 +1,1522 @@
+ (1).project                                        |    40 +
+ .gitignore                                         |    34 +
+ .xlsx                                              |   Bin 0 -> 3245 bytes
+ Basic1.xlsx                                        |   Bin 0 -> 3407 bytes
+ Dockerfile                                         |     5 +
+ README.md                                          |     2 -
+ academic_content.txt                               |    25 +
+ com.lyns_lBlockManagement                          |     1 +
+ compile_output.txt                                 |     2 +
+ fix_dash.py                                        |     4 +
+ hs_err_pid12020.log                                |   195 +
+ hs_err_pid12192.log                                |   376 +
+ hs_err_pid14184.log                                |   362 +
+ hs_err_pid15380.log                                |    32 +
+ hs_err_pid16976.log                                |   195 +
+ hs_err_pid19364.log                                |   362 +
+ hs_err_pid23740.log                                |   234 +
+ hs_err_pid4452.log                                 |   195 +
+ hs_err_pid7980.log                                 |   195 +
+ hs_err_pid8424.log                                 |   195 +
+ jshell.history                                     |     0
+ nbactions-release-profile.xml                      |    17 +
+ nbactions.tmp                                      |     0
+ pom.xml                                            |   136 +
+ pro-pics.zip                                       |   Bin 0 -> 954457 bytes
+ pro-pics/8921d0a6d0684d9ea47cafa02b2b62ac.jpg      |   Bin 0 -> 84950 bytes
+ pro-pics/Assessment.bmp                            |   Bin 0 -> 80085 bytes
+ pro-pics/Assessment.bmp.png                        |   Bin 0 -> 71636 bytes
+ pro-pics/Assessment.jpg                            |   Bin 0 -> 57456 bytes
+ pro-pics/Assessment2.png                           |   Bin 0 -> 50224 bytes
+ pro-pics/Assessment3.PNG                           |   Bin 0 -> 209433 bytes
+ pro-pics/CamScanner 08-03-2023 02.20_1.jpg         |   Bin 0 -> 343747 bytes
+ pro-pics/GRADE_BOUNDARIES.PNG                      |   Bin 0 -> 8819 bytes
+ pro-pics/IMG-20230209-WA0009.jpg                   |   Bin 0 -> 32100 bytes
+ pro-pics/IMG-20230209-WA0011.jpg                   |   Bin 0 -> 47153 bytes
+ pro-pics/New folder/headteacherSign.png            |   Bin 0 -> 4964 bytes
+ pro-pics/New folder/logo.png                       |   Bin 0 -> 45468 bytes
+ pro-pics/PARENTCATEGORY.jpg                        |   Bin 0 -> 77596 bytes
+ pro-pics/RECEIPT.jpg                               |   Bin 0 -> 75702 bytes
+ pro-pics/TOPdATA.jpg                               |   Bin 0 -> 55274 bytes
+ pro-pics/UENR.jpg                                  |     0
+ pro-pics/UENR.png                                  |   Bin 0 -> 125394 bytes
+ .../WhatsApp Image 2022-08-10 at 9.45.01 PM.jpeg   |   Bin 0 -> 20815 bytes
+ pro-pics/default.jpg                               |   Bin 0 -> 60492 bytes
+ pro-pics/gradeExplanation.png                      |   Bin 0 -> 110703 bytes
+ pro-pics/headteacherSign.jpeg                      |   Bin 0 -> 7208 bytes
+ pro-pics/headteacherSign.png                       |   Bin 0 -> 4964 bytes
+ pro-pics/headteacherSign_ (2).png                  |   Bin 0 -> 8737 bytes
+ pro-pics/headteacherSign_.png                      |   Bin 0 -> 4964 bytes
+ pro-pics/letterHead.png                            |   Bin 0 -> 72272 bytes
+ pro-pics/ubs1.jpg                                  |   Bin 0 -> 91770 bytes
+ pro-pics/ubs2.jpg                                  |   Bin 0 -> 91770 bytes
+ pro-pics/ubs3.jpg                                  |   Bin 0 -> 91770 bytes
+ pro-pics/uemr.jpg                                  |   Bin 0 -> 166342 bytes
+ replay_pid12192.log                                |  1181 +
+ replay_pid14184.log                                |   665 +
+ replay_pid19364.log                                |  6993 +++++
+ run.bat                                            |     1 +
+ .../Academic/Academic.class                        |   Bin 0 -> 2072 bytes
+ .../Academic/AcademicController.class              |   Bin 0 -> 1531 bytes
+ .../Academic/AcademicRepository.class              |   Bin 0 -> 432 bytes
+ .../Academic/AcademicService.class                 |   Bin 0 -> 1920 bytes
+ .../Assessment/Assessment.class                    |   Bin 0 -> 4368 bytes
+ .../Assessment/AssessmentController.class          |   Bin 0 -> 2400 bytes
+ .../Assessment/AssessmentRepo.class                |   Bin 0 -> 430 bytes
+ .../Assessment/AssessmentService.class             |   Bin 0 -> 3113 bytes
+ .../Assessment/ClassaGeneralAssessment.class       |   Bin 0 -> 1226 bytes
+ .../Attendance/Attendance.class                    |   Bin 0 -> 2814 bytes
+ .../Attendance/AttendanceController.class          |   Bin 0 -> 1888 bytes
+ .../Attendance/AttendanceRepo.class                |   Bin 0 -> 433 bytes
+ .../Attendance/AttendanceService.class             |   Bin 0 -> 2179 bytes
+ .../Bill/BillController.class                      |   Bin 0 -> 598 bytes
+ .../Bill/BillRepository.class                      |   Bin 0 -> 419 bytes
+ .../Bill/BillService.class                         |   Bin 0 -> 2591 bytes
+ .../Bill/StudentBill.class                         |   Bin 0 -> 2622 bytes
+ .../UnerBasicSchoolFinancialSystem/DataTrial.class |   Bin 0 -> 1149 bytes
+ .../Encyption/Encryption.class                     |   Bin 0 -> 594 bytes
+ .../Excel/AssessmentExcelSheet.class               |   Bin 0 -> 3967 bytes
+ .../Excel/AttendanceExcelSheet.class               |   Bin 0 -> 4548 bytes
+ .../Excel/StudentBillingFinanceExcel.class         |   Bin 0 -> 1483 bytes
+ .../StudentBillingFinanceExcelController.class     |   Bin 0 -> 6819 bytes
+ .../Excel/StudentBillingFinanceExcelService.class  |   Bin 0 -> 7757 bytes
+ .../Expenses/ExpenseRepository.class               |   Bin 0 -> 430 bytes
+ .../Expenses/Expenses.class                        |   Bin 0 -> 2322 bytes
+ .../Expenses/ExpensesController.class              |   Bin 0 -> 618 bytes
+ .../Expenses/ExpensesService.class                 |   Bin 0 -> 2324 bytes
+ .../FeePayment/PayementRepository.class            |   Bin 0 -> 436 bytes
+ .../FeePayment/PaymentController.class             |   Bin 0 -> 3124 bytes
+ .../FeePayment/PaymentService.class                |   Bin 0 -> 4897 bytes
+ .../FeePayment/Payments.class                      |   Bin 0 -> 3287 bytes
+ .../FeePayment/StudentTermlyPayment.class          |   Bin 0 -> 2159 bytes
+ .../Finance/FinanceController.class                |   Bin 0 -> 2130 bytes
+ .../Finance/FinanceService.class                   |   Bin 0 -> 2714 bytes
+ .../GetReportBasedOnTerm.class                     |   Bin 0 -> 367 bytes
+ .../HeadTeacher/HeadTeacherController.class        |   Bin 0 -> 2268 bytes
+ .../HeadTeacher/HeadTeacherService.class           |   Bin 0 -> 385 bytes
+ .../PDF/AssessmentPDF.class                        |   Bin 0 -> 591 bytes
+ .../PDF/AssessmentPDFController.class              |   Bin 0 -> 2266 bytes
+ .../PDF/AssessmentPDFService.class                 |   Bin 0 -> 6697 bytes
+ .../UnerBasicSchoolFinancialSystem/PTA/PTA.class   |   Bin 0 -> 1782 bytes
+ .../PTA/PTAController.class                        |   Bin 0 -> 1807 bytes
+ .../PTA/PTARepository.class                        |   Bin 0 -> 438 bytes
+ .../PTA/PTAService.class                           |   Bin 0 -> 2271 bytes
+ .../SMS/SMSConfiguration.class                     |   Bin 0 -> 1289 bytes
+ .../UnerBasicSchoolFinancialSystem/SMS/Sms.class   |   Bin 0 -> 1372 bytes
+ .../SMS/SmsController.class                        |   Bin 0 -> 1705 bytes
+ .../SMS/SmsService.class                           |   Bin 0 -> 1643 bytes
+ .../SchoolFees/SchoolFees.class                    |   Bin 0 -> 2348 bytes
+ .../SchoolFees/SchoolFeesController.class          |   Bin 0 -> 2015 bytes
+ .../SchoolFees/SchoolFeesRepository.class          |   Bin 0 -> 1241 bytes
+ .../SchoolFees/SchoolFeesService.class             |   Bin 0 -> 2192 bytes
+ .../ServletInitializer.class                       |   Bin 0 -> 1128 bytes
+ .../SpringMvcConfiguration.class                   |   Bin 0 -> 1141 bytes
+ .../Student/Student.class                          |   Bin 0 -> 5862 bytes
+ .../Student/StudentController.class                |   Bin 0 -> 7558 bytes
+ .../Student/StudentPromotion.class                 |   Bin 0 -> 938 bytes
+ .../Student/StudentRepository.class                |   Bin 0 -> 429 bytes
+ .../Student/StudentService.class                   |   Bin 0 -> 6379 bytes
+ .../StudentBillPaymentReport.class                 |   Bin 0 -> 2238 bytes
+ .../Subject/Subject.class                          |   Bin 0 -> 2199 bytes
+ .../Subject/SubjectRepository.class                |   Bin 0 -> 427 bytes
+ .../Subject/SubjectSeeder.class                    |   Bin 0 -> 1447 bytes
+ .../Subject/SubjectService.class                   |   Bin 0 -> 2079 bytes
+ .../TKS/TeachrKlassSubject.class                   |   Bin 0 -> 2701 bytes
+ .../TKS/TeachrKlassSubjectRepository.class         |   Bin 0 -> 455 bytes
+ .../TKS/TeachrKlassSubjectService.class            |   Bin 0 -> 3841 bytes
+ .../Teacher/Teacher.class                          |   Bin 0 -> 2568 bytes
+ .../Teacher/TeacherController.class                |   Bin 0 -> 7654 bytes
+ .../Teacher/TeacherRepository1.class               |   Bin 0 -> 1225 bytes
+ .../Teacher/TeacherService1.class                  |   Bin 0 -> 5314 bytes
+ .../UnerBasicSchoolFinancialSystem/Term/Term.class |   Bin 0 -> 2414 bytes
+ .../Term/TermController.class                      |   Bin 0 -> 1707 bytes
+ .../Term/TermRepository.class                      |   Bin 0 -> 412 bytes
+ .../Term/TermService.class                         |   Bin 0 -> 2337 bytes
+ ...UnerBasicSchoolFinancialSystemApplication.class |   Bin 0 -> 993 bytes
+ ...asicSchoolFinancialSystemApplicationTests.class |   Bin 0 -> 944 bytes
+ .../klass/klass.class                              |   Bin 0 -> 1688 bytes
+ .../klass/klassController.class                    |   Bin 0 -> 1674 bytes
+ .../klass/klassRepository.class                    |   Bin 0 -> 419 bytes
+ .../klass/klassService.class                       |   Bin 0 -> 2027 bytes
+ .../security/MyUserDetails.class                   |   Bin 0 -> 3901 bytes
+ .../security/RoleRepository.class                  |   Bin 0 -> 425 bytes
+ .../security/UserController.class                  |   Bin 0 -> 5595 bytes
+ .../security/UserDetailsServiceImpl.class          |   Bin 0 -> 1679 bytes
+ .../security/UserRepository.class                  |   Bin 0 -> 1098 bytes
+ .../security/UserService.class                     |   Bin 0 -> 4207 bytes
+ .../security/WebSecurityConfig.class               |   Bin 0 -> 3962 bytes
+ .../security/role.class                            |   Bin 0 -> 1342 bytes
+ .../security/users.class                           |   Bin 0 -> 2467 bytes
+ src/bin/data/Book1.xlsx                            |   Bin 0 -> 8725 bytes
+ .../Academic/Academic.java                         |   131 +
+ .../Academic/AcademicController.java               |   100 +
+ .../Academic/AcademicRepository.java               |    19 +
+ .../Academic/AcademicResponse.java                 |    25 +
+ .../Academic/AcademicService.java                  |    88 +
+ .../Admission/AdmissionController.java             |    54 +
+ .../Admission/AdmissionRepository.java             |    16 +
+ .../Admission/AdmissionService.java                |    32 +
+ .../Admission/AdmssionServiceImpl.java             |    71 +
+ .../Admission/ApplicationForm.java                 |   272 +
+ .../Admission/StaffAplicationForm.java             |    50 +
+ .../Admission/StaffApplicationFormRepository.java  |    16 +
+ .../UnerBasicSchoolFinancialSystem/ArrayJava.java  |    25 +
+ .../Assessment/Assessment.java                     |   133 +
+ .../Assessment/AssessmentController.java           |   288 +
+ .../Assessment/AssessmentDashBoard.java            |    63 +
+ .../Assessment/AssessmentHelper.java               |    47 +
+ .../Assessment/AssessmentInformation.java          |    13 +
+ .../Assessment/AssessmentRepo.java                 |    25 +
+ .../Assessment/AssessmentResponse.java             |    61 +
+ .../Assessment/AssessmentService.java              |   260 +
+ .../Assessment/ClassaGeneralAssessment.java        |    44 +
+ .../Assessment/StudentAssessmentModel.java         |    72 +
+ .../Attendance/Attendance.java                     |   101 +
+ .../Attendance/AttendanceController.java           |    34 +
+ .../Attendance/AttendanceRepo.java                 |    18 +
+ .../Attendance/AttendanceService.java              |    56 +
+ .../Bill/BillController.java                       |   210 +
+ .../Bill/BillEdit/BillEdit.java                    |   102 +
+ .../Bill/BillEdit/BillEditController.java          |    51 +
+ .../Bill/BillEdit/EditBillRepository.java          |    17 +
+ .../Bill/BillEdit/EditBillRequest.java             |    55 +
+ .../Bill/BillEdit/EditBillResponse.java            |    18 +
+ .../Bill/BillEdit/EditBillService.java             |    42 +
+ .../Bill/BillEdit/EditBillServiceImpl.java         |    75 +
+ .../Bill/BillRepository.java                       |    18 +
+ .../Bill/BillResponse.java                         |    75 +
+ .../Bill/BillService.java                          |   111 +
+ .../Bill/StudentBill.java                          |    88 +
+ .../Configuration/WebMVCConfiguration.java         |     0
+ .../Course/Course.java                             |    73 +
+ .../Course/CourseController.java                   |   155 +
+ .../Course/CourseRepository.java                   |    47 +
+ .../Course/CourseService.java                      |    27 +
+ .../Course/CourseServiceImpl.java                  |    67 +
+ .../UnerBasicSchoolFinancialSystem/DataTrial.java  |    43 +
+ .../Encyption/Encryption.java                      |    17 +
+ .../Excel/AssessmentExcelSheet.java                |   183 +
+ .../Excel/AttendanceExcelSheet.java                |   126 +
+ .../Excel/DefaultersExcel.java                     |    18 +
+ .../Excel/DownloadStudentAssessmentData.java       |   168 +
+ .../Excel/ExceModell.java                          |    61 +
+ .../Excel/ExcelController.java                     |   481 +
+ .../Excel/ExcelServices.java                       |   843 +
+ .../Excel/MockExcelSheet.java                      |   183 +
+ .../Excel/Sheet.java                               |    27 +
+ .../Excel/StudentDataUpload.java                   |    17 +
+ .../Expenses/ExpenseRepository.java                |    18 +
+ .../Expenses/Expenses.java                         |    71 +
+ .../Expenses/ExpensesController.java               |    17 +
+ .../Expenses/ExpensesService.java                  |    62 +
+ .../FeePayment/PayementRepository.java             |    27 +
+ .../FeePayment/Payment.java                        |   187 +
+ .../FeePayment/PaymentController.java              |   274 +
+ .../FeePayment/PaymentObjectBillingResponse.java   |   101 +
+ .../FeePayment/PaymentResponse.java                |    91 +
+ .../FeePayment/PaymentService.java                 |   306 +
+ .../FeePayment/StudentTermlyPayment.java           |    73 +
+ .../Finance/FinanceController.java                 |   184 +
+ .../Finance/FinanceService.java                    |   128 +
+ .../Finance/SchoolStatisticsModel.java             |   132 +
+ .../GetReportBasedOnTerm.java                      |    14 +
+ .../HeadTeacher/HeadTeacherController.java         |    68 +
+ .../HeadTeacher/headTeacherService.java            |    32 +
+ .../PDF/AssessmentPDF.java                         |    22 +
+ .../PDF/AssessmentPDFController.java               |   126 +
+ .../PDF/AssessmentPDFService.java                  |   507 +
+ .../PDF/MultipleAssessmentPDFService.java          |   509 +
+ .../PDF/MultipleMockPDFService1.java               |   519 +
+ .../PROMOTION/promote.java                         |    89 +
+ .../PROMOTION/promoteRepository.java               |    17 +
+ .../PROMOTION/promoteService.java                  |    25 +
+ .../PROMOTION/promoteServiceImpl.java              |   105 +
+ .../UnerBasicSchoolFinancialSystem/PTA/PTA.java    |    60 +
+ .../PTA/PTAController.java                         |    38 +
+ .../PTA/PTARepository.java                         |    17 +
+ .../PTA/PTAService.java                            |    85 +
+ .../Position/AssessmentPosition.java               |    54 +
+ .../Position/AssessmentPositionService.java        |   122 +
+ .../Receipt/Receipt.java                           |    88 +
+ .../Receipt/ReceiptController.java                 |    41 +
+ .../Receipt/ReceiptRepository.java                 |    22 +
+ .../Receipt/ReceiptService.java                    |    24 +
+ .../Receipt/ReceiptServiceImpl.java                |    61 +
+ .../RestController/StudentPaymentRest.java         |   202 +
+ .../RestController/student.java                    |   184 +
+ .../SMS/SMSConfiguration.java                      |    42 +
+ .../UnerBasicSchoolFinancialSystem/SMS/Sms.java    |    34 +
+ .../SMS/SmsController.java                         |    59 +
+ .../SMS/SmsService.java                            |   177 +
+ .../SchoolFees/SchoolFees.java                     |   146 +
+ .../SchoolFees/SchoolFeesController.java           |   166 +
+ .../SchoolFees/SchoolFeesRepository.java           |    23 +
+ .../SchoolFees/SchoolFeesService.java              |   280 +
+ .../ServletInitializer.java                        |    13 +
+ .../SpringMvcConfiguration.java                    |    48 +
+ .../Student/PaymentObjectBillingResponse.java      |     0
+ .../Student/Student.java                           |   389 +
+ .../Student/StudentController.java                 |   901 +
+ .../Student/StudentID_Checker/IDChecker.java       |    58 +
+ .../StudentID_Checker/IDCheckerService.java        |    19 +
+ .../StudentID_Checker/IDCheckerServiceImpl.java    |    48 +
+ .../Student/StudentID_Checker/IDRepository.java    |    13 +
+ .../Student/StudentPromotion.java                  |    25 +
+ .../Student/StudentRepository.java                 |    71 +
+ .../Student/StudentResponse.java                   |   301 +
+ .../Student/StudentResponseAssessment.java         |    16 +
+ .../Student/StudentResponseNew.java                |    35 +
+ .../Student/StudentResultResponse.java             |    42 +
+ .../Student/StudentService.java                    |   772 +
+ .../Student/StudentTelphoneResponse.java           |    51 +
+ .../StudentBillPaymentReport.java                  |    66 +
+ .../Subject/Subject.java                           |    68 +
+ .../Subject/SubjectController.java                 |    90 +
+ .../Subject/SubjectRepository.java                 |    22 +
+ .../Subject/SubjectResponse.java                   |    38 +
+ .../Subject/SubjectSeeder.java                     |   110 +
+ .../Subject/SubjectService.java                    |    92 +
+ .../TKS/TeacherKlassSubjectObject.java             |    58 +
+ .../TKS/TeachrKlassSubject.java                    |    77 +
+ .../TKS/TeachrKlassSubjectRepository.java          |    21 +
+ .../TKS/TeachrKlassSubjectService.java             |   154 +
+ .../Teacher/Teacher.java                           |   141 +
+ .../Teacher/TeacherController.java                 |   484 +
+ .../Teacher/TeacherRepository1.java                |    23 +
+ .../Teacher/TeacherResponse.java                   |    45 +
+ .../Teacher/TeacherService1.java                   |   210 +
+ .../UnerBasicSchoolFinancialSystem/Term/Term.java  |   186 +
+ .../Term/TermController.java                       |   128 +
+ .../Term/TermRepository.java                       |    18 +
+ .../Term/TermResponse.java                         |    86 +
+ .../Term/TermService.java                          |   147 +
+ .../UnerBasicSchoolFinancialSystemApplication.java |    29 +
+ .../cacheAssessment/CacheAssessment.java           |   244 +
+ .../cacheAssessment/CacheAssessmentRepository.java |    18 +
+ .../cacheAssessment/CacheAssessmentService.java    |    23 +
+ .../cacheAssessment/CacheSericeImpl.java           |    89 +
+ .../klass/KlassRequest.java                        |    32 +
+ .../klass/klass.java                               |   158 +
+ .../klass/klassController.java                     |   124 +
+ .../klass/klassReponse.java                        |    69 +
+ .../klass/klassRepository.java                     |    18 +
+ .../klass/klassService.java                        |   148 +
+ .../mock/AssessmentInformation.java                |    15 +
+ .../UnerBasicSchoolFinancialSystem/mock/Mock.java  |   303 +
+ .../mock/MockAssessment.java                       |    45 +
+ .../mock/MockController.java                       |   202 +
+ .../mock/MockDetails/MockDetailsController.java    |   130 +
+ .../mock/MockDetails/MockDetailsService.java       |    34 +
+ .../mock/MockDetails/mockDetails.java              |   165 +
+ .../mock/MockDetails/mockDetailsImpl.java          |   131 +
+ .../mock/MockDetails/mockDetailsRepository.java    |    17 +
+ .../mock/MockHelper.java                           |    46 +
+ .../mock/MockRepo.java                             |    19 +
+ .../mock/MockService.java                          |   249 +
+ .../product/ProductController.java                 |    13 +
+ .../product/product.java                           |    76 +
+ .../product/productService.java                    |    13 +
+ .../product/productServiceImpl.java                |    16 +
+ .../product/productrepository.java                 |    13 +
+ .../security/JwtUtil.java                          |    55 +
+ .../security/MyUserDetails.java                    |    81 +
+ .../security/RoleRepository.java                   |    18 +
+ .../security/UserController.java                   |   269 +
+ .../security/UserDetailsServiceImpl.java           |    33 +
+ .../security/UserRepository.java                   |    30 +
+ .../security/UserService.java                      |   192 +
+ .../security/WebSecurityConfig.java                |    66 +
+ .../security/role.java                             |    49 +
+ .../security/users.java                            |   115 +
+ .../stock/StockServiceImpl.java                    |    13 +
+ .../stock/productRepository.java                   |    13 +
+ .../stock/stock.java                               |    84 +
+ .../stock/stockController.java                     |    14 +
+ .../stock/stockService.java                        |    13 +
+ .../video/Video.java                               |   114 +
+ .../video/VideoRepository.java                     |    14 +
+ .../video/VideoRequest.java                        |    74 +
+ .../video/VideoResponse.java                       |    97 +
+ .../video/VideoRestController.java                 |   201 +
+ .../video/VideoService.java                        |    25 +
+ .../video/VideoServiceImpl.java                    |    83 +
+ src/main/java/data/Book1.xlsx                      |   Bin 0 -> 8725 bytes
+ src/main/resources/application.properties          |    31 +
+ src/main/resources/img/UENR.jpg                    |     0
+ .../resources/static/css/HeadTeacherPortal.html    |   443 +
+ src/main/resources/static/css/PrintPageCss.css     |    56 +
+ src/main/resources/static/css/SideBar.css          |    67 +
+ .../resources/static/css/bootstrap-grid.min.css    |     7 +
+ src/main/resources/static/css/bootstrap.min.css    |     7 +
+ .../resources/static/css/dataTables.bootstrap.css  |   191 +
+ src/main/resources/static/css/datatables.css       |   473 +
+ src/main/resources/static/css/login.css            |   151 +
+ src/main/resources/static/css/portal.css           |   461 +
+ src/main/resources/static/css/printer.css          |    19 +
+ src/main/resources/static/css/select2.min.css      |     1 +
+ src/main/resources/static/script/ProgressDialog.js |   121 +
+ .../resources/static/script/ProgressDialog_1.js    |   121 +
+ src/main/resources/static/script/bootstrap.min.js  |     7 +
+ src/main/resources/static/script/datatables.js     | 15397 +++++++++++
+ src/main/resources/static/script/datatables.min.js |   198 +
+ .../resources/static/script/jq.progress-bar.js     |    96 +
+ src/main/resources/static/script/jquery.js         | 10872 ++++++++
+ src/main/resources/static/script/jquery.min.js     |     2 +
+ src/main/resources/static/script/jquery.min_1.js   |     2 +
+ src/main/resources/static/script/jquery_1.js       | 10872 ++++++++
+ src/main/resources/static/script/select2.min.js    |     2 +
+ src/main/resources/static/script/sweetalert.min.js |     1 +
+ .../templates/AcademicYear/GeneralAction.html      |    15 +
+ .../resources/templates/AcademicYear/adacemic.html |   147 +
+ .../templates/Admission/ApplicationForm.html       |    99 +
+ .../resources/templates/Assessment/Assessment.html |   120 +
+ .../templates/Assessment/Assessment_1.html         |   120 +
+ .../Assessment/ClassGeneralAssessment.html         |    57 +
+ src/main/resources/templates/Bills.html            |    15 +
+ .../resources/templates/Excel/AddExcelFile.html    |    35 +
+ src/main/resources/templates/FinancePortal.html    |  1068 +
+ .../resources/templates/HeadTeacherPortal.html     |   494 +
+ src/main/resources/templates/Klasses/View.html     |    80 +
+ src/main/resources/templates/Login.html            |    81 +
+ .../templates/MockDetails/AddMockDetails.html      |    49 +
+ .../templates/MockDetails/AllMockDetails.html      |    86 +
+ .../templates/MockDetails/GeneralAction.html       |    22 +
+ src/main/resources/templates/OtherFeePayment.html  |    68 +
+ src/main/resources/templates/Receipt.html          |    39 +
+ src/main/resources/templates/Reset.html            |    63 +
+ src/main/resources/templates/Store.html            |    11 +
+ .../resources/templates/Student/AllStudent.html    |   209 +
+ .../resources/templates/Student/GeneralAction.html |    14 +
+ .../templates/Student/StudentDetails.html          |   128 +
+ .../resources/templates/StudentBill/EditBill.html  |    49 +
+ .../resources/templates/StudentBill/ViewBills.html |   252 +
+ src/main/resources/templates/StudentBill/bill.html |   174 +
+ src/main/resources/templates/StudentPortal.html    |   444 +
+ .../resources/templates/Subject/AllSubjects.html   |    82 +
+ .../resources/templates/Subject/GeneralAction.html |    14 +
+ .../resources/templates/Subject/UpdateSubject.html |    34 +
+ src/main/resources/templates/Teacher.html          |   216 +
+ .../resources/templates/Teacher/AddTecher.html     |    15 +
+ .../resources/templates/Teacher/AllTeachers.html   |     6 +
+ .../resources/templates/Teacher/GeneralAction.html |    15 +
+ src/main/resources/templates/TeacherPortal.html    |   426 +
+ src/main/resources/templates/Term.html             |   100 +
+ .../resources/templates/Term/GeneralAction.html    |    82 +
+ src/main/resources/templates/dash_oard.html        |   220 +
+ src/main/resources/templates/defaulters.html       |     6 +
+ .../resources/templates/defaulters/defaulters.html |    38 +
+ .../templates/defaulters/defaultersPritPage.html   |    51 +
+ src/main/resources/templates/fees/All_Fees.html    |    48 +
+ .../resources/templates/fees/GeneralAction.html    |    14 +
+ src/main/resources/templates/fees/fees.html        |   170 +
+ src/main/resources/templates/index.html            |  1694 ++
+ .../resources/templates/payment/GeneralAction.html |    14 +
+ src/main/resources/templates/payment/payment.html  |    79 +
+ .../resources/templates/receipt/BillReceipt.html   |   180 +
+ src/main/resources/templates/sideNav.html          |    99 +
+ src/main/resources/templates/updateTeacher.html    |    70 +
+ src/main/resources/templates/users/AddUser.html    |   134 +
+ .../resources/templates/users/GeneralAction.html   |    14 +
+ src/main/resources/templates/users/view.html       |    32 +
+ .../templates/video/SearchVideosStudents.html      |   274 +
+ .../resources/templates/video/VideoUpload.html     |   392 +
+ ...BasicSchoolFinancialSystemApplicationTests.java |    24 +
+ stud-pics/2021/12345/IMG_20210628_125759_310.jpg   |   Bin 0 -> 3240 bytes
+ stud-pics/2021/ES-01-023/IMG-20210506-WA0029.jpg   |   Bin 0 -> 3684 bytes
+ stud-pics/2021/ES-01-023/IMG-20210512-WA0002.jpg   |   Bin 0 -> 2987 bytes
+ stud-pics/2021/ESK-20/IMG-20211212-WA0064.jpg      |   Bin 0 -> 3949 bytes
+ stud-pics/2021/ESK-21/IMG-20211212-WA0065.jpg      |   Bin 0 -> 3501 bytes
+ stud-pics/2021/ESK-24/IMG-20211212-WA0065.jpg      |   Bin 0 -> 3501 bytes
+ stud-pics/2021/ESKS-1/IMG-20210512-WA0002.jpg      |   Bin 0 -> 2987 bytes
+ stud-pics/2021/ESKS-1/default.jpg                  |   Bin 0 -> 1798 bytes
+ stud-pics/2021/ESKS-13/IMG-20211212-WA0064.jpg     |   Bin 0 -> 3949 bytes
+ stud-pics/2021/IMG-20210717-WA0024(0).jpg          |   Bin 0 -> 4218 bytes
+ .../2021/UBS12007/IMG_20210628_125759_310.jpg      |   Bin 0 -> 3240 bytes
+ .../2021/UBS12007/IMG_20210628_130434_450.jpg      |   Bin 0 -> 2593 bytes
+ stud-pics/2021/UBS12007/passport.PNG               |   Bin 0 -> 15624 bytes
+ stud-pics/2021/UBS120074/IMG-20210506-WA0033.jpg   |   Bin 0 -> 4438 bytes
+ stud-pics/2021/UBS120078/Capture.PNG               |   Bin 0 -> 16228 bytes
+ stud-pics/2021/UBS120078/IMG-20210506-WA0033.jpg   |   Bin 0 -> 4438 bytes
+ .../2021/UBS120078/IMG_20210628_125759_310.jpg     |   Bin 0 -> 3240 bytes
+ stud-pics/2021/UBS1200781/IMG-20210506-WA0029.jpg  |   Bin 0 -> 3684 bytes
+ stud-pics/2021/UBS12008/IMG-20210506-WA0029.jpg    |   Bin 0 -> 3684 bytes
+ stud-pics/2021/UBS12009/IMG-20210512-WA0002.jpg    |   Bin 0 -> 2987 bytes
+ .../2021/UBS12009/IMG_20210628_130434_450.jpg      |   Bin 0 -> 2593 bytes
+ stud-pics/2021/UBS1234/IMG-20210506-WA0029.jpg     |   Bin 0 -> 3684 bytes
+ stud-pics/2021/UBS1856/IMG-20211211-WA0010.jpg     |   Bin 0 -> 3760 bytes
+ stud-pics/2021/UBS7774/IMG_20210628_130434_450.jpg |   Bin 0 -> 2593 bytes
+ stud-pics/2021/esk-10/20211124_220925.jpg          |   Bin 0 -> 2080 bytes
+ stud-pics/2022/12345/UENR.jpg                      |   Bin 0 -> 3956 bytes
+ stud-pics/2022/205/default.jpg                     |   Bin 0 -> 1798 bytes
+ stud-pics/2022/206/IMG_1982.jpeg                   |   Bin 0 -> 4028 bytes
+ stud-pics/2022/207/IMG_1971.jpeg                   |   Bin 0 -> 3744 bytes
+ stud-pics/2022/208/IMG_1984.jpeg                   |   Bin 0 -> 3804 bytes
+ stud-pics/2022/211/default.jpg                     |   Bin 0 -> 1798 bytes
+ stud-pics/2022/212/IMG_1974.jpeg                   |   Bin 0 -> 4011 bytes
+ stud-pics/2022/213/IMG_1964.jpeg                   |   Bin 0 -> 3623 bytes
+ stud-pics/2022/214/IMG_1970.jpeg                   |   Bin 0 -> 4056 bytes
+ stud-pics/2022/293/IMG_1961.jpeg                   |   Bin 0 -> 3604 bytes
+ stud-pics/2022/299/IMG_1972.jpeg                   |   Bin 0 -> 3858 bytes
+ stud-pics/2022/430/IMG_1969.jpeg                   |   Bin 0 -> 3841 bytes
+ stud-pics/2022/431/IMG_1960.jpeg                   |   Bin 0 -> 4316 bytes
+ stud-pics/2022/432/IMG_1981.jpeg                   |   Bin 0 -> 3846 bytes
+ stud-pics/2022/434/IMG_1977.jpeg                   |   Bin 0 -> 3997 bytes
+ stud-pics/2022/435/IMG_1983.jpeg                   |   Bin 0 -> 3880 bytes
+ stud-pics/2022/436/IMG_1985.jpeg                   |   Bin 0 -> 4195 bytes
+ stud-pics/2022/479/IMG_1962.jpeg                   |   Bin 0 -> 4028 bytes
+ stud-pics/2022/834/default.jpg                     |   Bin 0 -> 7512 bytes
+ stud-pics/2022/835/IMG_1973.jpeg                   |   Bin 0 -> 3591 bytes
+ stud-pics/2022/836/IMG_1967.jpeg                   |   Bin 0 -> 3567 bytes
+ stud-pics/2022/837/IMG_1958.jpeg                   |   Bin 0 -> 4152 bytes
+ stud-pics/2022/838/IMG_1958.jpeg                   |   Bin 0 -> 4152 bytes
+ stud-pics/2022/839/default.jpg                     |   Bin 0 -> 1798 bytes
+ stud-pics/2022/840/default.jpg                     |   Bin 0 -> 8267 bytes
+ stud-pics/2022/841/IMG_1968.jpeg                   |   Bin 0 -> 3490 bytes
+ stud-pics/2022/842/IMG_1978.jpeg                   |   Bin 0 -> 3677 bytes
+ stud-pics/2022/843/IMG_1957.jpeg                   |   Bin 0 -> 3675 bytes
+ stud-pics/2022/844/IMG_1966.jpeg                   |   Bin 0 -> 3809 bytes
+ stud-pics/2022/845/IMG_1979.jpeg                   |   Bin 0 -> 3843 bytes
+ stud-pics/2022/UBS12001231/c1.jpg                  |   Bin 0 -> 3015 bytes
+ stud-pics/2022/UBS25001/IMG_20220727_113432.jpg    |   Bin 0 -> 2610 bytes
+ stud-pics/2022/UBS25002/IMG_20220727_113525.jpg    |   Bin 0 -> 2528 bytes
+ stud-pics/2022/UBS25004/IMG_20220727_113104.jpg    |   Bin 0 -> 2557 bytes
+ stud-pics/2022/UBS25005/IMG_20220727_113149.jpg    |   Bin 0 -> 2611 bytes
+ stud-pics/2022/UBS25006/IMG_20220727_113736.jpg    |   Bin 0 -> 2302 bytes
+ stud-pics/2022/UBS25007/IMG_20220727_112815.jpg    |   Bin 0 -> 2437 bytes
+ stud-pics/2022/UBS25008/IMG_20220727_113232.jpg    |   Bin 0 -> 2390 bytes
+ stud-pics/2022/UBS25009/IMG_20220727_113158.jpg    |   Bin 0 -> 2292 bytes
+ stud-pics/2022/UBS25010/IMG_20220727_113826.jpg    |   Bin 0 -> 2438 bytes
+ stud-pics/2022/UBS25011/IMG_20220727_113322.jpg    |   Bin 0 -> 2414 bytes
+ stud-pics/2022/UBS25012/IMG_20220727_112948.jpg    |   Bin 0 -> 2455 bytes
+ stud-pics/2022/UBS25013/IMG_20220727_113012.jpg    |   Bin 0 -> 2562 bytes
+ stud-pics/2022/UBS25014/IMG_20220801_155221.jpg    |   Bin 0 -> 3439 bytes
+ stud-pics/2022/UBS25016/IMG_20220727_112740.jpg    |   Bin 0 -> 3115 bytes
+ stud-pics/2022/UBS25017/IMG_20220727_112955.jpg    |   Bin 0 -> 2737 bytes
+ stud-pics/2022/UBS25018/IMG_20220727_112928.jpg    |   Bin 0 -> 2504 bytes
+ stud-pics/2022/UBS25019/IMG_20220727_112859.jpg    |   Bin 0 -> 2902 bytes
+ stud-pics/2022/UBS25020/IMG_20220727_113554.jpg    |   Bin 0 -> 2425 bytes
+ stud-pics/2022/UBS25021/IMG_20220727_113835.jpg    |   Bin 0 -> 2470 bytes
+ stud-pics/2022/UBS25022/IMG_20220727_113114.jpg    |   Bin 0 -> 2720 bytes
+ stud-pics/2022/UBS25023/IMG_20220727_113716.jpg    |   Bin 0 -> 2429 bytes
+ stud-pics/2022/UBS25024/IMG_20220727_113219.jpg    |   Bin 0 -> 2662 bytes
+ stud-pics/2022/UBS25025/IMG_20220727_113452.jpg    |   Bin 0 -> 3037 bytes
+ stud-pics/2022/UBS25029/IMG_20220727_112707.jpg    |   Bin 0 -> 3173 bytes
+ stud-pics/2022/UBS26001/IMG_20220727_120209.jpg    |   Bin 0 -> 2840 bytes
+ stud-pics/2022/UBS26002/IMG_20220727_114527.jpg    |   Bin 0 -> 2257 bytes
+ stud-pics/2022/UBS26003/IMG_20220727_120026.jpg    |   Bin 0 -> 2548 bytes
+ stud-pics/2022/UBS26004/IMG_20220727_120136.jpg    |   Bin 0 -> 2829 bytes
+ stud-pics/2022/UBS26005/IMG_20220727_114457.jpg    |   Bin 0 -> 2404 bytes
+ stud-pics/2022/UBS26006/IMG_20220727_114503.jpg    |   Bin 0 -> 2415 bytes
+ stud-pics/2022/UBS26007/IMG_20220727_120313.jpg    |   Bin 0 -> 2962 bytes
+ stud-pics/2022/UBS26008/IMG_20220727_114022.jpg    |   Bin 0 -> 2477 bytes
+ stud-pics/2022/UBS26009/IMG_20220727_120155.jpg    |   Bin 0 -> 2563 bytes
+ stud-pics/2022/UBS26010/IMG_20220727_120110.jpg    |   Bin 0 -> 2769 bytes
+ stud-pics/2022/UBS26011/IMG_20220727_114151.jpg    |   Bin 0 -> 2638 bytes
+ stud-pics/2022/UBS26012/IMG_20220727_120037.jpg    |   Bin 0 -> 2818 bytes
+ stud-pics/2022/UBS26013/IMG_20220727_120001.jpg    |   Bin 0 -> 2575 bytes
+ stud-pics/2022/UBS26014/IMG_20220727_114240.jpg    |   Bin 0 -> 2495 bytes
+ stud-pics/2022/UBS26015/IMG_20220727_115629.jpg    |   Bin 0 -> 2629 bytes
+ stud-pics/2022/UBS26016/IMG_20220727_120252.jpg    |   Bin 0 -> 2518 bytes
+ stud-pics/2022/UBS26017/IMG_20220727_114336.jpg    |   Bin 0 -> 2647 bytes
+ stud-pics/2022/UBS26018/IMG_20220727_120220.jpg    |   Bin 0 -> 2989 bytes
+ stud-pics/2022/UBS26019/IMG_20220727_114428.jpg    |   Bin 0 -> 2428 bytes
+ stud-pics/2022/UBS26020/IMG_20220727_120234.jpg    |   Bin 0 -> 2994 bytes
+ stud-pics/2022/UBS26021/IMG_20220727_114449.jpg    |   Bin 0 -> 2555 bytes
+ stud-pics/2022/UBS26022/IMG_20220727_120214.jpg    |   Bin 0 -> 2736 bytes
+ stud-pics/2022/UBS26023/IMG_20220727_114245.jpg    |   Bin 0 -> 2598 bytes
+ stud-pics/2022/UBS26024/IMG_20220727_120327.jpg    |   Bin 0 -> 2280 bytes
+ stud-pics/2022/UBS26025/IMG_20220727_114011.jpg    |   Bin 0 -> 2648 bytes
+ stud-pics/2022/UBS26026/IMG_20220727_114343.jpg    |   Bin 0 -> 2366 bytes
+ stud-pics/2022/UBS26027/IMG_20220727_114045.jpg    |   Bin 0 -> 2365 bytes
+ stud-pics/2022/UBS26028/IMG_20220727_120147.jpg    |   Bin 0 -> 3143 bytes
+ stud-pics/2022/UBS26029/IMG_20220727_120200.jpg    |   Bin 0 -> 3014 bytes
+ stud-pics/2022/UBS26030/IMG_20220727_120100.jpg    |   Bin 0 -> 2963 bytes
+ stud-pics/2022/UBS26031/IMG_20220727_114509.jpg    |   Bin 0 -> 2887 bytes
+ stud-pics/2022/UBS26032/IMG_20220727_114205.jpg    |   Bin 0 -> 2227 bytes
+ stud-pics/2022/UBS26034/IMG_20220727_114218.jpg    |   Bin 0 -> 2704 bytes
+ stud-pics/2022/UBS26035/IMG_20220727_114253.jpg    |   Bin 0 -> 2692 bytes
+ stud-pics/2022/UBS26036/IMG_20220805_095402.jpg    |   Bin 0 -> 3542 bytes
+ stud-pics/2022/UBS26037/IMG_20220727_120105.jpg    |   Bin 0 -> 2808 bytes
+ stud-pics/2022/UBS26038/IMG_20220727_114436.jpg    |   Bin 0 -> 2275 bytes
+ stud-pics/2022/UBS26039/IMG_20220727_120123.jpg    |   Bin 0 -> 2964 bytes
+ stud-pics/2022/UBS26040/IMG_20220727_120131.jpg    |   Bin 0 -> 2686 bytes
+ stud-pics/2022/UBS26041/UENR.jpg                   |   Bin 0 -> 3956 bytes
+ stud-pics/2022/UBS26042/IMG_20220727_114302.jpg    |   Bin 0 -> 2383 bytes
+ stud-pics/2022/UBS26043/IMG_20220727_120318.jpg    |   Bin 0 -> 2675 bytes
+ stud-pics/2022/UBS26044/IMG_20220727_120241.jpg    |   Bin 0 -> 3013 bytes
+ stud-pics/2022/UBS26045/IMG_20220727_120022.jpg    |   Bin 0 -> 2879 bytes
+ stud-pics/2022/UBS26046/IMG_20220727_114227.jpg    |   Bin 0 -> 2596 bytes
+ stud-pics/2022/UBS26047/IMG_20220727_113956.jpg    |   Bin 0 -> 2322 bytes
+ stud-pics/2022/UBS26048/IMG_20220727_114032.jpg    |   Bin 0 -> 2893 bytes
+ stud-pics/2022/UBS26059/IMG_20220727_114358.jpg    |   Bin 0 -> 2497 bytes
+ stud-pics/2022/UBS26060/IMG_20220727_114421.jpg    |   Bin 0 -> 3016 bytes
+ stud-pics/2022/UBS27001/IMG_20220727_115246.jpg    |   Bin 0 -> 2464 bytes
+ stud-pics/2022/UBS27002/IMG_20220727_115049.jpg    |   Bin 0 -> 2456 bytes
+ stud-pics/2022/UBS27003/IMG_20220727_115020.jpg    |   Bin 0 -> 2766 bytes
+ stud-pics/2022/UBS27004/IMG_20220727_115645.jpg    |   Bin 0 -> 2997 bytes
+ stud-pics/2022/UBS27005/IMG_20220727_115129.jpg    |   Bin 0 -> 2287 bytes
+ stud-pics/2022/UBS27006/IMG_20220727_114757.jpg    |   Bin 0 -> 2813 bytes
+ stud-pics/2022/UBS27007/IMG_20220727_115029.jpg    |   Bin 0 -> 2966 bytes
+ stud-pics/2022/UBS27008/IMG_20220727_114928.jpg    |   Bin 0 -> 2444 bytes
+ stud-pics/2022/UBS27009/IMG_20220727_114802.jpg    |   Bin 0 -> 2642 bytes
+ stud-pics/2022/UBS27010/IMG_20220727_115623.jpg    |   Bin 0 -> 2673 bytes
+ stud-pics/2022/UBS27011/IMG_20220727_114913.jpg    |   Bin 0 -> 2374 bytes
+ stud-pics/2022/UBS27012/IMG_20220727_115525.jpg    |   Bin 0 -> 2798 bytes
+ stud-pics/2022/UBS27013/IMG_20220727_115707.jpg    |   Bin 0 -> 2703 bytes
+ stud-pics/2022/UBS27014/IMG_20220727_115013.jpg    |   Bin 0 -> 2543 bytes
+ stud-pics/2022/UBS27016/IMG_20220727_115111.jpg    |   Bin 0 -> 2556 bytes
+ stud-pics/2022/UBS27017/IMG_20220727_114631.jpg    |   Bin 0 -> 2790 bytes
+ stud-pics/2022/UBS27018/IMG_20220727_114901.jpg    |   Bin 0 -> 2382 bytes
+ stud-pics/2022/UBS27019/IMG_20220727_114923.jpg    |   Bin 0 -> 2778 bytes
+ stud-pics/2022/UBS27020/IMG_20220727_114945.jpg    |   Bin 0 -> 2850 bytes
+ stud-pics/2022/UBS27021/IMG_20220727_115607.jpg    |   Bin 0 -> 3080 bytes
+ stud-pics/2022/UBS27022/IMG_20220727_114934.jpg    |   Bin 0 -> 2318 bytes
+ stud-pics/2022/UBS27023/IMG_20220727_115340.jpg    |   Bin 0 -> 2833 bytes
+ stud-pics/2022/UBS27024/IMG_20220727_114822.jpg    |   Bin 0 -> 2605 bytes
+ stud-pics/2022/UBS27025/IMG_20220727_115650.jpg    |   Bin 0 -> 2381 bytes
+ stud-pics/2022/UBS27026/IMG_20220727_115611.jpg    |   Bin 0 -> 2426 bytes
+ stud-pics/2022/UBS27027/IMG_20220727_115534.jpg    |   Bin 0 -> 2504 bytes
+ stud-pics/2022/UBS27028/IMG_20220727_115408.jpg    |   Bin 0 -> 2398 bytes
+ .../UBS27029/16597067115964752655646840524227.jpg  |   Bin 0 -> 4768 bytes
+ stud-pics/2022/UBS27031/IMG_20220727_115002.jpg    |   Bin 0 -> 2634 bytes
+ stud-pics/2022/UBS27032/IMG_20220727_115118.jpg    |   Bin 0 -> 2605 bytes
+ stud-pics/2022/UBS27033/IMG_20220727_115633.jpg    |   Bin 0 -> 2545 bytes
+ stud-pics/2022/UBS27034/IMG_20220727_115618.jpg    |   Bin 0 -> 2592 bytes
+ stud-pics/2022/UBS27035/IMG_20220727_115448.jpg    |   Bin 0 -> 2658 bytes
+ stud-pics/2022/UBS27036/IMG_20220727_114840.jpg    |   Bin 0 -> 2719 bytes
+ stud-pics/2022/UBS27037/IMG_20220727_115055.jpg    |   Bin 0 -> 2416 bytes
+ stud-pics/2022/UBS27038/IMG_20220727_114736.jpg    |   Bin 0 -> 2321 bytes
+ stud-pics/2022/UBS27039/IMG_20220727_115035.jpg    |   Bin 0 -> 2314 bytes
+ stud-pics/2022/UBS27040/IMG_20220727_115328.jpg    |   Bin 0 -> 2448 bytes
+ stud-pics/2022/UBS27041/IMG_20220727_114616.jpg    |   Bin 0 -> 2685 bytes
+ stud-pics/2022/UBS27042/IMG_20220727_115506.jpg    |   Bin 0 -> 2657 bytes
+ stud-pics/2022/UBS27043/IMG_20220727_114750.jpg    |   Bin 0 -> 2634 bytes
+ stud-pics/2022/UBS27044/IMG_20220727_115713.jpg    |   Bin 0 -> 2624 bytes
+ stud-pics/2022/UBS27045/IMG_20220727_114830.jpg    |   Bin 0 -> 2552 bytes
+ stud-pics/2022/UBS27046/IMG_20220727_114814.jpg    |   Bin 0 -> 2891 bytes
+ stud-pics/2022/UBS27048/IMG_20220727_115638.jpg    |   Bin 0 -> 2432 bytes
+ stud-pics/2022/UBS27049/IMG_20220727_115440.jpg    |   Bin 0 -> 2825 bytes
+ stud-pics/2022/UBS27050/IMG_20220727_115601.jpg    |   Bin 0 -> 3059 bytes
+ stud-pics/2022/UBS27051/IMG_20220727_115307.jpg    |   Bin 0 -> 2286 bytes
+ stud-pics/2022/UBS27052/IMG_20220727_115237.jpg    |   Bin 0 -> 3037 bytes
+ stud-pics/2022/UBS27053/IMG_20220727_115353.jpg    |   Bin 0 -> 2642 bytes
+ stud-pics/2022/UBS27054/IMG_20220727_115332.jpg    |   Bin 0 -> 2772 bytes
+ stud-pics/2022/UBS27055/IMG_20220727_114849.jpg    |   Bin 0 -> 2417 bytes
+ stud-pics/2022/UBS270552/IMG_20220727_114938.jpg   |   Bin 0 -> 2856 bytes
+ stud-pics/2022/UBS27056/IMG_20220727_115520.jpg    |   Bin 0 -> 2144 bytes
+ stud-pics/2022/UBS27057/IMG_20220802_092313[1].jpg |   Bin 0 -> 3057 bytes
+ stud-pics/2022/UBS27058/IMG_20220727_115417.jpg    |   Bin 0 -> 2486 bytes
+ stud-pics/2022/UBS27059/IMG_20220727_114703.jpg    |   Bin 0 -> 2435 bytes
+ stud-pics/2022/UBS27060/IMG_20220727_114855.jpg    |   Bin 0 -> 2704 bytes
+ stud-pics/2022/UBS27061/IMG_20220727_114955.jpg    |   Bin 0 -> 2695 bytes
+ stud-pics/2022/UBS27062/IMG_20220727_115545.jpg    |   Bin 0 -> 2660 bytes
+ stud-pics/2022/UBS27063/IMG_20220727_114652.jpg    |   Bin 0 -> 2543 bytes
+ stud-pics/2022/UBS27089/IMG_20220727_115257.jpg    |   Bin 0 -> 3130 bytes
+ stud-pics/2022/UBS27092/IMG_20220727_115556.jpg    |   Bin 0 -> 2573 bytes
+ stud-pics/2022/UBS28001/IMG_20220727_122733.jpg    |   Bin 0 -> 2877 bytes
+ stud-pics/2022/UBS28002/IMG_20220727_123128.jpg    |   Bin 0 -> 2537 bytes
+ stud-pics/2022/UBS28003/IMG_20220727_123719.jpg    |   Bin 0 -> 3062 bytes
+ stud-pics/2022/UBS28004/IMG_20220727_123259.jpg    |   Bin 0 -> 3077 bytes
+ stud-pics/2022/UBS28005/IMG_20220727_124238.jpg    |   Bin 0 -> 3157 bytes
+ stud-pics/2022/UBS28006/IMG_20220727_124433.jpg    |   Bin 0 -> 2840 bytes
+ stud-pics/2022/UBS28007/IMG_20220727_124558.jpg    |   Bin 0 -> 3616 bytes
+ stud-pics/2022/UBS28008/IMG_20220727_124823.jpg    |   Bin 0 -> 3493 bytes
+ stud-pics/2022/UBS28009/IMG_20220727_124643.jpg    |   Bin 0 -> 2844 bytes
+ stud-pics/2022/UBS28010/IMG_20220727_123639.jpg    |   Bin 0 -> 3049 bytes
+ stud-pics/2022/UBS28011/IMG_20220727_124223.jpg    |   Bin 0 -> 3190 bytes
+ stud-pics/2022/UBS28012/IMG_20220727_123311.jpg    |   Bin 0 -> 2836 bytes
+ stud-pics/2022/UBS28013/IMG_20220727_124412.jpg    |   Bin 0 -> 2617 bytes
+ stud-pics/2022/UBS28014/IMG_20220727_124303.jpg    |   Bin 0 -> 3391 bytes
+ stud-pics/2022/UBS28015/IMG_20220727_123019.jpg    |   Bin 0 -> 2440 bytes
+ stud-pics/2022/UBS28015/IMG_20220727_124500.jpg    |   Bin 0 -> 2775 bytes
+ stud-pics/2022/UBS28016/IMG_20220727_123701.jpg    |   Bin 0 -> 3106 bytes
+ stud-pics/2022/UBS28018/IMG_20220727_124523.jpg    |   Bin 0 -> 2537 bytes
+ stud-pics/2022/UBS28019/IMG_20220727_124635.jpg    |   Bin 0 -> 2841 bytes
+ stud-pics/2022/UBS28020/IMG_20220727_122907.jpg    |   Bin 0 -> 2596 bytes
+ stud-pics/2022/UBS28021/Michelle.jpg               |   Bin 0 -> 2717 bytes
+ stud-pics/2022/UBS28022/DIVINA.jpg                 |   Bin 0 -> 2561 bytes
+ stud-pics/2022/UBS28023/IMG_20220727_124830.jpg    |   Bin 0 -> 3013 bytes
+ stud-pics/2022/UBS28024/Lisa.jpg                   |   Bin 0 -> 2632 bytes
+ stud-pics/2022/UBS28025/DRISLA.jpg                 |   Bin 0 -> 2708 bytes
+ stud-pics/2022/UBS28026/IMG_20220727_123246.jpg    |   Bin 0 -> 2952 bytes
+ stud-pics/2022/UBS28027/IMG_20220727_123602.jpg    |   Bin 0 -> 2600 bytes
+ stud-pics/2022/UBS28028/IMG_20220727_124708.jpg    |   Bin 0 -> 3089 bytes
+ stud-pics/2022/UBS28029/GENRALD.jpg                |   Bin 0 -> 2869 bytes
+ stud-pics/2022/UBS28030/IMG_20220727_122810.jpg    |   Bin 0 -> 3327 bytes
+ stud-pics/2022/UBS28031/IMG_20220727_123030.jpg    |   Bin 0 -> 2873 bytes
+ stud-pics/2022/UBS28032/HENYO.jpg                  |   Bin 0 -> 3159 bytes
+ stud-pics/2022/UBS28034/IMG_20220727_124955.jpg    |   Bin 0 -> 3031 bytes
+ stud-pics/2022/UBS28035/Nkunim.jpg                 |   Bin 0 -> 2521 bytes
+ stud-pics/2022/UBS28036/gaius.jpg                  |   Bin 0 -> 2795 bytes
+ stud-pics/2022/UBS28037/IMG_20220727_122722.jpg    |   Bin 0 -> 3277 bytes
+ stud-pics/2022/UBS28038/IMG_20220727_123411.jpg    |   Bin 0 -> 3123 bytes
+ stud-pics/2022/UBS28039/IMG_20220727_123209.jpg    |   Bin 0 -> 2346 bytes
+ stud-pics/2022/UBS28040/IMG_20220727_122954.jpg    |   Bin 0 -> 2993 bytes
+ stud-pics/2022/UBS28041/IMG_20220727_123459.jpg    |   Bin 0 -> 3338 bytes
+ stud-pics/2022/UBS28042/IMG_20220727_123222.jpg    |   Bin 0 -> 2483 bytes
+ stud-pics/2022/UBS28043/IMG_20220727_123622.jpg    |   Bin 0 -> 2711 bytes
+ stud-pics/2022/UBS28045/IMG_20220727_123756.jpg    |   Bin 0 -> 3005 bytes
+ stud-pics/2022/UBS28046/IMG_20220727_123003.jpg    |   Bin 0 -> 2781 bytes
+ stud-pics/2022/UBS28048/DAISY.jpg                  |   Bin 0 -> 2431 bytes
+ stud-pics/2022/UBS28049/Naa.jpg                    |   Bin 0 -> 2478 bytes
+ stud-pics/2022/UBS28051/Rosemond.jpg               |   Bin 0 -> 2496 bytes
+ stud-pics/2022/UBS28052/IMG_20220727_122757.jpg    |   Bin 0 -> 2707 bytes
+ stud-pics/2022/UBS28053/IMG_20220727_123335.jpg    |   Bin 0 -> 2617 bytes
+ stud-pics/2022/UBS28054/IMG_20220727_122939.jpg    |   Bin 0 -> 2589 bytes
+ stud-pics/2022/UBS28055/Jokybed.jpg                |   Bin 0 -> 2658 bytes
+ stud-pics/2022/UBS28056/IMG_20220727_124926.jpg    |   Bin 0 -> 2550 bytes
+ stud-pics/2022/UBS28057/IMG_20220727_122702.jpg    |   Bin 0 -> 2688 bytes
+ stud-pics/2022/UBS28058/MAXWELL.jpg                |   Bin 0 -> 2392 bytes
+ stud-pics/2022/UBS28059/IMG_20220727_122949.jpg    |   Bin 0 -> 3838 bytes
+ stud-pics/2022/UBS28060/IMG_20220727_123808.jpg    |   Bin 0 -> 3138 bytes
+ stud-pics/2022/UBS28072/Elizabeth.jpg              |   Bin 0 -> 2854 bytes
+ stud-pics/2022/UBS28075/IMG_20220727_125007.jpg    |   Bin 0 -> 3479 bytes
+ stud-pics/2022/UBS29001/IMG_20220727_125642.jpg    |   Bin 0 -> 2838 bytes
+ stud-pics/2022/UBS29002/Ernest.jpg                 |   Bin 0 -> 3305 bytes
+ stud-pics/2022/UBS29003/IMG_20220727_130321.jpg    |   Bin 0 -> 2816 bytes
+ stud-pics/2022/UBS29004/Janet.jpg                  |   Bin 0 -> 3427 bytes
+ stud-pics/2022/UBS29005/GERRITA ADJAPO.jpg         |   Bin 0 -> 3097 bytes
+ stud-pics/2022/UBS29005/Tracy.jpg                  |   Bin 0 -> 3718 bytes
+ stud-pics/2022/UBS29006/Tracy.jpg                  |   Bin 0 -> 3518 bytes
+ stud-pics/2022/UBS29007/Precious Adu.jpg           |   Bin 0 -> 2724 bytes
+ stud-pics/2022/UBS29008/IMG_20220728_103917.jpg    |   Bin 0 -> 2857 bytes
+ stud-pics/2022/UBS29008/jj.jpg                     |   Bin 0 -> 2857 bytes
+ stud-pics/2022/UBS29009/Nyamedor.jpg               |   Bin 0 -> 3117 bytes
+ stud-pics/2022/UBS29010/EINSTIEN.jpg               |   Bin 0 -> 3517 bytes
+ stud-pics/2022/UBS29011/IMG_20220727_125511.jpg    |   Bin 0 -> 2896 bytes
+ stud-pics/2022/UBS29012/IMG_20220727_125436.jpg    |   Bin 0 -> 2776 bytes
+ stud-pics/2022/UBS29013/IMG_20220727_125947.jpg    |   Bin 0 -> 2443 bytes
+ stud-pics/2022/UBS29014/IMG_20220727_130422.jpg    |   Bin 0 -> 3047 bytes
+ stud-pics/2022/UBS29015/Kadmeil.jpg                |   Bin 0 -> 3459 bytes
+ stud-pics/2022/UBS29017/Prosafina.jpg              |   Bin 0 -> 2934 bytes
+ stud-pics/2022/UBS29018/IMG_20220727_125454.jpg    |   Bin 0 -> 2549 bytes
+ stud-pics/2022/UBS29020/Obed.jpg                   |   Bin 0 -> 2748 bytes
+ stud-pics/2022/UBS29022/IMG_20220727_125841.jpg    |   Bin 0 -> 2599 bytes
+ stud-pics/2022/UBS29023/EMMANUEL.jpg               |   Bin 0 -> 3617 bytes
+ stud-pics/2022/UBS29024/IMG_20220727_130004.jpg    |   Bin 0 -> 3036 bytes
+ stud-pics/2022/UBS29025/Benaiah.jpg                |   Bin 0 -> 2998 bytes
+ stud-pics/2022/UBS29026/Adom Billah.jpg            |   Bin 0 -> 3075 bytes
+ stud-pics/2022/UBS29027/IMG_20220727_130349.jpg    |   Bin 0 -> 2840 bytes
+ stud-pics/2022/UBS29028/IMG_20220727_130054.jpg    |   Bin 0 -> 2569 bytes
+ stud-pics/2022/UBS29029/MARVIN.jpg                 |   Bin 0 -> 3357 bytes
+ stud-pics/2022/UBS29030/IMG_20220727_125911.jpg    |   Bin 0 -> 2800 bytes
+ stud-pics/2022/UBS29031/IMG_20220727_125829.jpg    |   Bin 0 -> 2765 bytes
+ stud-pics/2022/UBS29034/Precious Ohenewaa.jpg      |   Bin 0 -> 3086 bytes
+ stud-pics/2022/UBS29035/Ethan.jpg                  |   Bin 0 -> 2996 bytes
+ stud-pics/2022/UBS29036/LARENCIA.jpg               |   Bin 0 -> 3571 bytes
+ stud-pics/2022/UBS29037/IMG_20220727_125612.jpg    |   Bin 0 -> 2841 bytes
+ stud-pics/2022/UBS29038/IMG_20220727_125747.jpg    |   Bin 0 -> 2853 bytes
+ stud-pics/2022/UBS29039/IMG_20220727_125705.jpg    |   Bin 0 -> 3028 bytes
+ stud-pics/2022/UBS29040/IMG_20220727_125519.jpg    |   Bin 0 -> 3090 bytes
+ stud-pics/2022/UBS29041/Ella Debrah.jpg            |   Bin 0 -> 3245 bytes
+ stud-pics/2022/UBS29042/Kesewaa.jpg                |   Bin 0 -> 3508 bytes
+ stud-pics/2022/UBS29043/Yaa Tibuah.jpg             |   Bin 0 -> 3026 bytes
+ stud-pics/2022/UBS29044/IMG_20220727_125648.jpg    |   Bin 0 -> 3407 bytes
+ stud-pics/2022/UBS29045/IMG_20220727_125621.jpg    |   Bin 0 -> 3268 bytes
+ stud-pics/2022/UBS29046/Mathea Maxina.jpg          |   Bin 0 -> 2865 bytes
+ stud-pics/2022/UBS29047/IMG_20220727_130030.jpg    |   Bin 0 -> 3264 bytes
+ stud-pics/2022/UBS29048/IMG_20220727_125733.jpg    |   Bin 0 -> 2780 bytes
+ stud-pics/2022/UBS29049/ANNA NKRUMA.jpg            |   Bin 0 -> 3528 bytes
+ stud-pics/2022/UBS29050/IMG_20220727_125636.jpg    |   Bin 0 -> 3149 bytes
+ stud-pics/2022/UBS29053/BETTY.jpg                  |   Bin 0 -> 3491 bytes
+ stud-pics/2022/UBS29054/Kwasi Asare.jpg            |   Bin 0 -> 3309 bytes
+ stud-pics/2022/UBS29055/STEPHANIE.jpg              |   Bin 0 -> 3128 bytes
+ stud-pics/2022/UBS29056/ANABEL.jpg                 |   Bin 0 -> 3444 bytes
+ stud-pics/2022/UBS29057/Audrey.jpg                 |   Bin 0 -> 3299 bytes
+ stud-pics/2022/UBS29058/IMG_20220727_125712.jpg    |   Bin 0 -> 3295 bytes
+ stud-pics/2022/UBS29059/IMG_20220727_125357.jpg    |   Bin 0 -> 2836 bytes
+ stud-pics/2022/UBS29060/IMG_20220727_130022.jpg    |   Bin 0 -> 2997 bytes
+ stud-pics/2022/UBS29061/FRIMPOMAA.jpg              |   Bin 0 -> 3677 bytes
+ stud-pics/2022/UBS29062/IMG_20220727_125854.jpg    |   Bin 0 -> 2779 bytes
+ stud-pics/2022/UBS29063/STREPHANIE OBENG.jpg       |   Bin 0 -> 2916 bytes
+ stud-pics/2022/UBS29064/Prodencia.jpg              |   Bin 0 -> 2778 bytes
+ stud-pics/2022/UBS29065/IMG_20220727_125503.jpg    |   Bin 0 -> 2973 bytes
+ stud-pics/2022/UBS29066/IMG_20220727_125606.jpg    |   Bin 0 -> 3299 bytes
+ stud-pics/2022/UBS29067/Fiifi Otoo.jpg             |   Bin 0 -> 3300 bytes
+ stud-pics/2022/UBS29068/IMG_20220727_130412.jpg    |   Bin 0 -> 2695 bytes
+ stud-pics/2022/UBS29070/IMG_20220727_125630.jpg    |   Bin 0 -> 3144 bytes
+ stud-pics/2022/UBS29071/Gyasewaa Tutu.jpg          |   Bin 0 -> 4050 bytes
+ stud-pics/2022/UBS29072/Godsbrain.jpg              |   Bin 0 -> 2769 bytes
+ stud-pics/2022/UBS29073/IMG_20220727_125446.jpg    |   Bin 0 -> 3051 bytes
+ stud-pics/2022/UBS29074/IMG_20220727_125542.jpg    |   Bin 0 -> 3348 bytes
+ stud-pics/2022/UBS29075/IMG_20220727_125626.jpg    |   Bin 0 -> 3658 bytes
+ stud-pics/2022/UBS29076/IMG_20220727_125904.jpg    |   Bin 0 -> 2852 bytes
+ stud-pics/2022/UBS29079/EMMANUELLA.jpg             |   Bin 0 -> 3239 bytes
+ stud-pics/2022/UBS29080/IMG_20220727_125700.jpg    |   Bin 0 -> 3003 bytes
+ stud-pics/2022/UBS29081/IMG_20220727_125929.jpg    |   Bin 0 -> 3031 bytes
+ stud-pics/2022/UBS30001/IMG_20220728_101145.jpg    |   Bin 0 -> 2775 bytes
+ stud-pics/2022/UBS30002/IMG_20220728_101012.jpg    |   Bin 0 -> 2420 bytes
+ stud-pics/2022/UBS30003/IMG_20220728_095746.jpg    |   Bin 0 -> 3115 bytes
+ stud-pics/2022/UBS30004/IMG_20220728_095446.jpg    |   Bin 0 -> 3839 bytes
+ stud-pics/2022/UBS30005/IMG_20220728_095814.jpg    |   Bin 0 -> 3634 bytes
+ stud-pics/2022/UBS30006/IMG_20220728_095543.jpg    |   Bin 0 -> 3225 bytes
+ stud-pics/2022/UBS30007/IMG_20220728_101033.jpg    |   Bin 0 -> 2913 bytes
+ stud-pics/2022/UBS30008/IMG_20220728_101138.jpg    |   Bin 0 -> 3492 bytes
+ stud-pics/2022/UBS30009/IMG_20220728_095744.jpg    |   Bin 0 -> 3564 bytes
+ stud-pics/2022/UBS30010/IMG_20220728_095442.jpg    |   Bin 0 -> 3067 bytes
+ stud-pics/2022/UBS30010/IMG_20220728_095704.jpg    |   Bin 0 -> 3128 bytes
+ stud-pics/2022/UBS30011/IMG_20220728_101039.jpg    |   Bin 0 -> 3075 bytes
+ stud-pics/2022/UBS30011/IMG_20220728_101505.jpg    |   Bin 0 -> 3029 bytes
+ stud-pics/2022/UBS30012/IMG_20220728_095458.jpg    |   Bin 0 -> 3244 bytes
+ stud-pics/2022/UBS30013/IMG_20220728_101459.jpg    |   Bin 0 -> 3477 bytes
+ stud-pics/2022/UBS30014/IMG_20220728_095552.jpg    |   Bin 0 -> 3515 bytes
+ stud-pics/2022/UBS30015/IMG_20220728_101014.jpg    |   Bin 0 -> 3322 bytes
+ stud-pics/2022/UBS30016/IMG_20220728_095546.jpg    |   Bin 0 -> 3054 bytes
+ stud-pics/2022/UBS30018/IMG_20220728_100931.jpg    |   Bin 0 -> 3109 bytes
+ stud-pics/2022/UBS30019/IMG_20220728_095439.jpg    |   Bin 0 -> 3277 bytes
+ stud-pics/2022/UBS30021/IMG_20220728_095529.jpg    |   Bin 0 -> 3517 bytes
+ stud-pics/2022/UBS30022/IMG_20220728_095704.jpg    |   Bin 0 -> 3128 bytes
+ stud-pics/2022/UBS30023/IMG_20220728_100925.jpg    |   Bin 0 -> 3679 bytes
+ stud-pics/2022/UBS30024/IMG_20220728_095554.jpg    |   Bin 0 -> 2548 bytes
+ stud-pics/2022/UBS30025/IMG_20220728_095537.jpg    |   Bin 0 -> 3365 bytes
+ stud-pics/2022/UBS30026/IMG_20220728_101320.jpg    |   Bin 0 -> 3038 bytes
+ stud-pics/2022/UBS30027/IMG_20220728_101441.jpg    |   Bin 0 -> 3018 bytes
+ stud-pics/2022/UBS30028/IMG_20220728_101332.jpg    |   Bin 0 -> 2917 bytes
+ stud-pics/2022/UBS30029/IMG_20220728_101036.jpg    |   Bin 0 -> 2747 bytes
+ stud-pics/2022/UBS30030/IMG_20220728_101048.jpg    |   Bin 0 -> 2882 bytes
+ stud-pics/2022/UBS30031/IMG_20220728_101351.jpg    |   Bin 0 -> 3302 bytes
+ stud-pics/2022/UBS30032/IMG_20220728_095820.jpg    |   Bin 0 -> 3559 bytes
+ stud-pics/2022/UBS30034/IMG_20220728_095600.jpg    |   Bin 0 -> 2803 bytes
+ stud-pics/2022/UBS30035/IMG_20220728_101322.jpg    |   Bin 0 -> 2801 bytes
+ stud-pics/2022/UBS30036/IMG_20220728_101131.jpg    |   Bin 0 -> 3334 bytes
+ stud-pics/2022/UBS30037/IMG_20220728_101150.jpg    |   Bin 0 -> 2591 bytes
+ stud-pics/2022/UBS30038/IMG_20220728_095822.jpg    |   Bin 0 -> 3499 bytes
+ stud-pics/2022/UBS30039/IMG_20220728_101444.jpg    |   Bin 0 -> 3180 bytes
+ stud-pics/2022/UBS30040/IMG_20220728_095649.jpg    |   Bin 0 -> 3289 bytes
+ stud-pics/2022/UBS30041/IMG_20220728_095738.jpg    |   Bin 0 -> 3408 bytes
+ stud-pics/2022/UBS30042/IMG_20220728_101128.jpg    |   Bin 0 -> 2900 bytes
+ stud-pics/2022/UBS30043/IMG_20220728_101059.jpg    |   Bin 0 -> 2920 bytes
+ stud-pics/2022/UBS30044/IMG_20220728_101241.jpg    |   Bin 0 -> 3275 bytes
+ stud-pics/2022/UBS30045/IMG_20220728_101027.jpg    |   Bin 0 -> 3129 bytes
+ stud-pics/2022/UBS30046/IMG_20220728_100912.jpg    |   Bin 0 -> 3518 bytes
+ stud-pics/2022/UBS30047/IMG_20220728_100934.jpg    |   Bin 0 -> 3486 bytes
+ stud-pics/2022/UBS30048/IMG_20220728_101135.jpg    |   Bin 0 -> 2518 bytes
+ stud-pics/2022/UBS30050/IMG_20220728_095344.jpg    |   Bin 0 -> 3055 bytes
+ stud-pics/2022/UBS30051/IMG_20220728_095449.jpg    |   Bin 0 -> 3478 bytes
+ stud-pics/2022/UBS30052/IMG_20220728_095557.jpg    |   Bin 0 -> 2715 bytes
+ stud-pics/2022/UBS30053/IMG_20220808_104723.jpg    |   Bin 0 -> 2831 bytes
+ stud-pics/2022/UBS30054/IMG_20220728_095714.jpg    |   Bin 0 -> 3455 bytes
+ stud-pics/2022/UBS30055/IMG_20220728_095741.jpg    |   Bin 0 -> 3567 bytes
+ stud-pics/2022/UBS30056/IMG_20220728_095540.jpg    |   Bin 0 -> 3567 bytes
+ stud-pics/2022/UBS30057/IMG_20220728_095723.jpg    |   Bin 0 -> 3783 bytes
+ stud-pics/2022/UBS30058/IMG_20220728_101147.jpg    |   Bin 0 -> 2987 bytes
+ stud-pics/2022/UBS30059/IMG_20220728_101325.jpg    |   Bin 0 -> 2466 bytes
+ stud-pics/2022/UBS30060/IMG_20220728_101317.jpg    |   Bin 0 -> 2878 bytes
+ stud-pics/2022/UBS30061/IMG_20220728_101314.jpg    |   Bin 0 -> 2979 bytes
+ stud-pics/2022/UBS30062/IMG_20220728_101436.jpg    |   Bin 0 -> 3459 bytes
+ stud-pics/2022/UBS30063/IMG_20220728_100909.jpg    |   Bin 0 -> 3308 bytes
+ stud-pics/2022/UBS30064/IMG_20220728_095829.jpg    |   Bin 0 -> 3188 bytes
+ stud-pics/2022/UBS30065/IMG_20220728_101043.jpg    |   Bin 0 -> 3160 bytes
+ stud-pics/2022/UBS30066/IMG_20220728_095435.jpg    |   Bin 0 -> 3582 bytes
+ stud-pics/2022/UBS30068/IMG_20220728_095452.jpg    |   Bin 0 -> 2769 bytes
+ stud-pics/2022/UBS30069/IMG_20220728_100916.jpg    |   Bin 0 -> 3366 bytes
+ stud-pics/2022/UBS30070/IMG_20220728_100928.jpg    |   Bin 0 -> 3118 bytes
+ stud-pics/2022/UBS30071/IMG_20220728_095735.jpg    |   Bin 0 -> 3625 bytes
+ stud-pics/2022/UBS30072/IMG_20220728_101141.jpg    |   Bin 0 -> 3231 bytes
+ stud-pics/2022/UBS30073/IMG_20220808_110445.jpg    |   Bin 0 -> 2657 bytes
+ stud-pics/2022/UBS30074/IMG_20220728_095549.jpg    |   Bin 0 -> 3647 bytes
+ stud-pics/2022/UBS30075/IMG_20220728_095532.jpg    |   Bin 0 -> 3294 bytes
+ stud-pics/2022/UBS30077/IMG_20220728_095653.jpg    |   Bin 0 -> 3276 bytes
+ stud-pics/2022/UBS30078/IMG_20220728_095717.jpg    |   Bin 0 -> 2784 bytes
+ stud-pics/2022/UBS30079/IMG_20220728_101509.jpg    |   Bin 0 -> 2982 bytes
+ stud-pics/2022/UBS30080/IMG_20220728_095455.jpg    |   Bin 0 -> 2815 bytes
+ stud-pics/2022/UBS30081/IMG_20220728_095709.jpg    |   Bin 0 -> 3229 bytes
+ stud-pics/2022/UBS30082/IMG_20220728_095712.jpg    |   Bin 0 -> 3416 bytes
+ stud-pics/2022/UBS30083/IMG_20220728_095726.jpg    |   Bin 0 -> 3938 bytes
+ stud-pics/2022/UBS30084/IMG_20220728_095826.jpg    |   Bin 0 -> 3356 bytes
+ stud-pics/2022/UBS30085/IMG_20220728_095707.jpg    |   Bin 0 -> 3545 bytes
+ stud-pics/2022/UBS30088/IMG_20220728_100905.jpg    |   Bin 0 -> 3461 bytes
+ stud-pics/2022/UBS301915/IMG_20220728_101246.jpg   |   Bin 0 -> 2473 bytes
+ stud-pics/2022/UBS301917/IMG_20220728_101045.jpg   |   Bin 0 -> 2976 bytes
+ stud-pics/2022/UBS301920/IMG_20220728_100937.jpg   |   Bin 0 -> 3262 bytes
+ stud-pics/2022/UBS301921/IMG_20220728_101154.jpg   |   Bin 0 -> 3089 bytes
+ stud-pics/2022/UBS301937/IMG_20220728_101337.jpg   |   Bin 0 -> 2974 bytes
+ stud-pics/2022/UBS30199/IMG_20220728_101343.jpg    |   Bin 0 -> 2518 bytes
+ stud-pics/2023/1234/IMG_20230208_202602.jpg        |   Bin 0 -> 3976 bytes
+ stud-pics/2023/1234/analysis.PNG                   |   Bin 0 -> 3085 bytes
+ stud-pics/2023/12345/IMG_20220728_095442.jpg       |   Bin 0 -> 3508 bytes
+ stud-pics/2023/12345/IMG_20220728_095552.jpg       |   Bin 0 -> 3515 bytes
+ stud-pics/2023/123456789/student.PNG               |   Bin 0 -> 27149 bytes
+ .../2023/1235/800px-Grevy_s_Zebra_Stallion.jpg     |   Bin 0 -> 5271 bytes
+ ...544_10159366192068689_3487186613359979278_n.jpg |   Bin 0 -> 3333 bytes
+ stud-pics/2023/1238/800px-Grevy_s_zebra_group.jpg  |   Bin 0 -> 5411 bytes
+ stud-pics/2023/4567/IMG_20220728_095826.jpg        |   Bin 0 -> 3356 bytes
+ stud-pics/2023/DUN20231/IMG_20230208_184532.jpg    |   Bin 0 -> 2274 bytes
+ stud-pics/2023/DUN20231102/image.jpg               |   Bin 0 -> 12732 bytes
+ stud-pics/2023/DUN20231103/image.jpg               |   Bin 0 -> 16086 bytes
+ stud-pics/2023/DUN20231104/image.jpg               |   Bin 0 -> 14427 bytes
+ stud-pics/2023/DUN20231105/image.jpg               |   Bin 0 -> 15173 bytes
+ stud-pics/2023/DUN20231106/image.jpg               |   Bin 0 -> 12974 bytes
+ stud-pics/2023/DUN20231107/image.jpg               |   Bin 0 -> 13149 bytes
+ stud-pics/2023/DUN20231108/image.jpg               |   Bin 0 -> 13920 bytes
+ stud-pics/2023/DUN20231110/image.jpg               |   Bin 0 -> 14173 bytes
+ stud-pics/2023/DUN20231111/image.jpg               |   Bin 0 -> 20061 bytes
+ stud-pics/2023/DUN20231112/image.jpg               |   Bin 0 -> 12876 bytes
+ stud-pics/2023/DUN20231113/image.jpg               |   Bin 0 -> 12983 bytes
+ stud-pics/2023/DUN20231114/image.jpg               |   Bin 0 -> 14508 bytes
+ stud-pics/2023/DUN20231116/image.jpg               |   Bin 0 -> 13831 bytes
+ stud-pics/2023/DUN20231117/image.jpg               |   Bin 0 -> 13295 bytes
+ stud-pics/2023/DUN20231118/image.jpg               |   Bin 0 -> 13729 bytes
+ stud-pics/2023/DUN20231119/image.jpg               |   Bin 0 -> 13289 bytes
+ stud-pics/2023/DUN20231120/image.jpg               |   Bin 0 -> 14924 bytes
+ stud-pics/2023/DUN20231121/image.jpg               |   Bin 0 -> 13346 bytes
+ stud-pics/2023/DUN20231122/image.jpg               |   Bin 0 -> 13870 bytes
+ stud-pics/2023/DUN20231123/image.jpg               |   Bin 0 -> 18686 bytes
+ stud-pics/2023/DUN20231124/image.jpg               |   Bin 0 -> 13159 bytes
+ stud-pics/2023/DUN20231125/image.jpg               |   Bin 0 -> 13575 bytes
+ stud-pics/2023/DUN20231126/image.jpg               |   Bin 0 -> 14200 bytes
+ stud-pics/2023/DUN20231128/image.jpg               |   Bin 0 -> 13969 bytes
+ stud-pics/2023/DUN20231129/image.jpg               |   Bin 0 -> 19769 bytes
+ stud-pics/2023/DUN20231130/image.jpg               |   Bin 0 -> 12971 bytes
+ stud-pics/2023/DUN20231131/image.jpg               |   Bin 0 -> 12572 bytes
+ stud-pics/2023/DUN20231132/image.jpg               |   Bin 0 -> 12479 bytes
+ stud-pics/2023/DUN20231134/image.jpg               |   Bin 0 -> 12818 bytes
+ stud-pics/2023/DUN20231135/image.jpg               |   Bin 0 -> 13532 bytes
+ stud-pics/2023/DUN20231139/IMG_20230329_144051.jpg |   Bin 0 -> 17353 bytes
+ stud-pics/2023/DUN20231140/IMG_20230329_145305.jpg |   Bin 0 -> 12255 bytes
+ stud-pics/2023/DUN20231141/IMG_20220727_123259.jpg |   Bin 0 -> 15907 bytes
+ stud-pics/2023/DUN20231142/IMG_20230329_143017.jpg |   Bin 0 -> 16741 bytes
+ stud-pics/2023/DUN20231143/IMG_20230329_141816.jpg |   Bin 0 -> 11448 bytes
+ stud-pics/2023/DUN20231144/IMG_20230329_151134.jpg |   Bin 0 -> 12677 bytes
+ stud-pics/2023/DUN20231146/IMG_20230329_145225.jpg |   Bin 0 -> 10740 bytes
+ stud-pics/2023/DUN20231146/IMG_20230329_151353.jpg |   Bin 0 -> 10064 bytes
+ stud-pics/2023/DUN20231147/IMG_20230329_151510.jpg |   Bin 0 -> 13013 bytes
+ stud-pics/2023/DUN20231148/IMG_20230329_142617.jpg |   Bin 0 -> 12802 bytes
+ stud-pics/2023/DUN20231149/IMG_20220727_123602.jpg |   Bin 0 -> 12047 bytes
+ stud-pics/2023/DUN20231156/IMG_20230329_143335.jpg |   Bin 0 -> 14333 bytes
+ stud-pics/2023/DUN20231157/IMG_20230329_142532.jpg |   Bin 0 -> 9057 bytes
+ stud-pics/2023/DUN20231158/IMG_20230329_143215.jpg |   Bin 0 -> 12860 bytes
+ stud-pics/2023/DUN20231160/IMG_20230329_141900.jpg |   Bin 0 -> 12984 bytes
+ stud-pics/2023/DUN20231161/IMG_20230329_142158.jpg |   Bin 0 -> 11943 bytes
+ stud-pics/2023/DUN20231162/IMG_20230329_141636.jpg |   Bin 0 -> 10762 bytes
+ stud-pics/2023/DUN20231163/IMG_20230329_141501.jpg |   Bin 0 -> 12095 bytes
+ stud-pics/2023/DUN20231165/IMG_20230329_142305.jpg |   Bin 0 -> 11348 bytes
+ stud-pics/2023/DUN20231166/IMG_20230329_142219.jpg |   Bin 0 -> 9310 bytes
+ stud-pics/2023/DUN20231167/IMG_20230329_141228.jpg |   Bin 0 -> 12777 bytes
+ stud-pics/2023/DUN20231170/IMG_20230329_141045.jpg |   Bin 0 -> 5710 bytes
+ stud-pics/2023/DUN20231173/IMG_20230329_140245.jpg |   Bin 0 -> 7410 bytes
+ stud-pics/2023/DUN20231174/IMG_20230329_143909.jpg |   Bin 0 -> 9858 bytes
+ stud-pics/2023/DUN20231175/IMG_20230329_140207.jpg |   Bin 0 -> 11553 bytes
+ stud-pics/2023/DUN20231177/ramadan.jpg             |   Bin 0 -> 13386 bytes
+ stud-pics/2023/DUN20231178/blessing.jpg            |   Bin 0 -> 22198 bytes
+ stud-pics/2023/DUN20231179/prosper.jpg             |   Bin 0 -> 15597 bytes
+ stud-pics/2023/DUN20231180/tutu.jpg                |   Bin 0 -> 19069 bytes
+ stud-pics/2023/DUN20231181/ivana.jpg               |   Bin 0 -> 18218 bytes
+ stud-pics/2023/DUN20231182/akira.jpg               |   Bin 0 -> 12371 bytes
+ stud-pics/2023/DUN20231183/freda.jpg               |   Bin 0 -> 12018 bytes
+ stud-pics/2023/DUN20231184/perry.jpg               |   Bin 0 -> 12024 bytes
+ stud-pics/2023/DUN20231185/remi.jpg                |   Bin 0 -> 15139 bytes
+ stud-pics/2023/DUN20231186/almaay.jpg              |   Bin 0 -> 16274 bytes
+ stud-pics/2023/DUN20231187/shan.jpg                |   Bin 0 -> 18914 bytes
+ stud-pics/2023/DUN20231188/arnold.jpg              |   Bin 0 -> 14740 bytes
+ stud-pics/2023/DUN20231189/kankam.jpg              |   Bin 0 -> 19152 bytes
+ stud-pics/2023/DUN20231190/esther.jpg              |   Bin 0 -> 10467 bytes
+ stud-pics/2023/DUN20231191/Pearl.jpg               |   Bin 0 -> 15067 bytes
+ stud-pics/2023/DUN20231192/JEFFERY.jpg             |   Bin 0 -> 17010 bytes
+ stud-pics/2023/DUN20231193/JUDE.jpg                |   Bin 0 -> 14238 bytes
+ stud-pics/2023/DUN20231194/JAIDEN.jpg              |   Bin 0 -> 23547 bytes
+ stud-pics/2023/DUN20231195/OKODIE.jpg              |   Bin 0 -> 20178 bytes
+ stud-pics/2023/DUN20231196/SAMUELLA.jpg            |   Bin 0 -> 14039 bytes
+ stud-pics/2023/DUN20231197/JESSI.jpg               |   Bin 0 -> 12137 bytes
+ stud-pics/2023/DUN20231201/trinity.jpg             |   Bin 0 -> 23124 bytes
+ stud-pics/2023/DUN20231202/natasha.jpg             |   Bin 0 -> 15601 bytes
+ stud-pics/2023/DUN20231203/IMG_20220727_115120.jpg |   Bin 0 -> 11252 bytes
+ stud-pics/2023/DUN20231209/marylyn.jpg             |   Bin 0 -> 19673 bytes
+ stud-pics/2023/DUN20231210/hayford.jpg             |   Bin 0 -> 20236 bytes
+ stud-pics/2023/DUN20231246/image.jpg               |   Bin 0 -> 15788 bytes
+ stud-pics/2023/DUN20231247/image.jpg               |   Bin 0 -> 15693 bytes
+ stud-pics/2023/DUN20231248/image.jpg               |   Bin 0 -> 15451 bytes
+ stud-pics/2023/DUN20231249/image.jpg               |   Bin 0 -> 16501 bytes
+ stud-pics/2023/DUN20231250/image.jpg               |   Bin 0 -> 14802 bytes
+ stud-pics/2023/DUN20231251/image.jpg               |   Bin 0 -> 16551 bytes
+ stud-pics/2023/DUN20231253/image.jpg               |   Bin 0 -> 18009 bytes
+ stud-pics/2023/DUN20231255/image.jpg               |   Bin 0 -> 16796 bytes
+ stud-pics/2023/DUN20231257/image.jpg               |   Bin 0 -> 17184 bytes
+ stud-pics/2023/DUN20231258/image.jpg               |   Bin 0 -> 15906 bytes
+ stud-pics/2023/DUN20231260/image.jpg               |   Bin 0 -> 16617 bytes
+ stud-pics/2023/DUN20231261/image.jpg               |   Bin 0 -> 15724 bytes
+ stud-pics/2023/DUN20231262/image.jpg               |   Bin 0 -> 15526 bytes
+ stud-pics/2023/DUN20231263/image.jpg               |   Bin 0 -> 18770 bytes
+ stud-pics/2023/DUN20231264/image.jpg               |   Bin 0 -> 15503 bytes
+ stud-pics/2023/DUN20231267/image.jpg               |   Bin 0 -> 16309 bytes
+ stud-pics/2023/DUN20231268/image.jpg               |   Bin 0 -> 16689 bytes
+ stud-pics/2023/DUN20231269/image.jpg               |   Bin 0 -> 15760 bytes
+ stud-pics/2023/DUN20231270/image.jpg               |   Bin 0 -> 17111 bytes
+ stud-pics/2023/DUN20231272/image.jpg               |   Bin 0 -> 18425 bytes
+ stud-pics/2023/DUN20231274/image.jpg               |   Bin 0 -> 16382 bytes
+ stud-pics/2023/DUN20231275/image.jpg               |   Bin 0 -> 17003 bytes
+ stud-pics/2023/DUN20231276/image.jpg               |   Bin 0 -> 17431 bytes
+ stud-pics/2023/DUN20231277/image.jpg               |   Bin 0 -> 18672 bytes
+ stud-pics/2023/DUN20231279/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/DUN20231279/image.jpg               |   Bin 0 -> 14494 bytes
+ stud-pics/2023/DUN20231280/image.jpg               |   Bin 0 -> 13625 bytes
+ stud-pics/2023/DUN20231283/image.jpg               |   Bin 0 -> 14598 bytes
+ stud-pics/2023/DUN20231284/image.jpg               |   Bin 0 -> 13139 bytes
+ stud-pics/2023/DUN20231285/image.jpg               |   Bin 0 -> 13476 bytes
+ stud-pics/2023/DUN20231288/image.jpg               |   Bin 0 -> 12042 bytes
+ stud-pics/2023/DUN20231289/image.jpg               |   Bin 0 -> 13381 bytes
+ stud-pics/2023/DUN20231290/image.jpg               |   Bin 0 -> 14199 bytes
+ stud-pics/2023/DUN20231291/image.jpg               |   Bin 0 -> 12520 bytes
+ stud-pics/2023/DUN20231292/image.jpg               |   Bin 0 -> 13303 bytes
+ stud-pics/2023/DUN20231293/image.jpg               |   Bin 0 -> 14256 bytes
+ stud-pics/2023/DUN20231294/image.jpg               |   Bin 0 -> 13413 bytes
+ stud-pics/2023/DUN20231295/image.jpg               |   Bin 0 -> 12454 bytes
+ stud-pics/2023/DUN20231296/image.jpg               |   Bin 0 -> 14624 bytes
+ stud-pics/2023/DUN20231297/image.jpg               |   Bin 0 -> 12746 bytes
+ stud-pics/2023/DUN20231298/image.jpg               |   Bin 0 -> 14119 bytes
+ stud-pics/2023/DUN20231299/image.jpg               |   Bin 0 -> 13068 bytes
+ stud-pics/2023/DUN20231300/image.jpg               |   Bin 0 -> 11920 bytes
+ stud-pics/2023/DUN20231301/image.jpg               |   Bin 0 -> 13450 bytes
+ stud-pics/2023/DUN20231302/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/DUN20231318/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/DUN20232/IMG_20230208_184532.jpg    |   Bin 0 -> 2274 bytes
+ stud-pics/2023/DUN20233/IMG_20230208_184532.jpg    |   Bin 0 -> 2274 bytes
+ stud-pics/2023/DUN2023508/image.jpg                |   Bin 0 -> 12330 bytes
+ stud-pics/2023/DUN2023509/image.jpg                |   Bin 0 -> 13546 bytes
+ stud-pics/2023/DUN2023510/image.jpg                |   Bin 0 -> 12874 bytes
+ stud-pics/2023/DUN2023511/image.jpg                |   Bin 0 -> 12986 bytes
+ stud-pics/2023/DUN2023513/image.jpg                |   Bin 0 -> 13287 bytes
+ stud-pics/2023/DUN2023514/image.jpg                |   Bin 0 -> 14343 bytes
+ stud-pics/2023/DUN2023515/image.jpg                |   Bin 0 -> 12421 bytes
+ stud-pics/2023/DUN2023516/image.jpg                |   Bin 0 -> 15044 bytes
+ stud-pics/2023/DUN2023518/image.jpg                |   Bin 0 -> 14295 bytes
+ stud-pics/2023/DUN2023520/image.jpg                |   Bin 0 -> 13685 bytes
+ stud-pics/2023/DUN2023521/image.jpg                |   Bin 0 -> 13238 bytes
+ stud-pics/2023/DUN2023522/image.jpg                |   Bin 0 -> 13463 bytes
+ stud-pics/2023/DUN2023523/image.jpg                |   Bin 0 -> 14610 bytes
+ stud-pics/2023/DUN2023524/image.jpg                |   Bin 0 -> 12822 bytes
+ stud-pics/2023/DUN2023525/image.jpg                |   Bin 0 -> 14202 bytes
+ stud-pics/2023/DUN2023526/image.jpg                |   Bin 0 -> 13531 bytes
+ stud-pics/2023/DUN2023527/image.jpg                |   Bin 0 -> 13445 bytes
+ stud-pics/2023/DUN2023528/image.jpg                |   Bin 0 -> 12471 bytes
+ stud-pics/2023/DUN2023529/image.jpg                |   Bin 0 -> 15044 bytes
+ stud-pics/2023/DUN2023675/image.jpg                |   Bin 0 -> 12472 bytes
+ stud-pics/2023/DUN2023676/image.jpg                |   Bin 0 -> 12838 bytes
+ stud-pics/2023/DUN2023677/image.jpg                |   Bin 0 -> 12743 bytes
+ stud-pics/2023/DUN2023678/image.jpg                |   Bin 0 -> 13159 bytes
+ stud-pics/2023/DUN2023679/image.jpg                |   Bin 0 -> 12440 bytes
+ stud-pics/2023/DUN2023680/image.jpg                |   Bin 0 -> 12453 bytes
+ stud-pics/2023/DUN2023681/image.jpg                |   Bin 0 -> 15860 bytes
+ stud-pics/2023/DUN2023682/image.jpg                |   Bin 0 -> 13055 bytes
+ stud-pics/2023/DUN2023684/image.jpg                |   Bin 0 -> 15770 bytes
+ stud-pics/2023/DUN2023685/image.jpg                |   Bin 0 -> 14684 bytes
+ stud-pics/2023/DUN2023686/image.jpg                |   Bin 0 -> 13833 bytes
+ stud-pics/2023/DUN2023687/image.jpg                |   Bin 0 -> 13433 bytes
+ stud-pics/2023/DUN2023688/image.jpg                |   Bin 0 -> 14224 bytes
+ stud-pics/2023/DUN2023689/image.jpg                |   Bin 0 -> 13208 bytes
+ stud-pics/2023/DUN2023690/image.jpg                |   Bin 0 -> 15159 bytes
+ stud-pics/2023/DUN2023691/image.jpg                |   Bin 0 -> 11809 bytes
+ stud-pics/2023/DUN2023692/image.jpg                |   Bin 0 -> 12279 bytes
+ stud-pics/2023/DUN2023693/image.jpg                |   Bin 0 -> 12251 bytes
+ stud-pics/2023/DUN2023694/image.jpg                |   Bin 0 -> 12586 bytes
+ stud-pics/2023/DUN2023695/image.jpg                |   Bin 0 -> 14524 bytes
+ stud-pics/2023/DUN2023696/image.jpg                |   Bin 0 -> 12544 bytes
+ stud-pics/2023/DUN2023698/image.jpg                |   Bin 0 -> 12680 bytes
+ stud-pics/2023/DUN2023699/image.jpg                |   Bin 0 -> 12990 bytes
+ .../2023/DUN2023810/IMG_20230327_103148_458.jpg    |   Bin 0 -> 12635 bytes
+ .../2023/DUN2023811/IMG_20230327_102823_425.jpg    |   Bin 0 -> 12024 bytes
+ .../2023/DUN2023812/IMG_20230327_102843_95.jpg     |   Bin 0 -> 12722 bytes
+ .../2023/DUN2023813/IMG_20230327_102739_46.jpg     |   Bin 0 -> 14349 bytes
+ .../2023/DUN2023814/IMG_20230327_102818_464.jpg    |   Bin 0 -> 11292 bytes
+ stud-pics/2023/DUN2023815/image.jpg                |   Bin 0 -> 14169 bytes
+ stud-pics/2023/DUN2023816/image.jpg                |   Bin 0 -> 13384 bytes
+ stud-pics/2023/DUN2023817/image.jpg                |   Bin 0 -> 13954 bytes
+ stud-pics/2023/DUN2023818/image.jpg                |   Bin 0 -> 13853 bytes
+ stud-pics/2023/DUN2023819/image.jpg                |   Bin 0 -> 11592 bytes
+ stud-pics/2023/DUN2023820/image.jpg                |   Bin 0 -> 13719 bytes
+ stud-pics/2023/DUN2023821/image.jpg                |   Bin 0 -> 15049 bytes
+ stud-pics/2023/DUN2023822/image.jpg                |   Bin 0 -> 14244 bytes
+ stud-pics/2023/DUN2023823/image.jpg                |   Bin 0 -> 14465 bytes
+ stud-pics/2023/DUN2023824/image.jpg                |   Bin 0 -> 13317 bytes
+ .../2023/DUN2023825/IMG_20230327_102626_395.jpg    |   Bin 0 -> 13778 bytes
+ stud-pics/2023/DUN2023826/image.jpg                |   Bin 0 -> 15004 bytes
+ stud-pics/2023/DUN2023827/image.jpg                |   Bin 0 -> 12781 bytes
+ stud-pics/2023/DUN2023828/image.jpg                |   Bin 0 -> 14209 bytes
+ stud-pics/2023/DUN2023829/image.jpg                |   Bin 0 -> 14083 bytes
+ stud-pics/2023/DUN2023830/image.jpg                |   Bin 0 -> 13201 bytes
+ stud-pics/2023/DUN2023831/image.jpg                |   Bin 0 -> 13605 bytes
+ .../IMG_20230327_092232_kindlephoto-74230588.jpg   |   Bin 0 -> 3092 bytes
+ .../IMG_20230327_092217_kindlephoto-74281570.jpg   |   Bin 0 -> 2909 bytes
+ .../IMG_20230327_092205_kindlephoto-74316025.jpg   |   Bin 0 -> 2803 bytes
+ .../IMG_20230327_092205_kindlephoto-74316025.jpg   |   Bin 0 -> 2803 bytes
+ .../IMG_20230327_092150_kindlephoto-74349860.jpg   |   Bin 0 -> 3136 bytes
+ .../IMG_20230327_092135_kindlephoto-74373290.jpg   |   Bin 0 -> 3447 bytes
+ .../IMG_20230327_092115_kindlephoto-74398220.jpg   |   Bin 0 -> 2953 bytes
+ .../IMG_20230327_092101_kindlephoto-74422238.jpg   |   Bin 0 -> 3171 bytes
+ .../IMG_20230327_092044_kindlephoto-74450902.jpg   |   Bin 0 -> 2955 bytes
+ .../IMG_20230327_092033_kindlephoto-74482318.jpg   |   Bin 0 -> 2836 bytes
+ .../IMG_20230327_092016_kindlephoto-74512620.jpg   |   Bin 0 -> 3004 bytes
+ .../IMG_20230327_092006_kindlephoto-74549382.jpg   |   Bin 0 -> 3118 bytes
+ .../IMG_20230327_091949_kindlephoto-74570158.jpg   |   Bin 0 -> 3215 bytes
+ .../IMG_20230327_091925_kindlephoto-74597070.jpg   |   Bin 0 -> 2961 bytes
+ stud-pics/2023/DUN2023872/IMG_20230327_091906.jpg  |   Bin 0 -> 3435 bytes
+ .../IMG_20230327_091838_kindlephoto-74620295.jpg   |   Bin 0 -> 2969 bytes
+ .../IMG_20230327_091827_kindlephoto-74648922.jpg   |   Bin 0 -> 3105 bytes
+ .../2023/DUN2023875/IMG_20230327_103148_458.jpg    |   Bin 0 -> 3244 bytes
+ .../IMG_20230327_091814_kindlephoto-74675381.jpg   |   Bin 0 -> 3084 bytes
+ .../2023/DUN2023877/IMG_20230327_103148_458.jpg    |   Bin 0 -> 3244 bytes
+ .../2023/UBS20231728/PXL_20230821_153237502.jpg    |   Bin 0 -> 16776 bytes
+ stud-pics/2023/UBS20231729/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231730/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231731/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231732/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231734/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231735/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231736/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231737/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231738/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231739/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231740/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231741/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231742/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231743/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231744/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231745/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231746/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231747/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231748/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231749/default (3).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231750/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231751/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231752/default (3).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231753/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231754/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231755/default (3).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231756/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231757/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231758/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231759/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231760/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231761/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231762/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231763/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231764/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231765/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231766/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231767/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231768/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231769/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231770/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231771/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231772/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231773/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231774/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231775/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231776/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231777/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231778/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231779/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231780/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231781/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231782/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231783/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231784/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231785/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231786/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231787/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231788/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231789/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231790/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231791/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231792/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231793/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231794/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231795/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231797/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231798/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231799/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231800/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231801/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231802/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231803/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231804/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231805/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231806/untitled.png            |   Bin 0 -> 8923 bytes
+ stud-pics/2023/UBS20231807/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231808/default (1).jpg         |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231809/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231810/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231811/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231812/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231813/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231814/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231815/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UBS20231816/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231817/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231818/default.jpg             |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UBS20231957/default.jpg             |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UENR20231369/default.jpg            |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UENR20231370/image.jpg              |   Bin 0 -> 14804 bytes
+ stud-pics/2023/UENR20231371/image.jpg              |   Bin 0 -> 15446 bytes
+ stud-pics/2023/UENR20231372/image.jpg              |   Bin 0 -> 14987 bytes
+ stud-pics/2023/UENR20231373/image.jpg              |   Bin 0 -> 13802 bytes
+ stud-pics/2023/UENR20231374/image.jpg              |   Bin 0 -> 14763 bytes
+ stud-pics/2023/UENR20231375/image.jpg              |   Bin 0 -> 15745 bytes
+ stud-pics/2023/UENR20231376/image.jpg              |   Bin 0 -> 14730 bytes
+ stud-pics/2023/UENR20231377/image.jpg              |   Bin 0 -> 15433 bytes
+ .../16800860481256858446794374979882.jpg           |   Bin 0 -> 13109 bytes
+ stud-pics/2023/UENR20231378/default.jpg            |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UENR20231379/UERN.jpg               |   Bin 0 -> 18724 bytes
+ stud-pics/2023/UENR20231380/default.jpg            |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UENR20231381/default.jpg            |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UENR20231382/default.jpg            |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UENR20231383/default.jpg            |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UENR20231384/default.jpg            |   Bin 0 -> 5224 bytes
+ stud-pics/2023/UENR20231385/default.jpg            |   Bin 0 -> 5224 bytes
+ .../2023/UENR20231386/IMG_20230614_131156_283.jpg  |   Bin 0 -> 4551 bytes
+ stud-pics/2023/UENR20231386/default.jpg            |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UENR20231387/default.jpg            |   Bin 0 -> 5637 bytes
+ stud-pics/2023/UENR2023507/default.jpg             |   Bin 0 -> 1798 bytes
+ stud-pics/2023/UENR202353/KGKL.png                 |   Bin 0 -> 552 bytes
+ stud-pics/2023/UENR202354/vote.png                 |   Bin 0 -> 2058 bytes
+ stud-pics/2023/UENR202355/vote.png                 |   Bin 0 -> 2058 bytes
+ stud-pics/2023/UENR202356/vote.png                 |   Bin 0 -> 2058 bytes
+ stud-pics/2023/UENR202357/vote.png                 |   Bin 0 -> 2058 bytes
+ stud-pics/2023/UENR202358/KGKL.png                 |   Bin 0 -> 552 bytes
+ stud-pics/2023/UENR202359/KGKL.png                 |   Bin 0 -> 552 bytes
+ stud-pics/2023/ch/IMG_20220727_113736.jpg          |   Bin 0 -> 2302 bytes
+ .../2023/d1112/800px-Grevy_s_Zebra_Stallion.jpg    |   Bin 0 -> 5271 bytes
+ stud-pics/2023/d1113/analysis.PNG                  |   Bin 0 -> 3085 bytes
+ ...50351_194790512181778_4151315214894792430_o.jpg |   Bin 0 -> 4058 bytes
+ ...544_10159366192068689_3487186613359979278_n.jpg |   Bin 0 -> 3333 bytes
+ stud-pics/2023/jhs2/download.png                   |   Bin 0 -> 2939 bytes
+ stud-pics/2023/uer3/20200426_235129.jpg            |   Bin 0 -> 4183 bytes
+ stud-pics/2024/UBS20242507/15.jpg                  |   Bin 0 -> 16825 bytes
+ stud-pics/2024/UBS20242508/15.jpg                  |   Bin 0 -> 16825 bytes
+ stud-pics/2024/UBS20242509/14.jpg                  |   Bin 0 -> 21300 bytes
+ .../UBS20250/10_0_0_20170110215927291.jpg.chip.jpg |   Bin 0 -> 11864 bytes
+ .../10_0_0_20161220222308131.jpg.chip.jpg          |   Bin 0 -> 9219 bytes
+ .../UBS2026000/CamScanner 2026-4-9 12.29_1.jpg     |   Bin 0 -> 24454 bytes
+ stud-pics/stud-pics/2022/12345/UENR.jpg            |   Bin 0 -> 3956 bytes
+ stud-pics/stud-pics/2022/205/default.jpg           |   Bin 0 -> 1798 bytes
+ stud-pics/stud-pics/2022/206/IMG_1982.jpeg         |   Bin 0 -> 4028 bytes
+ stud-pics/stud-pics/2022/207/IMG_1971.jpeg         |   Bin 0 -> 3744 bytes
+ stud-pics/stud-pics/2022/208/IMG_1984.jpeg         |   Bin 0 -> 3804 bytes
+ stud-pics/stud-pics/2022/211/default.jpg           |   Bin 0 -> 1798 bytes
+ stud-pics/stud-pics/2022/212/IMG_1974.jpeg         |   Bin 0 -> 4011 bytes
+ stud-pics/stud-pics/2022/213/IMG_1964.jpeg         |   Bin 0 -> 3623 bytes
+ stud-pics/stud-pics/2022/214/IMG_1970.jpeg         |   Bin 0 -> 4056 bytes
+ stud-pics/stud-pics/2022/293/IMG_1961.jpeg         |   Bin 0 -> 3604 bytes
+ stud-pics/stud-pics/2022/299/IMG_1972.jpeg         |   Bin 0 -> 3858 bytes
+ stud-pics/stud-pics/2022/430/IMG_1969.jpeg         |   Bin 0 -> 3841 bytes
+ stud-pics/stud-pics/2022/431/IMG_1960.jpeg         |   Bin 0 -> 4316 bytes
+ stud-pics/stud-pics/2022/432/IMG_1981.jpeg         |   Bin 0 -> 3846 bytes
+ stud-pics/stud-pics/2022/434/IMG_1977.jpeg         |   Bin 0 -> 3997 bytes
+ stud-pics/stud-pics/2022/435/IMG_1983.jpeg         |   Bin 0 -> 3880 bytes
+ stud-pics/stud-pics/2022/436/IMG_1985.jpeg         |   Bin 0 -> 4195 bytes
+ stud-pics/stud-pics/2022/479/IMG_1962.jpeg         |   Bin 0 -> 4028 bytes
+ stud-pics/stud-pics/2022/834/default.jpg           |   Bin 0 -> 7512 bytes
+ stud-pics/stud-pics/2022/835/IMG_1973.jpeg         |   Bin 0 -> 3591 bytes
+ stud-pics/stud-pics/2022/836/IMG_1967.jpeg         |   Bin 0 -> 3567 bytes
+ stud-pics/stud-pics/2022/837/IMG_1958.jpeg         |   Bin 0 -> 4152 bytes
+ stud-pics/stud-pics/2022/838/IMG_1958.jpeg         |   Bin 0 -> 4152 bytes
+ stud-pics/stud-pics/2022/839/default.jpg           |   Bin 0 -> 1798 bytes
+ stud-pics/stud-pics/2022/840/default.jpg           |   Bin 0 -> 8267 bytes
+ stud-pics/stud-pics/2022/841/IMG_1968.jpeg         |   Bin 0 -> 3490 bytes
+ stud-pics/stud-pics/2022/842/IMG_1978.jpeg         |   Bin 0 -> 3677 bytes
+ stud-pics/stud-pics/2022/843/IMG_1957.jpeg         |   Bin 0 -> 3675 bytes
+ stud-pics/stud-pics/2022/844/IMG_1966.jpeg         |   Bin 0 -> 3809 bytes
+ stud-pics/stud-pics/2022/845/IMG_1979.jpeg         |   Bin 0 -> 3843 bytes
+ stud-pics/stud-pics/2022/UBS12001231/c1.jpg        |   Bin 0 -> 3015 bytes
+ .../2022/UBS25001/IMG_20220727_113432.jpg          |   Bin 0 -> 2610 bytes
+ .../2022/UBS25002/IMG_20220727_113525.jpg          |   Bin 0 -> 2528 bytes
+ .../2022/UBS25004/IMG_20220727_113104.jpg          |   Bin 0 -> 2557 bytes
+ .../2022/UBS25005/IMG_20220727_113149.jpg          |   Bin 0 -> 2611 bytes
+ .../2022/UBS25006/IMG_20220727_113736.jpg          |   Bin 0 -> 2302 bytes
+ .../2022/UBS25007/IMG_20220727_112815.jpg          |   Bin 0 -> 2437 bytes
+ .../2022/UBS25008/IMG_20220727_113232.jpg          |   Bin 0 -> 2390 bytes
+ .../2022/UBS25009/IMG_20220727_113158.jpg          |   Bin 0 -> 2292 bytes
+ .../2022/UBS25010/IMG_20220727_113826.jpg          |   Bin 0 -> 2438 bytes
+ .../2022/UBS25011/IMG_20220727_113322.jpg          |   Bin 0 -> 2414 bytes
+ .../2022/UBS25012/IMG_20220727_112948.jpg          |   Bin 0 -> 2455 bytes
+ .../2022/UBS25013/IMG_20220727_113012.jpg          |   Bin 0 -> 2562 bytes
+ .../2022/UBS25014/IMG_20220801_155221.jpg          |   Bin 0 -> 3439 bytes
+ .../2022/UBS25016/IMG_20220727_112740.jpg          |   Bin 0 -> 3115 bytes
+ .../2022/UBS25017/IMG_20220727_112955.jpg          |   Bin 0 -> 2737 bytes
+ .../2022/UBS25018/IMG_20220727_112928.jpg          |   Bin 0 -> 2504 bytes
+ .../2022/UBS25019/IMG_20220727_112859.jpg          |   Bin 0 -> 2902 bytes
+ .../2022/UBS25020/IMG_20220727_113554.jpg          |   Bin 0 -> 2425 bytes
+ .../2022/UBS25021/IMG_20220727_113835.jpg          |   Bin 0 -> 2470 bytes
+ .../2022/UBS25022/IMG_20220727_113114.jpg          |   Bin 0 -> 2720 bytes
+ .../2022/UBS25023/IMG_20220727_113716.jpg          |   Bin 0 -> 2429 bytes
+ .../2022/UBS25024/IMG_20220727_113219.jpg          |   Bin 0 -> 2662 bytes
+ .../2022/UBS25025/IMG_20220727_113452.jpg          |   Bin 0 -> 3037 bytes
+ .../2022/UBS25029/IMG_20220727_112707.jpg          |   Bin 0 -> 3173 bytes
+ .../2022/UBS26001/IMG_20220727_120209.jpg          |   Bin 0 -> 2840 bytes
+ .../2022/UBS26002/IMG_20220727_114527.jpg          |   Bin 0 -> 2257 bytes
+ .../2022/UBS26003/IMG_20220727_120026.jpg          |   Bin 0 -> 2548 bytes
+ .../2022/UBS26004/IMG_20220727_120136.jpg          |   Bin 0 -> 2829 bytes
+ .../2022/UBS26005/IMG_20220727_114457.jpg          |   Bin 0 -> 2404 bytes
+ .../2022/UBS26006/IMG_20220727_114503.jpg          |   Bin 0 -> 2415 bytes
+ .../2022/UBS26007/IMG_20220727_120313.jpg          |   Bin 0 -> 2962 bytes
+ .../2022/UBS26008/IMG_20220727_114022.jpg          |   Bin 0 -> 2477 bytes
+ .../2022/UBS26009/IMG_20220727_120155.jpg          |   Bin 0 -> 2563 bytes
+ .../2022/UBS26010/IMG_20220727_120110.jpg          |   Bin 0 -> 2769 bytes
+ .../2022/UBS26011/IMG_20220727_114151.jpg          |   Bin 0 -> 2638 bytes
+ .../2022/UBS26012/IMG_20220727_120037.jpg          |   Bin 0 -> 2818 bytes
+ .../2022/UBS26013/IMG_20220727_120001.jpg          |   Bin 0 -> 2575 bytes
+ .../2022/UBS26014/IMG_20220727_114240.jpg          |   Bin 0 -> 2495 bytes
+ .../2022/UBS26015/IMG_20220727_115629.jpg          |   Bin 0 -> 2629 bytes
+ .../2022/UBS26016/IMG_20220727_120252.jpg          |   Bin 0 -> 2518 bytes
+ .../2022/UBS26017/IMG_20220727_114336.jpg          |   Bin 0 -> 2647 bytes
+ .../2022/UBS26018/IMG_20220727_120220.jpg          |   Bin 0 -> 2989 bytes
+ .../2022/UBS26019/IMG_20220727_114428.jpg          |   Bin 0 -> 2428 bytes
+ .../2022/UBS26020/IMG_20220727_120234.jpg          |   Bin 0 -> 2994 bytes
+ .../2022/UBS26021/IMG_20220727_114449.jpg          |   Bin 0 -> 2555 bytes
+ .../2022/UBS26022/IMG_20220727_120214.jpg          |   Bin 0 -> 2736 bytes
+ .../2022/UBS26023/IMG_20220727_114245.jpg          |   Bin 0 -> 2598 bytes
+ .../2022/UBS26024/IMG_20220727_120327.jpg          |   Bin 0 -> 2280 bytes
+ .../2022/UBS26025/IMG_20220727_114011.jpg          |   Bin 0 -> 2648 bytes
+ .../2022/UBS26026/IMG_20220727_114343.jpg          |   Bin 0 -> 2366 bytes
+ .../2022/UBS26027/IMG_20220727_114045.jpg          |   Bin 0 -> 2365 bytes
+ .../2022/UBS26028/IMG_20220727_120147.jpg          |   Bin 0 -> 3143 bytes
+ .../2022/UBS26029/IMG_20220727_120200.jpg          |   Bin 0 -> 3014 bytes
+ .../2022/UBS26030/IMG_20220727_120100.jpg          |   Bin 0 -> 2963 bytes
+ .../2022/UBS26031/IMG_20220727_114509.jpg          |   Bin 0 -> 2887 bytes
+ .../2022/UBS26032/IMG_20220727_114205.jpg          |   Bin 0 -> 2227 bytes
+ .../2022/UBS26034/IMG_20220727_114218.jpg          |   Bin 0 -> 2704 bytes
+ .../2022/UBS26035/IMG_20220727_114253.jpg          |   Bin 0 -> 2692 bytes
+ .../2022/UBS26036/IMG_20220805_095402.jpg          |   Bin 0 -> 3542 bytes
+ .../2022/UBS26037/IMG_20220727_120105.jpg          |   Bin 0 -> 2808 bytes
+ .../2022/UBS26038/IMG_20220727_114436.jpg          |   Bin 0 -> 2275 bytes
+ .../2022/UBS26039/IMG_20220727_120123.jpg          |   Bin 0 -> 2964 bytes
+ .../2022/UBS26040/IMG_20220727_120131.jpg          |   Bin 0 -> 2686 bytes
+ stud-pics/stud-pics/2022/UBS26041/UENR.jpg         |   Bin 0 -> 3956 bytes
+ .../2022/UBS26042/IMG_20220727_114302.jpg          |   Bin 0 -> 2383 bytes
+ .../2022/UBS26043/IMG_20220727_120318.jpg          |   Bin 0 -> 2675 bytes
+ .../2022/UBS26044/IMG_20220727_120241.jpg          |   Bin 0 -> 3013 bytes
+ .../2022/UBS26045/IMG_20220727_120022.jpg          |   Bin 0 -> 2879 bytes
+ .../2022/UBS26046/IMG_20220727_114227.jpg          |   Bin 0 -> 2596 bytes
+ .../2022/UBS26047/IMG_20220727_113956.jpg          |   Bin 0 -> 2322 bytes
+ .../2022/UBS26048/IMG_20220727_114032.jpg          |   Bin 0 -> 2893 bytes
+ .../2022/UBS26059/IMG_20220727_114358.jpg          |   Bin 0 -> 2497 bytes
+ .../2022/UBS26060/IMG_20220727_114421.jpg          |   Bin 0 -> 3016 bytes
+ .../2022/UBS27001/IMG_20220727_115246.jpg          |   Bin 0 -> 2464 bytes
+ .../2022/UBS27002/IMG_20220727_115049.jpg          |   Bin 0 -> 2456 bytes
+ .../2022/UBS27003/IMG_20220727_115020.jpg          |   Bin 0 -> 2766 bytes
+ .../2022/UBS27004/IMG_20220727_115645.jpg          |   Bin 0 -> 2997 bytes
+ .../2022/UBS27005/IMG_20220727_115129.jpg          |   Bin 0 -> 2287 bytes
+ .../2022/UBS27006/IMG_20220727_114757.jpg          |   Bin 0 -> 2813 bytes
+ .../2022/UBS27007/IMG_20220727_115029.jpg          |   Bin 0 -> 2966 bytes
+ .../2022/UBS27008/IMG_20220727_114928.jpg          |   Bin 0 -> 2444 bytes
+ .../2022/UBS27009/IMG_20220727_114802.jpg          |   Bin 0 -> 2642 bytes
+ .../2022/UBS27010/IMG_20220727_115623.jpg          |   Bin 0 -> 2673 bytes
+ .../2022/UBS27011/IMG_20220727_114913.jpg          |   Bin 0 -> 2374 bytes
+ .../2022/UBS27012/IMG_20220727_115525.jpg          |   Bin 0 -> 2798 bytes
+ .../2022/UBS27013/IMG_20220727_115707.jpg          |   Bin 0 -> 2703 bytes
+ .../2022/UBS27014/IMG_20220727_115013.jpg          |   Bin 0 -> 2543 bytes
+ .../2022/UBS27016/IMG_20220727_115111.jpg          |   Bin 0 -> 2556 bytes
+ .../2022/UBS27017/IMG_20220727_114631.jpg          |   Bin 0 -> 2790 bytes
+ .../2022/UBS27018/IMG_20220727_114901.jpg          |   Bin 0 -> 2382 bytes
+ .../2022/UBS27019/IMG_20220727_114923.jpg          |   Bin 0 -> 2778 bytes
+ .../2022/UBS27020/IMG_20220727_114945.jpg          |   Bin 0 -> 2850 bytes
+ .../2022/UBS27021/IMG_20220727_115607.jpg          |   Bin 0 -> 3080 bytes
+ .../2022/UBS27022/IMG_20220727_114934.jpg          |   Bin 0 -> 2318 bytes
+ .../2022/UBS27023/IMG_20220727_115340.jpg          |   Bin 0 -> 2833 bytes
+ .../2022/UBS27024/IMG_20220727_114822.jpg          |   Bin 0 -> 2605 bytes
+ .../2022/UBS27025/IMG_20220727_115650.jpg          |   Bin 0 -> 2381 bytes
+ .../2022/UBS27026/IMG_20220727_115611.jpg          |   Bin 0 -> 2426 bytes
+ .../2022/UBS27027/IMG_20220727_115534.jpg          |   Bin 0 -> 2504 bytes
+ .../2022/UBS27028/IMG_20220727_115408.jpg          |   Bin 0 -> 2398 bytes
+ .../UBS27029/16597067115964752655646840524227.jpg  |   Bin 0 -> 4768 bytes
+ .../2022/UBS27031/IMG_20220727_115002.jpg          |   Bin 0 -> 2634 bytes
+ .../2022/UBS27032/IMG_20220727_115118.jpg          |   Bin 0 -> 2605 bytes
+ .../2022/UBS27033/IMG_20220727_115633.jpg          |   Bin 0 -> 2545 bytes
+ .../2022/UBS27034/IMG_20220727_115618.jpg          |   Bin 0 -> 2592 bytes
+ .../2022/UBS27035/IMG_20220727_115448.jpg          |   Bin 0 -> 2658 bytes
+ .../2022/UBS27036/IMG_20220727_114840.jpg          |   Bin 0 -> 2719 bytes
+ .../2022/UBS27037/IMG_20220727_115055.jpg          |   Bin 0 -> 2416 bytes
+ .../2022/UBS27038/IMG_20220727_114736.jpg          |   Bin 0 -> 2321 bytes
+ .../2022/UBS27039/IMG_20220727_115035.jpg          |   Bin 0 -> 2314 bytes
+ .../2022/UBS27040/IMG_20220727_115328.jpg          |   Bin 0 -> 2448 bytes
+ .../2022/UBS27041/IMG_20220727_114616.jpg          |   Bin 0 -> 2685 bytes
+ .../2022/UBS27042/IMG_20220727_115506.jpg          |   Bin 0 -> 2657 bytes
+ .../2022/UBS27043/IMG_20220727_114750.jpg          |   Bin 0 -> 2634 bytes
+ .../2022/UBS27044/IMG_20220727_115713.jpg          |   Bin 0 -> 2624 bytes
+ .../2022/UBS27045/IMG_20220727_114830.jpg          |   Bin 0 -> 2552 bytes
+ .../2022/UBS27046/IMG_20220727_114814.jpg          |   Bin 0 -> 2891 bytes
+ .../2022/UBS27048/IMG_20220727_115638.jpg          |   Bin 0 -> 2432 bytes
+ .../2022/UBS27049/IMG_20220727_115440.jpg          |   Bin 0 -> 2825 bytes
+ .../2022/UBS27050/IMG_20220727_115601.jpg          |   Bin 0 -> 3059 bytes
+ .../2022/UBS27051/IMG_20220727_115307.jpg          |   Bin 0 -> 2286 bytes
+ .../2022/UBS27052/IMG_20220727_115237.jpg          |   Bin 0 -> 3037 bytes
+ .../2022/UBS27053/IMG_20220727_115353.jpg          |   Bin 0 -> 2642 bytes
+ .../2022/UBS27054/IMG_20220727_115332.jpg          |   Bin 0 -> 2772 bytes
+ .../2022/UBS27055/IMG_20220727_114849.jpg          |   Bin 0 -> 2417 bytes
+ .../2022/UBS270552/IMG_20220727_114938.jpg         |   Bin 0 -> 2856 bytes
+ .../2022/UBS27056/IMG_20220727_115520.jpg          |   Bin 0 -> 2144 bytes
+ .../2022/UBS27057/IMG_20220802_092313[1].jpg       |   Bin 0 -> 3057 bytes
+ .../2022/UBS27058/IMG_20220727_115417.jpg          |   Bin 0 -> 2486 bytes
+ .../2022/UBS27059/IMG_20220727_114703.jpg          |   Bin 0 -> 2435 bytes
+ .../2022/UBS27060/IMG_20220727_114855.jpg          |   Bin 0 -> 2704 bytes
+ .../2022/UBS27061/IMG_20220727_114955.jpg          |   Bin 0 -> 2695 bytes
+ .../2022/UBS27062/IMG_20220727_115545.jpg          |   Bin 0 -> 2660 bytes
+ .../2022/UBS27063/IMG_20220727_114652.jpg          |   Bin 0 -> 2543 bytes
+ .../2022/UBS27089/IMG_20220727_115257.jpg          |   Bin 0 -> 3130 bytes
+ .../2022/UBS27092/IMG_20220727_115556.jpg          |   Bin 0 -> 2573 bytes
+ .../2022/UBS28001/IMG_20220727_122733.jpg          |   Bin 0 -> 2877 bytes
+ .../2022/UBS28002/IMG_20220727_123128.jpg          |   Bin 0 -> 2537 bytes
+ .../2022/UBS28003/IMG_20220727_123719.jpg          |   Bin 0 -> 3062 bytes
+ .../2022/UBS28004/IMG_20220727_123259.jpg          |   Bin 0 -> 3077 bytes
+ .../2022/UBS28005/IMG_20220727_124238.jpg          |   Bin 0 -> 3157 bytes
+ .../2022/UBS28006/IMG_20220727_124433.jpg          |   Bin 0 -> 2840 bytes
+ .../2022/UBS28007/IMG_20220727_124558.jpg          |   Bin 0 -> 3616 bytes
+ .../2022/UBS28008/IMG_20220727_124823.jpg          |   Bin 0 -> 3493 bytes
+ .../2022/UBS28009/IMG_20220727_124643.jpg          |   Bin 0 -> 2844 bytes
+ .../2022/UBS28010/IMG_20220727_123639.jpg          |   Bin 0 -> 3049 bytes
+ .../2022/UBS28011/IMG_20220727_124223.jpg          |   Bin 0 -> 3190 bytes
+ .../2022/UBS28012/IMG_20220727_123311.jpg          |   Bin 0 -> 2836 bytes
+ .../2022/UBS28013/IMG_20220727_124412.jpg          |   Bin 0 -> 2617 bytes
+ .../2022/UBS28014/IMG_20220727_124303.jpg          |   Bin 0 -> 3391 bytes
+ .../2022/UBS28015/IMG_20220727_123019.jpg          |   Bin 0 -> 2440 bytes
+ .../2022/UBS28015/IMG_20220727_124500.jpg          |   Bin 0 -> 2775 bytes
+ .../2022/UBS28016/IMG_20220727_123701.jpg          |   Bin 0 -> 3106 bytes
+ .../2022/UBS28018/IMG_20220727_124523.jpg          |   Bin 0 -> 2537 bytes
+ .../2022/UBS28019/IMG_20220727_124635.jpg          |   Bin 0 -> 2841 bytes
+ .../2022/UBS28020/IMG_20220727_122907.jpg          |   Bin 0 -> 2596 bytes
+ .../2022/UBS28026/IMG_20220727_123246.jpg          |   Bin 0 -> 2952 bytes
+ .../2022/UBS28027/IMG_20220727_123602.jpg          |   Bin 0 -> 2600 bytes
+ .../2022/UBS28030/IMG_20220727_122810.jpg          |   Bin 0 -> 3327 bytes
+ .../2022/UBS28031/IMG_20220727_123030.jpg          |   Bin 0 -> 2873 bytes
+ .../2022/UBS28037/IMG_20220727_122722.jpg          |   Bin 0 -> 3277 bytes
+ .../2022/UBS28038/IMG_20220727_123411.jpg          |   Bin 0 -> 3123 bytes
+ .../2022/UBS28039/IMG_20220727_123209.jpg          |   Bin 0 -> 2346 bytes
+ .../2022/UBS28040/IMG_20220727_122954.jpg          |   Bin 0 -> 2993 bytes
+ .../2022/UBS28041/IMG_20220727_123459.jpg          |   Bin 0 -> 3338 bytes
+ .../2022/UBS28042/IMG_20220727_123222.jpg          |   Bin 0 -> 2483 bytes
+ .../2022/UBS28043/IMG_20220727_123622.jpg          |   Bin 0 -> 2711 bytes
+ .../2022/UBS28045/IMG_20220727_123756.jpg          |   Bin 0 -> 3005 bytes
+ .../2022/UBS28046/IMG_20220727_123003.jpg          |   Bin 0 -> 2781 bytes
+ .../2022/UBS28052/IMG_20220727_122757.jpg          |   Bin 0 -> 2707 bytes
+ .../2022/UBS28053/IMG_20220727_123335.jpg          |   Bin 0 -> 2617 bytes
+ .../2022/UBS28054/IMG_20220727_122939.jpg          |   Bin 0 -> 2589 bytes
+ .../2022/UBS28057/IMG_20220727_122702.jpg          |   Bin 0 -> 2688 bytes
+ .../2022/UBS28059/IMG_20220727_122949.jpg          |   Bin 0 -> 3838 bytes
+ .../2022/UBS28060/IMG_20220727_123808.jpg          |   Bin 0 -> 3138 bytes
+ stud-pics/stud-pics/2022/UBS29002/Ernest.jpg       |   Bin 0 -> 3305 bytes
+ stud-pics/stud-pics/2022/UBS29004/Janet.jpg        |   Bin 0 -> 3427 bytes
+ stud-pics/stud-pics/2022/UBS29007/Precious Adu.jpg |   Bin 0 -> 2724 bytes
+ .../2022/UBS29008/IMG_20220728_103917.jpg          |   Bin 0 -> 2857 bytes
+ stud-pics/stud-pics/2022/UBS29008/jj.jpg           |   Bin 0 -> 2857 bytes
+ stud-pics/stud-pics/2022/UBS29009/Nyamedor.jpg     |   Bin 0 -> 3117 bytes
+ stud-pics/stud-pics/2022/UBS29010/EINSTIEN.jpg     |   Bin 0 -> 3517 bytes
+ stud-pics/stud-pics/2022/UBS29015/Kadmeil.jpg      |   Bin 0 -> 3459 bytes
+ stud-pics/stud-pics/2022/UBS29017/Prosafina.jpg    |   Bin 0 -> 2934 bytes
+ stud-pics/stud-pics/2022/UBS29020/Obed.jpg         |   Bin 0 -> 2748 bytes
+ stud-pics/stud-pics/2022/UBS29023/EMMANUEL.jpg     |   Bin 0 -> 3617 bytes
+ stud-pics/stud-pics/2022/UBS29025/Benaiah.jpg      |   Bin 0 -> 2998 bytes
+ stud-pics/stud-pics/2022/UBS29026/Adom Billah.jpg  |   Bin 0 -> 3075 bytes
+ stud-pics/stud-pics/2022/UBS29029/MARVIN.jpg       |   Bin 0 -> 3357 bytes
+ .../stud-pics/2022/UBS29034/Precious Ohenewaa.jpg  |   Bin 0 -> 3086 bytes
+ stud-pics/stud-pics/2022/UBS29035/Ethan.jpg        |   Bin 0 -> 2996 bytes
+ stud-pics/stud-pics/2022/UBS29036/LARENCIA.jpg     |   Bin 0 -> 3571 bytes
+ stud-pics/stud-pics/2022/UBS29041/Ella Debrah.jpg  |   Bin 0 -> 3245 bytes
+ stud-pics/stud-pics/2022/UBS29042/Kesewaa.jpg      |   Bin 0 -> 3508 bytes
+ stud-pics/stud-pics/2022/UBS29043/Yaa Tibuah.jpg   |   Bin 0 -> 3026 bytes
+ .../stud-pics/2022/UBS29046/Mathea Maxina.jpg      |   Bin 0 -> 2865 bytes
+ stud-pics/stud-pics/2022/UBS29049/ANNA NKRUMA.jpg  |   Bin 0 -> 3528 bytes
+ stud-pics/stud-pics/2022/UBS29053/BETTY.jpg        |   Bin 0 -> 3491 bytes
+ stud-pics/stud-pics/2022/UBS29054/Kwasi Asare.jpg  |   Bin 0 -> 3309 bytes
+ stud-pics/stud-pics/2022/UBS29055/STEPHANIE.jpg    |   Bin 0 -> 3128 bytes
+ stud-pics/stud-pics/2022/UBS29056/ANABEL.jpg       |   Bin 0 -> 3444 bytes
+ stud-pics/stud-pics/2022/UBS29057/Audrey.jpg       |   Bin 0 -> 3299 bytes
+ stud-pics/stud-pics/2022/UBS29061/FRIMPOMAA.jpg    |   Bin 0 -> 3677 bytes
+ .../stud-pics/2022/UBS29063/STREPHANIE OBENG.jpg   |   Bin 0 -> 2916 bytes
+ stud-pics/stud-pics/2022/UBS29064/Prodencia.jpg    |   Bin 0 -> 2778 bytes
+ stud-pics/stud-pics/2022/UBS29067/Fiifi Otoo.jpg   |   Bin 0 -> 3300 bytes
+ .../stud-pics/2022/UBS29071/Gyasewaa Tutu.jpg      |   Bin 0 -> 4050 bytes
+ stud-pics/stud-pics/2022/UBS29072/Godsbrain.jpg    |   Bin 0 -> 2769 bytes
+ stud-pics/stud-pics/2022/UBS29079/EMMANUELLA.jpg   |   Bin 0 -> 3239 bytes
+ .../2022/UBS30001/IMG_20220728_101145.jpg          |   Bin 0 -> 2775 bytes
+ .../2022/UBS30002/IMG_20220728_101012.jpg          |   Bin 0 -> 2420 bytes
+ .../2022/UBS30003/IMG_20220728_095746.jpg          |   Bin 0 -> 3115 bytes
+ .../2022/UBS30004/IMG_20220728_095446.jpg          |   Bin 0 -> 3839 bytes
+ .../2022/UBS30005/IMG_20220728_095814.jpg          |   Bin 0 -> 3634 bytes
+ .../2022/UBS30006/IMG_20220728_095543.jpg          |   Bin 0 -> 3225 bytes
+ .../2022/UBS30007/IMG_20220728_101033.jpg          |   Bin 0 -> 2913 bytes
+ .../2022/UBS30008/IMG_20220728_101138.jpg          |   Bin 0 -> 3492 bytes
+ .../2022/UBS30009/IMG_20220728_095744.jpg          |   Bin 0 -> 3564 bytes
+ .../2022/UBS30010/IMG_20220728_095704.jpg          |   Bin 0 -> 3128 bytes
+ .../2022/UBS30011/IMG_20220728_101039.jpg          |   Bin 0 -> 3075 bytes
+ .../2022/UBS30011/IMG_20220728_101505.jpg          |   Bin 0 -> 3029 bytes
+ .../2022/UBS30012/IMG_20220728_095458.jpg          |   Bin 0 -> 3244 bytes
+ .../2022/UBS30013/IMG_20220728_101459.jpg          |   Bin 0 -> 3477 bytes
+ .../2022/UBS30014/IMG_20220728_095552.jpg          |   Bin 0 -> 3515 bytes
+ .../2022/UBS30015/IMG_20220728_101014.jpg          |   Bin 0 -> 3322 bytes
+ .../2022/UBS30016/IMG_20220728_095546.jpg          |   Bin 0 -> 3054 bytes
+ .../2022/UBS30018/IMG_20220728_100931.jpg          |   Bin 0 -> 3109 bytes
+ .../2022/UBS30019/IMG_20220728_095439.jpg          |   Bin 0 -> 3277 bytes
+ .../2022/UBS30021/IMG_20220728_095529.jpg          |   Bin 0 -> 3517 bytes
+ .../2022/UBS30022/IMG_20220728_095704.jpg          |   Bin 0 -> 3128 bytes
+ .../2022/UBS30023/IMG_20220728_100925.jpg          |   Bin 0 -> 3679 bytes
+ .../2022/UBS30024/IMG_20220728_095554.jpg          |   Bin 0 -> 2548 bytes
+ .../2022/UBS30025/IMG_20220728_095537.jpg          |   Bin 0 -> 3365 bytes
+ .../2022/UBS30026/IMG_20220728_101320.jpg          |   Bin 0 -> 3038 bytes
+ .../2022/UBS30027/IMG_20220728_101441.jpg          |   Bin 0 -> 3018 bytes
+ .../2022/UBS30028/IMG_20220728_101332.jpg          |   Bin 0 -> 2917 bytes
+ .../2022/UBS30029/IMG_20220728_101036.jpg          |   Bin 0 -> 2747 bytes
+ .../2022/UBS30030/IMG_20220728_101048.jpg          |   Bin 0 -> 2882 bytes
+ .../2022/UBS30031/IMG_20220728_101351.jpg          |   Bin 0 -> 3302 bytes
+ .../2022/UBS30032/IMG_20220728_095820.jpg          |   Bin 0 -> 3559 bytes
+ .../2022/UBS30034/IMG_20220728_095600.jpg          |   Bin 0 -> 2803 bytes
+ .../2022/UBS30035/IMG_20220728_101322.jpg          |   Bin 0 -> 2801 bytes
+ .../2022/UBS30036/IMG_20220728_101131.jpg          |   Bin 0 -> 3334 bytes
+ .../2022/UBS30037/IMG_20220728_101150.jpg          |   Bin 0 -> 2591 bytes
+ .../2022/UBS30038/IMG_20220728_095822.jpg          |   Bin 0 -> 3499 bytes
+ .../2022/UBS30039/IMG_20220728_101444.jpg          |   Bin 0 -> 3180 bytes
+ .../2022/UBS30040/IMG_20220728_095649.jpg          |   Bin 0 -> 3289 bytes
+ .../2022/UBS30041/IMG_20220728_095738.jpg          |   Bin 0 -> 3408 bytes
+ .../2022/UBS30042/IMG_20220728_101128.jpg          |   Bin 0 -> 2900 bytes
+ .../2022/UBS30043/IMG_20220728_101059.jpg          |   Bin 0 -> 2920 bytes
+ .../2022/UBS30044/IMG_20220728_101241.jpg          |   Bin 0 -> 3275 bytes
+ .../2022/UBS30045/IMG_20220728_101027.jpg          |   Bin 0 -> 3129 bytes
+ .../2022/UBS30046/IMG_20220728_100912.jpg          |   Bin 0 -> 3518 bytes
+ .../2022/UBS30047/IMG_20220728_100934.jpg          |   Bin 0 -> 3486 bytes
+ .../2022/UBS30048/IMG_20220728_101135.jpg          |   Bin 0 -> 2518 bytes
+ .../2022/UBS30050/IMG_20220728_095344.jpg          |   Bin 0 -> 3055 bytes
+ .../2022/UBS30051/IMG_20220728_095449.jpg          |   Bin 0 -> 3478 bytes
+ .../2022/UBS30052/IMG_20220728_095557.jpg          |   Bin 0 -> 2715 bytes
+ .../2022/UBS30053/IMG_20220808_104723.jpg          |   Bin 0 -> 2831 bytes
+ .../2022/UBS30054/IMG_20220728_095714.jpg          |   Bin 0 -> 3455 bytes
+ .../2022/UBS30055/IMG_20220728_095741.jpg          |   Bin 0 -> 3567 bytes
+ .../2022/UBS30056/IMG_20220728_095540.jpg          |   Bin 0 -> 3567 bytes
+ .../2022/UBS30057/IMG_20220728_095723.jpg          |   Bin 0 -> 3783 bytes
+ .../2022/UBS30058/IMG_20220728_101147.jpg          |   Bin 0 -> 2987 bytes
+ .../2022/UBS30059/IMG_20220728_101325.jpg          |   Bin 0 -> 2466 bytes
+ .../2022/UBS30060/IMG_20220728_101317.jpg          |   Bin 0 -> 2878 bytes
+ .../2022/UBS30061/IMG_20220728_101314.jpg          |   Bin 0 -> 2979 bytes
+ .../2022/UBS30062/IMG_20220728_101436.jpg          |   Bin 0 -> 3459 bytes
+ .../2022/UBS30063/IMG_20220728_100909.jpg          |   Bin 0 -> 3308 bytes
+ .../2022/UBS30064/IMG_20220728_095829.jpg          |   Bin 0 -> 3188 bytes
+ .../2022/UBS30065/IMG_20220728_101043.jpg          |   Bin 0 -> 3160 bytes
+ .../2022/UBS30066/IMG_20220728_095435.jpg          |   Bin 0 -> 3582 bytes
+ .../2022/UBS30068/IMG_20220728_095452.jpg          |   Bin 0 -> 2769 bytes
+ .../2022/UBS30069/IMG_20220728_100916.jpg          |   Bin 0 -> 3366 bytes
+ .../2022/UBS30070/IMG_20220728_100928.jpg          |   Bin 0 -> 3118 bytes
+ .../2022/UBS30071/IMG_20220728_095735.jpg          |   Bin 0 -> 3625 bytes
+ .../2022/UBS30072/IMG_20220728_101141.jpg          |   Bin 0 -> 3231 bytes
+ .../2022/UBS30073/IMG_20220808_110445.jpg          |   Bin 0 -> 2657 bytes
+ .../2022/UBS30074/IMG_20220728_095549.jpg          |   Bin 0 -> 3647 bytes
+ .../2022/UBS30075/IMG_20220728_095532.jpg          |   Bin 0 -> 3294 bytes
+ .../2022/UBS30077/IMG_20220728_095653.jpg          |   Bin 0 -> 3276 bytes
+ .../2022/UBS30078/IMG_20220728_095717.jpg          |   Bin 0 -> 2784 bytes
+ .../2022/UBS30079/IMG_20220728_101509.jpg          |   Bin 0 -> 2982 bytes
+ .../2022/UBS30080/IMG_20220728_095455.jpg          |   Bin 0 -> 2815 bytes
+ .../2022/UBS30081/IMG_20220728_095709.jpg          |   Bin 0 -> 3229 bytes
+ .../2022/UBS30082/IMG_20220728_095712.jpg          |   Bin 0 -> 3416 bytes
+ .../2022/UBS30083/IMG_20220728_095726.jpg          |   Bin 0 -> 3938 bytes
+ .../2022/UBS30084/IMG_20220728_095826.jpg          |   Bin 0 -> 3356 bytes
+ .../2022/UBS30085/IMG_20220728_095707.jpg          |   Bin 0 -> 3545 bytes
+ .../2022/UBS30088/IMG_20220728_100905.jpg          |   Bin 0 -> 3461 bytes
+ .../2022/UBS301915/IMG_20220728_101246.jpg         |   Bin 0 -> 2473 bytes
+ .../2022/UBS301917/IMG_20220728_101045.jpg         |   Bin 0 -> 2976 bytes
+ .../2022/UBS301920/IMG_20220728_100937.jpg         |   Bin 0 -> 3262 bytes
+ .../2022/UBS301921/IMG_20220728_101154.jpg         |   Bin 0 -> 3089 bytes
+ .../2022/UBS301937/IMG_20220728_101337.jpg         |   Bin 0 -> 2974 bytes
+ .../2022/UBS30199/IMG_20220728_101343.jpg          |   Bin 0 -> 2518 bytes
+ stud-pics/stud-pics/205/default.jpg                |   Bin 0 -> 1798 bytes
+ ubsfs.sql                                          | 27429 +++++++++++++++++++
+ ussd                                               |    27 +
+ write_academic.py                                  |     6 +
+ write_file.py                                      |     4 +
+ 1521 files changed, 107290 insertions(+), 2 deletions(-)

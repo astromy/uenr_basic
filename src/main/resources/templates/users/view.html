@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<div th:fragment="usersList">
+    <p>qwertyuio</p>
+    <div class="jumbotron  shadow">
+        <table class="table table-primary bg-white shadow" id="mydata">
+    <tr>
+        <th>user Name</th>
+        <th>role</th>
+         <th>State</th>
+       
+    </tr> 
+    <tr th:each="u:${users}">
+        <td th:text="${u.username}">
+            
+        </td>
+      
+      <th:block th:each="r:${u.roles}">
+              <td th:text="${r.name}"></td>
+      </th:block>
+    <td th:text="${u.password}"></td>
+     <td th:text="${u.enabled}"></td>
+    
+    </tr>
+    
+    </table>
+    </div>
+</div>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<div th:fragment="appForm">
+   
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/css/PrintPageCss.css}" rel="stylesheet" type="text/css"/>
+   <div class="col-2">  
+            <a class="btn btn-secondary" id="button"  
+               th:onclick="printData();">PRINT&nbsp;<span class="fa fa-print"></span></a>   
+        </div>
+        
+         <div class="pagePrint col-12 " >
+<div class="table table-bordered bg-white " style="font-family: gil sans MT; font-size:30px; ">
+<table class="table-bordered col-12" >
+      <TR>
+           <img th:src="@{/pro-pics/letterHead.png}" height="300" alt="notFound" />
+        
+</TR>
+             <div>
+                 <center>
+                     <H3>APPLICATION FOR ADMISSION INTO UENR BASIC SCHOOL- 
+                      <BR />  <B> <SPAN th:text="${TermAppForm.TermName}"></SPAN> &nbsp;&nbsp;<SPAN th:text="${TermAppForm.academicyear.AcademicName}"></SPAN> ACADEMIC YEAR<br />
+                         APPLICATION FORM NO: <span th:text="${AppId}"></span> </B>
+                     </H3>
+                      <hr />
+                 </center>
+                 </div>
+       
+ 
+    <TR><H4><B>1.PARTICULARS OF CHILD (PLEASE WRITE IN CAPITAL LETTERS)</B></H4></TR>
+<TR><TD><SPAN CLASS="offset-9">    <img th:src="@{/pro-pics/default.JPG}" height="150" alt="notFound" /></SPAN></TD></TR>      
+<tr> 
+          
+          <td>FIRST NAME:........................................
+             <SPAN >OTHER NAMES:........................................ </SPAN>
+                SURNAME:........................................</td>
+      </tr>
+       <tr> 
+          
+          <td>DATE OF BIRTH(DD/MM/YY):...................................
+              &nbsp;  &nbsp; &nbsp; PLACE OF BIRTH:.....................................................</td>
+                
+      </tr>
+         <tr> 
+          
+          <td>REGION OF BIRTH:.............................
+             SEX OF CHILD:.............................</td>
+                
+      </tr>   
+       <tr> 
+          
+          <td>NATIONALITY:.............................
+             LANGUAGE(S) SPOKEN:.............................</td>
+                
+      </tr> 
+    <tr> 
+          
+          <td>PHYSICAL DISABILITY (YES /NO):.............................
+             NHIS CARD No:.............................
+              CLASS SEEKING FOR:.............................</td>   
+      </tr> 
+      <tr> 
+          
+          <td>PREVIOUS SCHOOL ATTENDED:...................................................................................
+           PREVIOUS CLASS:.............................</td>
+                
+      </tr>
+         <tr> 
+             <TD colspan="2">    <img th:src="@{/pro-pics/PARENTCATEGORY.JPG}" height="700" alt="notFound" /></TD>
+</TR>
+<TR><TD colspan="2"><H4><B>STAFF DECLARATION (UNIVERSITY STAFF ONLY)</B></H4></TD></TR> 
+      <tr> 
+          
+        
+          <td>
+             NAME OF STAFF :..........................................................................................................
+              STAFF ID :.......................................................<BR />HUMAN RESOURCE(HR) DECLARATION: ............................................................................................................................................................................................................    
+          <BR />SIGNATURE (HR):..................................................................... <BR />STAMP: <BR /> <BR /></td>
+      </tr> 
+    
+    <TR><TD colspan="2"><H4><B>4. PARENT DECLARATION</B></H4></TD></TR> 
+   <td>I, ..................................................., hereby certify all the above information is true.<br />
+     <B>SIGNATURE:.............................</B><BR /> <B>NOTE: </B> Please return the duly filled form together with the necessary attachments to the headmistress,UENR Basic School.<br /> 
+     This form is valid for <b>only</b> <span th:text="${TermAppForm.academicyear.AcademicName}"> </span> Academic Year.</td> 
+   
+</table>
+</div>
+
+</DIV>
+
+<SCRIPT>
+    function printData(){
+  window.print();
+    }
+</SCRIPT>
+</DIV>

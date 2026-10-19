@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+
+            <div th:fragment="MockExcelFile" >
+                <p class="h4 text-justify bg-light ">Upload <span th:text="${Mock.mockName}"></span> Excel File <hr style="color:#c69500; "/> </p>
+                <br >
+                <form th:method="post" class="form-inline" th:action="@{/TeacherPortal/GetMockExcelFile}" enctype="multipart/form-data">
+           
+            <table class="table table-borderless table-primary">        
+                  <tr> 
+                      <td>  
+                          <span><input type="hidden"  th:value="${SubjectId}" id="SubjectId" th:name="SubjectId">
+               <input type="hidden" readonly="true" th:value="${MockExcelTerm.TermName}" class="form-control">
+             <input type="hidden"  th:value="${TeacherId}" id="TeacherId" th:name="TeacherId">
+             <input type="hidden"  th:value="${Mock.id}" id="MockId" th:name="MockId"> </span>
+             </td>  </tr><tr><td>
+                        <input type="file" class=" form-control-file"  th:name="file" >&nbsp; &nbsp;
+                    </td>        
+                </tr><tr>
+                    <td>
+                        <button type="submit" class="btn btn-primary" id="upload_btn" th:onclick="spinOnload()">Upload File</button>
+                    </td>
+                </tr>
+                    </form>
+                       <tr>                
+                    <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading.................
+                    </button>
+            </tr>
+                 </table></form>
+                </div>

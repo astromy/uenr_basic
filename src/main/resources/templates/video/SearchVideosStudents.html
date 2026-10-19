@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<div th:fragment="StudentSearchVideo">
+    
+    <div class="modal fade" id="TutorialForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger ">
+                    <div class="row ">
+                        <table class="table table-responsive-md">
+                            <tr >
+                        <td>   
+                            <div class="form-group">
+                        
+                                <select id="ArraySubject" 
+                                        style="outline:none;padding: 0.4rem;border-radius: 5px; border: none; box-shadow: 0 0 10px rgb(202, 202, 202);margin: 0.8rem;">
+                                    
+                                </select></div></td>  <td>   
+                                    <div class="form-group">
+                  
+                        <select id="arrayTerm" style="outline:none;padding: 0.4rem;border-radius: 5px; border: none; box-shadow: 0 0 10px rgb(202, 202, 202);margin: 0.8rem;">
+                            
+</select>     </div>  
+                                </td>  <td><button class="btn btn-success" onclick="getSearchVideos();" style="outline:none;padding: 0.4rem;border-radius: 5px; border: none; box-shadow: 0 0 10px rgb(202, 202, 202);margin: 0.8rem;">Search</button>
+                       
+                                    </td> </tr></table></div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    
+                </div>
+                <div class="modal-body">
+                     
+                    <table id="ClassVideosT" class="table table-active table-light ">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Indicator</th>
+                               
+                                <th>Subject</th>
+                                <th>class</th>
+                                      <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div></div>   <div class="modal-footer bg-danger ">
+                    <h6 class="modal-title text-white" id="exampleModalLabel">Powered by quantum publications (quantumseriespublication@gmail.com)</h6>
+                   
+                </div>  </div>
+ 
+    
+
+    </div>
+
+    <script>
+
+
+        function showTutorialForm() {
+            $.ajax({
+
+                url: '/GetSubjectStudent', // Replace this with your actual API endpoint
+                method: 'Get',
+                dataType: 'json',
+
+                success: function (data) {
+                    var arr = data;
+                    console.log(data);
+                    // arr = ["Courses here","Frontend Training","Backend Training","Java Training","Ethical Hacking"];
+                    var options = "";
+                    arr.map((op, i) => {
+                        options += `<option value="${op.subjectName}" id="${i}" style="border-radius: 5px; onchange='getSearchVideos()'"">${op.subjectName}</option>`
+                    })
+                    document.getElementById("ArraySubject").innerHTML = options;
+
+                //    $("#VideoUpload").modal('show');
+
+                }});
+
+            $.ajax({
+
+                url: '/VideoTerms', // Replace this with your actual API endpoint
+                method: 'Get',
+                dataType: 'json',
+
+                success: function (data) {
+                     var arr = data;
+                    console.log(data);
+                    // arr = ["Courses here","Frontend Training","Backend Training","Java Training","Ethical Hacking"];
+                    var options = "";
+                    arr.map((op, i) => {
+                        options += `<option value="${op.termDescription}" id="${i}" style="border-radius: 5px; onchange='getSearchVideos();'"">${op.termDescription}</option>`
+                    })
+                    document.getElementById("arrayTerm").innerHTML = options;
+}});getAllVideos(); $("#TutorialForm").modal('show');
+        }
+
+         function getAllVideos() {
+                $('#ClassVideosT').dataTable().fnDestroy();
+            $.ajax({
+
+                url: '/getAllVideosStudent', 
+                method: 'Get',
+                dataType: 'json',
+            success: function (data) {
+            $('#ClassVideosT').DataTable({
+                 
+                 "data": data,
+                 
+                 "columns": [
+                 {"data": "description"},
+                 {"data":"indicator" },
+                 {"data": "subject"},
+                 {"data": "klass"},
+                 
+                 {
+                 "data": null,
+                 "render": function (data, type, row) {
+                 return '<button class="play btn btn-success" data-id="' + data.url+ '" >Play</button><span>';
+                 
+                 }
+                 
+                 }
+                 ]
+                 });  $("#videoss").modal('show');
+           
+                  },
+        error: function (xhr, status, error) {
+
+            // $("#msg").append("<b>Error Reload </b>" + error);
+            // $("#info").modal('show');
+             //  $("#error").append("<b>   Unssucessful operation sorry !</b>" + data);
+            window.location("/login");
+        }
+
+    });
+
+    $('#ClassVideosT').on('click', '.play', function () {
+        var id = $(this).data('id');
+     
+      alert("If video fails to load please click on the play button again!");
+       // displayTransactionRequestForm(id);
+        //  var StudentId = $(this).data('StudentId');
+        //  window.location = "/findShop/"+id;
+loadVideo (id);
+        // alert(id);//alert(StudentId);
+ 
+              });
+
+    }
+      
+ function getSearchVideos() {
+                $('#ClassVideosT').dataTable().fnDestroy();
+                var term =document.getElementById("arrayTerm").value;
+                var subject =document.getElementById("ArraySubject").value;
+                var search =term+subject;
+                  
+        $.ajax({
+
+                url: '/getByVidoesBySearch/'+search, 
+                method: 'Get',
+                dataType: 'json',
+               
+            success: function (data) {
+                    $('#ClassVideosT').DataTable({
+                 
+                 "data": data,
+                 
+                 "columns": [
+                 {"data": "description"},
+                 {"data":"indicator" },
+                 {"data": "subject"},
+                 {"data": "klass"},
+                 
+                 {
+                 "data": null,
+                 "render": function (data, type, row) {
+                 return '<button class="play btn btn-success" data-id="' + data.url+ '" >Play</button><span>';
+                 
+                 }
+                 
+                 }
+                 ]
+                 });
+                
+                
+            }});}
+       
+    </script>   
+   
+
+    <div class="modal fade" id="Videoplay" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload Video &nbsp;&nbsp;&nbsp;<span id="StudentName"><button class="btn btn-link " onclick="getAllVideos()">Search videos</button></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+             <div id="videoPlayer">
+        
+        
+        </div>
+</div>
+  
+    <script>
+       var Tid;
+        function loadVideo (id){
+             
+        var tag=document.createElement('script');
+        tag.src="https://www.youtube.com/player_api";
+        var control =document.getElementsByTagName("script")[0];
+        control.parentNode.insertBefore(tag,control);
+        //https://www.youtube.com/watch?v=3Rgc-dTAO6k
+      
+       onYouTubePlayerApiReady (id);
+        Tid=id;
+        $("#Videoplay").modal("show");
+    }
+    
+    function onYouTubePlayerApiReady (id){
+    
+        player = new YT.Player('videoPlayer',{
+            height:'360px',
+            width:'640px',
+            videoId:id, // Replace with the video ID you want to loop
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+       
+    }
+
+    // Check the player state
+    function onPlayerStateChange(event) {
+       
+      // If video ended (state 0), replay it
+    if (event.data ==1) {
+    
+// player.loadVideoById(Tid); ; // Go back to the start
+       // Play again
+     }
+      if (event.data ==2) {
+           
+      // Go back to the start
+         // Play again
+      }
+    }
+      
+    
+    </script>
+    
+    </div>
+        </div></div> </div> 
+
+
+   
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
