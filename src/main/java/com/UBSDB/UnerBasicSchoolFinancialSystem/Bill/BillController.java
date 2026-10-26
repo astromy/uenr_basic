@@ -99,9 +99,8 @@ public class BillController {
         this.KS.FindKlass(classId).getStudents().stream().forEach((c) -> {
             double outcome = (Double)c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (b, o) -> {
                 return b + o;
-            }) - (Double)c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g) -> {
-                return s + g;
-            });
+            }) - (Double)c.getStudentBills().stream().map(StudentBill::getFees).map(SchoolFees::getAmount)
+                    .reduce(0.0,Double::sum);
             if (outcome < 0.0) {
                 students.add(c);
             }
@@ -114,9 +113,8 @@ public class BillController {
             p.setAmount(c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (v, g) -> {
                 return v + g;
             }));
-            p.setRemaining(p.getAmount() - c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t) -> {
-                return r + t;
-            }));
+            p.setRemaining(p.getAmount() - c.getStudentBills().stream().map(StudentBill::getFees).map(SchoolFees::getAmount)
+                    .reduce(0.0,Double::sum));
             p.setPaymentType("fees");
             payments.add(p);
         });
@@ -130,9 +128,8 @@ public class BillController {
         this.SS.AALLStudents().stream().forEach((c) -> {
             double outcome = (Double)c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (b, o) -> {
                 return b + o;
-            }) - (Double)c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g) -> {
-                return s + g;
-            });
+            }) - (Double)c.getStudentBills().stream().map(StudentBill::getFees).map(SchoolFees::getAmount)
+                    .reduce(0.0,Double::sum);
             if (outcome < 0.0) {
                 students.add(c);
             }
@@ -145,9 +142,8 @@ public class BillController {
             p.setAmount(c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (v, g) -> {
                 return v + g;
             }));
-            p.setRemaining(p.getAmount() - c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t) -> {
-                return r + t;
-            }));
+            p.setRemaining(p.getAmount() - c.getStudentBills().stream().map(StudentBill::getFees).map(SchoolFees::getAmount)
+                    .reduce(0.0,Double::sum));
             p.setPaymentType("fees");
             payments.add(p);
         });
@@ -179,20 +175,20 @@ public class BillController {
         }
     }
 
-    @GetMapping({"/deleteAllBills"})
+    @GetMapping("/deleteAllBills")
     public void deleteBillForStudents() {
         this.BS.deleteBills();
     }
 
-    @GetMapping({"/getStudentBills/{StudentId}"})
-    public List<Bill> getAllStudentBills(@PathVariable("StudentId") String studentId) {
+    @GetMapping("/getStudentBills/{StudentId}")
+    public List<SchoolFees> getAllStudentBills(@PathVariable("StudentId") String studentId) {
         Optional<Student> studentOpt = this.SS.findOptionalStudent(studentId);
         if (studentOpt.isPresent()) {
-            return studentOpt.get().getStudentBills().stream().map(StudentBill::getBill).toList();
+            return studentOpt.get().getStudentBills().stream().map(StudentBill::getFees).toList();
         }
         Optional<Student> refStudentOpt = this.SS.findOptionalStudentByReference(studentId);
 
-        return studentOpt.get().getStudentBills().stream().map(StudentBill::getBill).toList();
+        return studentOpt.get().getStudentBills().stream().map(StudentBill::getFees).toList();
     }
 
     @GetMapping({"/GetStudentBill/{BillId}"})

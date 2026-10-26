@@ -6,6 +6,7 @@
 package com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill;
 
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.Bill;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
 import java.util.List;
@@ -20,6 +21,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StudentBillRepository extends JpaRepository<StudentBill, UUID> {
     List<StudentBill> findByStudent(Student student);
-    List<StudentBill> findByBill(Bill bill);
-    boolean existsByStudentAndBillAndTerm(Student student, Bill bill, Term term);
+    List<StudentBill> findByFees(SchoolFees fees);
+    boolean existsByStudentAndFeesAndTerm(Student student, SchoolFees fees, Term term);
 }

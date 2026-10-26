@@ -7,6 +7,7 @@ package com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill;
 
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.Bill;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.BillService;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentService;
 
@@ -14,13 +15,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
  *
  * @author enock
  */
-@Service
+@Component
 public class StudentBillServiceImpl implements StudentBillService {
     @Autowired
     private StudentBillRepository studentBillRepository;
@@ -37,8 +39,8 @@ public class StudentBillServiceImpl implements StudentBillService {
     @Override
     public StudentBill saveStudentBill(StudentBill studentBill) {
         try {
-            if (studentBill.getBill() != null && studentBill.getTerm() == null) {
-                studentBill.setTerm(studentBill.getBill().getTerm());
+            if (studentBill.getFees() != null && studentBill.getTerm() == null) {
+                studentBill.setTerm(studentBill.getFees().getTerm());
             }
             return studentBillRepository.save(studentBill);
         } catch (Exception e) {
@@ -68,8 +70,8 @@ public class StudentBillServiceImpl implements StudentBillService {
     }
 
     @Override
-    public List<StudentBill> findStudentBillsByBill(Bill bill) {
-        return studentBillRepository.findByBill(bill);
+    public List<StudentBill> findStudentBillsByBill(SchoolFees bill) {
+        return studentBillRepository.findByFees(bill);
     }
 
     @Override

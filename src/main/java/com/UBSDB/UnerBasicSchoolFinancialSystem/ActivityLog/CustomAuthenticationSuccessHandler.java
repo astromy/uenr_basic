@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -17,6 +19,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Autowired
     private ActivityLogService activityLogService;
+
+    @Autowired
+    private ActivityLogRepository activityLogRepository;
 
     @Autowired
     private UserService userService;
@@ -31,7 +36,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             role = authentication.getAuthorities().iterator().next().getAuthority();
         }
 
-        activityLogService.recordLogin(username, role, request);
+        ActivityLog activityLog = activityLogService.recordLogin(username, role, request);
+        if (activityLog != null) {
+            activityLog.setActivityType("LOGIN");
+
+            activityLogRepository.save(activityLog);
+        }
 
         // Continue with the default behavior (redirect to /RouteUser)
         response.sendRedirect(request.getContextPath() + "/RouteUser");

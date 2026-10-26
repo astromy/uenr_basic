@@ -5,6 +5,7 @@
  */
 package com.UBSDB.UnerBasicSchoolFinancialSystem.Finance;
 
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Expenses.ExpensesService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.FeePayment.PaymentService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.FeePayment.Payment;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.PTA.PTA;
@@ -13,6 +14,7 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFeesService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentService;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klass;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klassService;
@@ -20,6 +22,8 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +31,14 @@ import org.springframework.stereotype.Service;
  *
  * @author enock
  */
+@Slf4j
 @Service
 public class FinanceService {
-   @Autowired private StudentService SS; 
-   @Autowired private PaymentService PS;@Autowired private klassService KS; 
+   @Autowired private StudentService SS;
+   @Autowired private PaymentService PS;@Autowired private klassService KS;
    @Autowired private SchoolFeesService SFS;@Autowired private PTAService PTAS;
-    @Autowired private TermService Ts;
+   @Autowired private TermService Ts;
+   @Autowired private ExpensesService ES;
    public List<klass>GetStudentClasses(){
    return  KS.AllKlass();
    }
@@ -111,37 +117,50 @@ public class FinanceService {
    public List<klass>AllKlasses(){
    return KS.AllKlass();
    }
-    public SchoolStatisticsModel getSchoolStaticsModel(){
-       try{
-        int totalStudents = Math.toIntExact(SS.countAllStudents());
-        int juniorStaff = (int) SS.countJuniorStaffStudents();
-        int nonStaff = (int) SS.countNonStaffStudents();
-        int seniorMember = (int) SS.countSeniorMemberStudents();
+     public SchoolStatisticsModel getSchoolStaticsModel(){
+        try{
+         int totalStudents = Math.toIntExact(SS.countAllStudents());
+         int juniorStaff = (int) SS.countJuniorStaffStudents();
+         int nonStaff = (int) SS.countNonStaffStudents();
+         int seniorMember = (int) SS.countSeniorMemberStudents();
 
-        int upperPrimary = (int) SS.countStudentsByClassLevel("UpperPrimary");
-        int lowerPrimary = (int) SS.countStudentsByClassLevel("LowerPrimary");
-        int juniorHigh = (int) SS.countStudentsByClassLevel("JuniorHigh");
-        int creche = (int) SS.countStudentsByClassLevel("Creche");
-        int nursery = (int) SS.countStudentsByClassLevel("Nursery");
-        int kindergarten = (int) SS.countStudentsByClassLevel("Kindergaten");
+         int upperPrimary = (int) SS.countStudentsByClassLevel("UpperPrimary");
+         int lowerPrimary = (int) SS.countStudentsByClassLevel("LowerPrimary");
+         int juniorHigh = (int) SS.countStudentsByClassLevel("JuniorHigh");
+         int creche = (int) SS.countStudentsByClassLevel("Creche");
+         int nursery = (int) SS.countStudentsByClassLevel("Nursery");
+         int kindergarten = (int) SS.countStudentsByClassLevel("Kindergaten");
 
-        double amountPaid = PS.sumPaymentsByDateAndTerm(LocalDate.now(), Ts.getCurrentTerm().getId());
+         double amountPaid = PS.sumPaymentsByDateAndTerm(LocalDate.now(), Ts.getCurrentTerm().getId());
 
-        int totalByLevel = upperPrimary + lowerPrimary + juniorHigh + creche + kindergarten + nursery;
+         // Get total expenses for current term
+         double totalExpenses = 0.0;
+         try {
+             Term currentTerm = Ts.getCurrentTerm();
+             if (currentTerm != null) {
+                 totalExpenses = ES.getTotalExpensesByTerm(currentTerm);
+             }
+         } catch (Exception e) {
+             System.out.println("Error fetching expenses: " + e.getMessage());
+         }
 
-        SchoolStatisticsModel SSM = new SchoolStatisticsModel(totalByLevel, nonStaff, juniorStaff,
-                seniorMember, kindergarten, juniorHigh, lowerPrimary, upperPrimary,
-                creche,
-                nursery, (float) amountPaid);
-         System.out.println("All students"+ SSM.toString());
-         
-        return SSM;
-        
-       }catch (Exception ex){
-           
-       return null;
-       
-       }
+         double netProfit = amountPaid - totalExpenses;
+
+         int totalByLevel = upperPrimary + lowerPrimary + juniorHigh + creche + kindergarten + nursery;
+
+         SchoolStatisticsModel SSM = new SchoolStatisticsModel(totalByLevel, nonStaff, juniorStaff,
+                 seniorMember, kindergarten, juniorHigh, lowerPrimary, upperPrimary,
+                 creche,
+                 nursery, (float) amountPaid, totalExpenses, netProfit);
+          System.out.println("All students"+ SSM.toString());
+
+         return SSM;
+
+        }catch (Exception ex){
+       log.error("{} ",ex.toString());
+        return null;
+
+        }
     }
    
 }

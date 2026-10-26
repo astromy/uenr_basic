@@ -1,81 +1,442 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <meta name="description" content="">
     <meta name="author" content="">
 
     <title>SMS - Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
-    <link th:href="@{/css/bootstrap.min.css}" th:rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 
     <!-- Login page CSS -->
-    <link th:href="@{/css/login.css}" th:rel="stylesheet">
+    <link th:href="@{/css/login.css}" rel="stylesheet">
 
-    <link th:href="@{/css/fontawesome.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/fontawesome.css}"
+          rel="stylesheet"
+          type="text/css">
 </head>
 
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <!-- Header with logo -->
-            <div class="login-header">
-                <img th:src="@{/pro-pics/UENR.PNG}" height="100" alt="School Logo"/>
-                <h1>SMS</h1>
+
+<div class="school-login-page">
+
+    <!-- =====================================================
+         LEFT - SCHOOL INFORMATION
+    ====================================================== -->
+    <section class="school-showcase">
+
+        <!-- Background decorative shapes -->
+        <div class="shape shape-one"></div>
+        <div class="shape shape-two"></div>
+
+        <div class="showcase-content">
+
+            <!-- Header -->
+            <header class="school-header">
+
+                <div class="school-brand">
+                    <div class="brand-logo">
+                        <img th:src="@{/css/images/joyheart.jpg}"
+                             alt="Joy Hearts Tech Kids Academy">
+                    </div>
+
+                    <div class="brand-text">
+                        <span>JOY HEARTS TECH</span>
+                        <strong>KIDS ACADEMY</strong>
+                    </div>
+                </div>
+
+                <div class="academic-badge">
+                    <span>QUALITY</span>
+                    <strong>EDUCATION</strong>
+                </div>
+
+            </header>
+
+
+            <!-- Hero -->
+            <div class="school-hero">
+
+                <div class="hero-copy">
+
+                    <span class="hero-label">
+                        WELCOME TO JOY HEARTS
+                    </span>
+
+                    <h1>
+                        Building
+                        <span>Young Minds</span>
+                        Through Technology
+                    </h1>
+
+                    <p>
+                        A nurturing learning environment where children
+                        discover, create, learn and develop the skills
+                        they need for a brighter future.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a href="#admission" class="primary-action">
+                            ENROLL NOW
+                            <span>→</span>
+                        </a>
+
+                        <a href="#contact" class="secondary-action">
+                            Contact School
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Hero Image -->
+                <div class="hero-image-wrapper">
+
+                    <div class="image-decoration"></div>
+
+                    <div class="hero-image">
+
+                        <img
+                                th:src="@{/css/images/joyheart.jpg}"
+                                alt="Students at Joy Hearts Tech Kids Academy"
+                        >
+
+                        <div class="image-caption">
+                            <span>LEARNING</span>
+                            <strong>WITH PURPOSE</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <!-- Login Form -->
-            <div class="login-body">
-                <form th:method="post" th:action="@{/login}" id="loginForm">
-                    <!-- Error message -->
-                    <div th:if="${param.error}">
-                        <p class="alert alert-warning">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
-                    </div>
 
-                    <!-- Logout message -->
-                    <div th:if="${param.logout}">
-                        <p class="alert alert-success text-center">You have been logged out. Try logging in again.</p>
-                    </div>
+            <!-- Admission Banner -->
+            <div class="admission-banner" id="admission">
 
-                    <!-- Sign In label -->
-                    <label for="username" class="h6 mb-3">Please Sign In</label>
+                <div class="admission-icon">
+                    ★
+                </div>
 
-                    <!-- Username field -->
-                    <div class="form-group mb-3">
-                        <label for="username">User Name (ID)</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required autofocus>
-                    </div>
+                <div class="admission-text">
+                    <span>ADMISSIONS ARE NOW</span>
+                    <strong>OPEN</strong>
+                </div>
 
-                    <!-- Password field -->
-                    <div class="form-group mb-4">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
-                    </div>
+                <div class="admission-levels">
+                    <span>CRECHE</span>
+                    <span>NURSERY</span>
+                    <span>KINDERGARTEN</span>
+                </div>
 
-                    <!-- Submit button with loading state -->
-                    <div class="form-group mb-3">
-                        <input type="submit" value="Login" class="btn btn-login" id="upload_btn" th:onclick="spinOnload()">
-                        <button class="btn btn-login d-none" id="loading_btn" type="button" disabled>
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            Please wait...
-                        </button>
-                    </div>
+                <a href="#contact" class="admission-button">
+                    APPLY NOW →
+                </a>
 
-                    <!-- Forgot password link -->
-                    <div class="text-center">
-                        <a th:href="@{/reset}" class="forgot-password">Forgot password?</a>
-                    </div>
-                </form>
             </div>
+
+
+            <!-- School Features -->
+            <div class="school-features">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <span>01</span>
+                    </div>
+
+                    <div>
+                        <strong>Early Learning</strong>
+                        <p>
+                            A strong foundation for curious young minds.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <span>02</span>
+                    </div>
+
+                    <div>
+                        <strong>Technology</strong>
+                        <p>
+                            Preparing children for the digital future.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <span>03</span>
+                    </div>
+
+                    <div>
+                        <strong>Safe Environment</strong>
+                        <p>
+                            A caring and supportive learning community.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Footer information -->
+            <footer class="school-footer" id="contact">
+
+                <div class="contact-info">
+
+                    <div class="contact-item">
+                        <span class="contact-symbol">⌖</span>
+
+                        <div>
+                            <small>LOCATION</small>
+                            <strong>BereKum - Opp. Chris FM</strong>
+                        </div>
+                    </div>
+
+
+                    <div class="contact-item">
+                        <span class="contact-symbol">☎</span>
+
+                        <div>
+                            <small>CALL US</small>
+                            <strong>0241 232 915</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="motto">
+                    <small>OUR MOTTO</small>
+                    <strong>
+                        BUILDING YOUNG MINDS THROUGH TECHNOLOGY
+                    </strong>
+                </div>
+
+            </footer>
+
         </div>
-    </div>
 
-    <!-- Scripts -->
-    <script th:src="@{/script/jquery.min.js}"></script>
-    <script th:src="@{/script/bootstrap.min.js}" type="text/javascript"></script>
-    <script th:src="@{/script/ProgressDialog_1.js}" type="text/javascript"></script>
+    </section>
+
+
+    <!-- =====================================================
+         RIGHT - LOGIN
+    ====================================================== -->
+    <section class="login-area">
+
+        <div class="login-container">
+
+            <!-- Login logo -->
+            <div class="login-brand">
+
+                <div class="login-logo">
+                    <img
+                            th:src="@{/css/images/Logo.jpeg}"
+                            alt="Joy Hearts Tech Kids Academy"
+                    >
+                </div>
+
+                <div>
+                    <strong>JOY HEARTS</strong>
+                    <span>TECH KIDS ACADEMY</span>
+                </div>
+
+            </div>
+
+
+            <!-- Login heading -->
+            <div class="login-heading">
+
+                <span>WELCOME BACK</span>
+
+                <h2>
+                    Sign in to your account
+                </h2>
+
+                <p>
+                    Enter your credentials to access the
+                    school management system.
+                </p>
+
+            </div>
+
+
+            <!-- Error -->
+            <div
+                    th:if="${param.error}"
+                    class="login-alert"
+            >
+                <span>!</span>
+                <div>
+                    <strong>Login failed</strong>
+                    <p>Invalid username or password.</p>
+                </div>
+            </div>
+
+
+            <!-- Logout -->
+            <div
+                    th:if="${param.logout}"
+                    class="login-success"
+            >
+                You have been successfully logged out.
+            </div>
+
+
+            <!-- Form -->
+            <form
+                    th:action="@{/login}"
+                    method="post"
+                    class="login-form"
+            >
+
+                <!-- Username -->
+                <div class="input-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ◉
+                        </span>
+
+                        <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="Enter your username"
+                                autocomplete="username"
+                                required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+                <div class="input-group">
+
+                    <div class="password-label">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+
+
+                    </div>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ◈
+                        </span>
+
+                        <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Remember -->
+                <div class="login-options">
+
+                    <label class="remember-me">
+
+                        <input
+                                type="checkbox"
+                                name="remember-me"
+                        >
+
+                        <span>
+                            Remember me
+                        </span>
+                    </label>
+                    <a th:href="@{/reset}">
+                        Forgot password?
+                    </a>
+                </div>
+
+
+                <!-- Button -->
+                <button
+                        type="submit"
+                        class="sign-in-button"
+                >
+                    <span>SIGN IN</span>
+                    <strong>→</strong>
+                </button>
+
+            </form>
+
+
+            <!-- Security note -->
+            <div class="security-note">
+
+                <span class="lock-icon">⌁</span>
+
+                <div>
+                    <strong>Secure access</strong>
+                    <p>
+                        Your account information is protected
+                        by our secure authentication system.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- Login footer -->
+            <div class="login-bottom">
+
+                <span>© 2026 Joy Hearts Tech Kids Academy</span>
+
+                <span class="system-label">
+                    SCHOOL MANAGEMENT SYSTEM
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
 </body>
 </html>

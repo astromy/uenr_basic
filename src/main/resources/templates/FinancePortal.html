@@ -31,7 +31,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top border-bottom">
             <div class="container-fluid px-4">
                 <a class="navbar-brand d-flex align-items-center" th:href="@{/FinancePortal/}">
-                    <img th:src="@{/pro-pics/UENR.PNG}" height="42" class="me-2">
+                    <img th:src="@{/css/pro-pics/UENR.PNG}" height="42" class="me-2">
                     <div>
                         <div class="brand-title">School Management System</div>
                         <small class="brand-subtitle">Finance Portal</small>
@@ -111,11 +111,15 @@
 
                         <a  class="nav-link" th:href="@{/updateUser}">Update User</a>
 
+                        <hr class="sidebar-divider">
 
+                        <a th:href="@{/FinancePortal/expenses/list}" class="nav-link">Manage Expenses</a>
 
                         <hr class="sidebar-divider">
 
+                        <a th:href="@{/FinancePortal/expenses/report}" class="nav-link">Expense Report</a>
 
+                        <hr class="sidebar-divider">
 
                         <form th:action="@{/logout}" method="post">
 
@@ -283,6 +287,46 @@
 
 
                             </div> </div>
+
+                        <div th:if="${expensesList}">
+
+                            <div th:replace="expenses/expenses::expensesList">
+
+                            </div>
+
+                        </div>
+
+                        <div th:if="${addExpense}">
+
+                            <div th:replace="expenses/add_expense::addExpense">
+
+                            </div>
+
+                        </div>
+
+                        <div th:if="${editExpense}">
+
+                            <div th:replace="expenses/edit_expense::editExpense">
+
+                            </div>
+
+                        </div>
+
+                        <div th:if="${expenseReport}">
+
+                            <div th:replace="expenses/report::expenseReport">
+
+                            </div>
+
+                        </div>
+
+                        <div th:if="${financialSummary}">
+
+                            <div th:replace="expenses/financial_summary::financialSummary">
+
+                            </div>
+
+                        </div>
 
                         <div th:if="${StudentList}" class="card border-0 shadow-sm rounded-lg">
 
@@ -660,14 +704,6 @@
 
 
                             <!--school fees payment-->
-
-                            <div th:if="${id}" class="mb-3">
-                                <a class="btn btn-success" target="_blank"
-                                   th:href="@{/Paystack/Pay/{id}(id=${id})}">
-                                    <i class="fa fa-credit-card"></i> Pay Online with Paystack
-                                </a>
-                                <small class="d-block text-muted mt-1">Opens a payment link the parent can use directly (card, mobile money, bank).</small>
-                            </div>
 
                             <div th:if="${payment}" style="font-size:12px; ">   
 

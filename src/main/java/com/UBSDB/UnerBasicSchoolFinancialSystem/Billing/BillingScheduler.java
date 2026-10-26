@@ -33,10 +33,10 @@ public class BillingScheduler {
         DayOfWeek dayOfWeek = today.getDayOfWeek();
 
         // Skip weekends (Saturday = 6, Sunday = 7)
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            log.info("Skipping daily billing process - today is {} (weekend)", dayOfWeek);
-            return;
-        }
+//        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+//            log.info("Skipping daily billing process - today is {} (weekend)", dayOfWeek);
+//            return;
+//        }
 
         log.info("Running scheduled daily billing for date: {} ({})", today, dayOfWeek);
 

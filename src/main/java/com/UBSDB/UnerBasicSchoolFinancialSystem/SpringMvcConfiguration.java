@@ -25,6 +25,7 @@ public class SpringMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
     /*    
     Path imageUploadDir=Paths.get("./pro-pics");
     String imageUploadPath=imageUploadDir.toFile().getAbsolutePath();
@@ -37,12 +38,15 @@ public class SpringMvcConfiguration implements WebMvcConfigurer {
     
     
     //System.out.println(imageUploadPath);
-    registry.addResourceHandler("/pro-pics/**").addResourceLocations("file:/"+imageUploadPath+"/");
+    registry.addResourceHandler("/css/pro-pics/**").addResourceLocations("file:/"+imageUploadPath+"/");
     registry.addResourceHandler("/script/**").addResourceLocations("classpath:/static/script/");
    registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/");
-   registry.addResourceHandler("/img/**").addResourceLocations("classpath:/static/img/");
-   registry.addResourceHandler("/stud-pics/**").addResourceLocations("file:/"+StudimageUploadPath+"/");
-   
+        registry.addResourceHandler("/css/pro-pics/**").addResourceLocations("classpath:/static/css/");
+
+        registry.addResourceHandler("/img/**").addResourceLocations("classpath:/static/img/");
+        registry
+                .addResourceHandler("/css/page/stud-pics/**")
+                .addResourceLocations("file:/var/data/stud-pics/");
     }
     
 }

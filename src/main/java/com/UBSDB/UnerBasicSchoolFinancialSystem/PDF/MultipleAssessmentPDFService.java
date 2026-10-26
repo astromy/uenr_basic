@@ -12,6 +12,7 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.Attendance.Attendance;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Attendance.AttendanceService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.BillService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.Bill;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBill;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Excel.ExcelServices;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.FeePayment.Payment;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.FeePayment.PaymentService;
@@ -149,7 +150,7 @@ private @Autowired TeachrKlassSubjectService TKS;
         PdfPCell cell=new PdfPCell(); PdfPCell cell2=new PdfPCell();
          Font font=FontFactory.getFont("Gil Sans MT", 11, Color.BLACK);
          cell.setPadding(-1);cell.setBorderWidthTop(10);
-         cell.setBorderColor(Color.WHITE);Path imagepath=Paths.get("stud-pics");
+         cell.setBorderColor(Color.WHITE);Path imagepath=Paths.get("/css/page");
            
          AssessmentPosition AP=new AssessmentPosition();
            DecimalFormat decimalF= new DecimalFormat("##.#");
@@ -291,7 +292,7 @@ private @Autowired TeachrKlassSubjectService TKS;
         
            double areas =(stud.getStudentBills().stream().filter(c-> LocalDate.parse(c.getTerm().getEndDate())
                    .isBefore(LocalDate.parse(t.getEndDate())))
-                   .flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount)
+                   .map(StudentBill ::getFees).map(SchoolFees::getAmount)
                    .reduce(0.0, (b,f)-> b+f)-stud.getPayments().stream().map(Payment::getDiscount).reduce(0.f, (f,s)->f+s))-(stud.getPayments().stream()
                            .filter(c-> c.getDate()
                    .isBefore(LocalDate.parse(t

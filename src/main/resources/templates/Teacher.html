@@ -39,12 +39,12 @@
                         <!---Displaying Subjects that is not assigned to teachers---->
                         <div th:if="${Subjects}" class="jumbotron bg-white shadow">
 
-                            <form mthod="get" th:action="@{/AssignClassAndSubjectToTeacher/{TeacherId}/{ClassId}(TeacherId=${TeacherId},ClassId=${ClassName})}">    
+                            <form method="POST" th:action="@{/AssignClassAndSubjectToTeacher/{TeacherId}/{ClassId}(TeacherId=${TeacherId},ClassId=${ClassName})}">
                                 <table class="table table-striped table-light" id="mydata" th:if="${Subjects}">
 
                                     <tr>
                                         <td ><input type="submit" value="Assign"  class="btn btn-primary"></td>
-                                        <td></td>
+                                        <td>post</td>
                                     </tr>
                                     <thead>
                                         <tr>

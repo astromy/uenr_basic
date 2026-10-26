@@ -6,6 +6,7 @@
 package com.UBSDB.UnerBasicSchoolFinancialSystem.Assessment;
 
 
+import com.UBSDB.UnerBasicSchoolFinancialSystem.ActivityLog.ActivityLogService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Excel.ExcelServices;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Notification.NotificationService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.RestController.student;
@@ -60,10 +61,17 @@ public class AssessmentService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private ActivityLogService activityLogService;
+
     public AssessmentService() {
     }
 
     public String saveAssessment(Assessment assessment) {
+        return saveAssessment(assessment, null);
+    }
+
+    public String saveAssessment(Assessment assessment, String username) {
         try {
             Optional<Assessment> CheckAssessmnt =this.findAssessmentByDeatials(assessment);
             log.info(CheckAssessmnt.isPresent()+":::is present");
@@ -83,6 +91,16 @@ public class AssessmentService {
 
                 // Create notification for assessment update
                 createAssessmentNotification(savedAssessment, "updated");
+
+                // Log assessment update activity
+                if (username != null && !username.isEmpty()) {
+                    String description = String.format("Assessment updated for %s - %s (%s)",
+                            savedAssessment.getStudent().getStudentklass().getClassName(),
+                            savedAssessment.getSubject().getSubjectName(),
+                            savedAssessment.getTerm().getTermName());
+                    activityLogService.recordAssessmentUpload(username, "TEACHER", description);
+                }
+
                 return "Updated Successfully";
 
         } else {
@@ -93,6 +111,16 @@ public class AssessmentService {
 
                 // Create notification for new assessment
                 createAssessmentNotification(savedAssessment, "loaded");
+
+                // Log assessment upload activity
+                if (username != null && !username.isEmpty()) {
+                    String description = String.format("Assessment uploaded for %s - %s (%s)",
+                            savedAssessment.getStudent().getStudentklass().getClassName(),
+                            savedAssessment.getSubject().getSubjectName(),
+                            savedAssessment.getTerm().getTermName());
+                    activityLogService.recordAssessmentUpload(username, "TEACHER", description);
+                }
+
                 return "Successfully saved";
             }
         } catch (Exception var3) {
@@ -366,7 +394,7 @@ Assessment newAss = new Assessment();
             if (!Allterms.isEmpty()) {
                 Allterms.forEach((a, b) -> {
                     Term t = (Term)this.TS.findTermById(a).get();
-                    
+
                     assessmentModel.add(new StudentAssessmentModel(t.getTermName(), a, stud.getStudentId(), b, t.getAcademicyear().getAcademicName()));
                     System.out.println (t.getTermResponse().toString());
                 });
@@ -376,6 +404,210 @@ Assessment newAss = new Assessment();
         } catch (Exception c) {
             c.printStackTrace();
             return new ArrayList();
+        }
+    }
+
+    public StudentAnalyticsResponse getStudentAnalytics(Student stud) {
+        try {
+            List<Assessment> assessments = stud.getAssessment();
+            if (assessments == null || assessments.isEmpty()) {
+                return new StudentAnalyticsResponse(
+                    stud.getFirstName() + " " + stud.getLastName(),
+                    stud.getStudentklass().getClassName(),
+                    new ArrayList<>(),
+                    new ArrayList<>()
+                );
+            }
+
+            // Group assessments by term
+            Map<Long, List<Assessment>> assessmentsByTerm = assessments.stream()
+                .collect(Collectors.groupingBy(a -> a.getTerm().getId()));
+
+            // Sort terms by ID (assuming first term = 1, second = 2, third = 3)
+            List<Long> sortedTermIds = new ArrayList<>(assessmentsByTerm.keySet());
+            sortedTermIds.sort(Long::compareTo);
+
+            List<StudentAnalyticsResponse.TermPerformance> termPerformanceList = new ArrayList<>();
+            List<StudentAnalyticsResponse.SubjectSuggestion> suggestions = new ArrayList<>();
+
+            // Track subject performance across terms for trend analysis
+            Map<String, List<Double>> subjectScoresAcrossTerms = new HashMap<>();
+            Map<String, String> subjectNames = new HashMap<>();
+
+            for (Long termId : sortedTermIds) {
+                Term term = (Term) this.TS.findTermById(termId).get();
+                List<Assessment> termAssessments = assessmentsByTerm.get(termId);
+
+                List<StudentAnalyticsResponse.SubjectScore> subjectScores = termAssessments.stream()
+                    .map(a -> {
+                        String subjectName = a.getSubject().getSubjectName();
+                        subjectNames.put(subjectName, subjectName);
+                        subjectScoresAcrossTerms
+                            .computeIfAbsent(subjectName, k -> new ArrayList<>())
+                            .add(a.getTotalScore());
+                        return new StudentAnalyticsResponse.SubjectScore(
+                            subjectName,
+                            a.getTotalScore(),
+                            a.getGrade()
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+                termPerformanceList.add(new StudentAnalyticsResponse.TermPerformance(
+                    term.getTermName(),
+                    term.getAcademicyear().getAcademicName(),
+                    subjectScores
+                ));
+            }
+
+            // Generate suggestions based on performance trends
+            for (Map.Entry<String, List<Double>> entry : subjectScoresAcrossTerms.entrySet()) {
+                String subjectName = entry.getKey();
+                List<Double> scores = entry.getValue();
+
+                if (scores.size() >= 2) {
+                    // Check for declining trend
+                    boolean declining = true;
+                    for (int i = 1; i < scores.size(); i++) {
+                        if (scores.get(i) >= scores.get(i - 1)) {
+                            declining = false;
+                            break;
+                        }
+                    }
+
+                    if (declining) {
+                        suggestions.add(new StudentAnalyticsResponse.SubjectSuggestion(
+                            subjectName,
+                            "Your performance in " + subjectName + " is declining across terms. Consider seeking extra help from your teacher or forming a study group.",
+                            "high"
+                        ));
+                    } else {
+                        // Check for consistently low scores
+                        double average = scores.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+                        if (average < 50) {
+                            suggestions.add(new StudentAnalyticsResponse.SubjectSuggestion(
+                                subjectName,
+                                "Your average score in " + subjectName + " is " + String.format("%.1f", average) + "%. You need to focus more on this subject to improve your grades.",
+                                "high"
+                            ));
+                        } else if (average < 60) {
+                            suggestions.add(new StudentAnalyticsResponse.SubjectSuggestion(
+                                subjectName,
+                                "Your average score in " + subjectName + " is " + String.format("%.1f", average) + "%. There is room for improvement. Consider reviewing past assessments and practicing more.",
+                                "medium"
+                            ));
+                        }
+                    }
+                } else if (scores.size() == 1) {
+                    double score = scores.get(0);
+                    if (score < 50) {
+                        suggestions.add(new StudentAnalyticsResponse.SubjectSuggestion(
+                            subjectName,
+                            "Your score in " + subjectName + " is " + String.format("%.1f", score) + "%. You need to focus more on this subject.",
+                            "high"
+                        ));
+                    } else if (score < 60) {
+                        suggestions.add(new StudentAnalyticsResponse.SubjectSuggestion(
+                            subjectName,
+                            "Your score in " + subjectName + " is " + String.format("%.1f", score) + "%. Consider putting in more effort to improve.",
+                            "medium"
+                        ));
+                    }
+                }
+            }
+
+            return new StudentAnalyticsResponse(
+                stud.getFirstName() + " " + stud.getLastName(),
+                stud.getStudentklass().getClassName(),
+                termPerformanceList,
+                suggestions
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new StudentAnalyticsResponse(
+                stud.getFirstName() + " " + stud.getLastName(),
+                stud.getStudentklass().getClassName(),
+                new ArrayList<>(),
+                new ArrayList<>()
+            );
+        }
+    }
+
+    public StudentAnalyticsResponse getStudentAnalyticsByTerm(Student stud, Long termId) {
+        try {
+            List<Assessment> assessments = stud.getAssessment();
+            if (assessments == null || assessments.isEmpty()) {
+                return new StudentAnalyticsResponse(
+                    stud.getFirstName() + " " + stud.getLastName(),
+                    stud.getStudentklass().getClassName(),
+                    new ArrayList<>(),
+                    new ArrayList<>()
+                );
+            }
+
+            // Filter assessments for the specific term
+            List<Assessment> termAssessments = assessments.stream()
+                .filter(a -> a.getTerm().getId().equals(termId))
+                .collect(Collectors.toList());
+
+            if (termAssessments.isEmpty()) {
+                return new StudentAnalyticsResponse(
+                    stud.getFirstName() + " " + stud.getLastName(),
+                    stud.getStudentklass().getClassName(),
+                    new ArrayList<>(),
+                    new ArrayList<>()
+                );
+            }
+
+            Term term = (Term) this.TS.findTermById(termId).get();
+
+            List<StudentAnalyticsResponse.SubjectScore> subjectScores = termAssessments.stream()
+                .map(a -> new StudentAnalyticsResponse.SubjectScore(
+                    a.getSubject().getSubjectName(),
+                    a.getTotalScore(),
+                    a.getGrade()
+                ))
+                .collect(Collectors.toList());
+
+            List<StudentAnalyticsResponse.TermPerformance> termPerformanceList = new ArrayList<>();
+            termPerformanceList.add(new StudentAnalyticsResponse.TermPerformance(
+                term.getTermName(),
+                term.getAcademicyear().getAcademicName(),
+                subjectScores
+            ));
+
+            // Generate suggestions for this term only
+            List<StudentAnalyticsResponse.SubjectSuggestion> suggestions = new ArrayList<>();
+            for (StudentAnalyticsResponse.SubjectScore score : subjectScores) {
+                if (score.getTotalScore() < 50) {
+                    suggestions.add(new StudentAnalyticsResponse.SubjectSuggestion(
+                        score.getSubjectName(),
+                        "Your score in " + score.getSubjectName() + " is " + String.format("%.1f", score.getTotalScore()) + "%. You need to focus more on this subject to improve your grades.",
+                        "high"
+                    ));
+                } else if (score.getTotalScore() < 60) {
+                    suggestions.add(new StudentAnalyticsResponse.SubjectSuggestion(
+                        score.getSubjectName(),
+                        "Your score in " + score.getSubjectName() + " is " + String.format("%.1f", score.getTotalScore()) + "%. There is room for improvement. Consider reviewing past assessments and practicing more.",
+                        "medium"
+                    ));
+                }
+            }
+
+            return new StudentAnalyticsResponse(
+                stud.getFirstName() + " " + stud.getLastName(),
+                stud.getStudentklass().getClassName(),
+                termPerformanceList,
+                suggestions
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new StudentAnalyticsResponse(
+                stud.getFirstName() + " " + stud.getLastName(),
+                stud.getStudentklass().getClassName(),
+                new ArrayList<>(),
+                new ArrayList<>()
+            );
         }
     }
 }

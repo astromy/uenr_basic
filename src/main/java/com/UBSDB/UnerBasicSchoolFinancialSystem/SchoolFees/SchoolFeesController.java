@@ -5,8 +5,12 @@
  */
 package com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees;
 
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBill;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBillService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.PTA.PTAService;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentService;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klassService;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,6 +37,8 @@ public class SchoolFeesController {
    @Autowired
    private PTAService ptas;
   private  @Autowired klassService ks;
+  private @Autowired TermService termService;
+  private  @Autowired StudentBillService studentBillService;
   
     @GetMapping("/ShowSchoolFeesForm")
    public String ShowSchoolFeesForm(Model model)
@@ -158,5 +164,72 @@ public class SchoolFeesController {
        
        return "FinancePortal";
        }
-      
+
+    @GetMapping("/BillStudents")
+    public String saveStudentFess(Model model){
+             try{
+                 ks.AllKlass().forEach(klass -> {
+                     var tempSchoolFees =klass
+                             .getSchoolFees()
+                             .stream()
+                             .filter(c
+                                     ->c.getTerm()
+                                     .getTermName()
+                                     .equals(termService.getCurrentTerm().getTermName())).findFirst();
+                           if (tempSchoolFees.isPresent()){
+                            for (Student stud : klass.getStudents()){
+                             var studentBill = StudentBill
+                             .builder()
+                             .fees(tempSchoolFees.get())
+                                     .student(stud)
+                                     .term(tempSchoolFees.get().getTerm())
+
+                             .build();
+                     studentBillService.saveStudentBill(studentBill);
+                            }
+                       }});
+              return "Billed Successfully";
+        }catch(Exception ex){
+            model.addAttribute("msg",ex.toString());
+           ex.printStackTrace();
+        }
+
+        return " null ";
+    }
+
+
+    @GetMapping("/BillStudentsNewAdmission")
+    public String saveStudentsNewAdmission(Model model){
+        try{
+            ks.AllKlass().forEach(klass -> {
+                var tempSchoolFees =klass
+                        .getSchoolFees()
+                        .stream()
+                        .filter(c
+                                ->c.getTerm()
+                                .getTermName()
+                                .equals((termService.getCurrentTerm().getTermName()))&&
+                                        (c.getFeeType().equals("New_Admission"))).findFirst();
+                if (tempSchoolFees.isPresent()){
+                    for (Student stud : klass.getStudents()){
+                        var studentBill = StudentBill
+                                .builder()
+                                .fees(tempSchoolFees.get())
+                                .student(stud)
+                                .term(tempSchoolFees.get().getTerm())
+
+                                .build();
+                        studentBillService.saveStudentBill(studentBill);
+                    }
+                }});
+            return "Billed Successfully";
+        }catch(Exception ex){
+            model.addAttribute("msg",ex.toString());
+            ex.printStackTrace();
+        }
+
+        return " null ";
+    }
+
+
 }

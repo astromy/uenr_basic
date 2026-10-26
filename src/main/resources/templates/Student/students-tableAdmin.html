@@ -1,0 +1,5774 @@
+
+<!--<div th:fragment="students-table"-->
+<!--     xmlns:th="http://www.w3.org/1999/xhtml">-->
+
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+<!--    &lt;!&ndash; CUSTOM PAGE STYLES                                        &ndash;&gt;-->
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+<!--    <style>-->
+
+<!--        /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--           GENERAL-->
+<!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+<!--        .student-page-card {-->
+<!--            border: 0;-->
+<!--            border-radius: 12px;-->
+<!--            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);-->
+<!--            overflow: visible;-->
+<!--        }-->
+
+<!--        .student-page-header {-->
+<!--            background: #ffffff;-->
+<!--            border: 0;-->
+<!--            padding: 20px 24px;-->
+<!--        }-->
+
+<!--        .student-page-title {-->
+<!--            margin: 0;-->
+<!--            font-size: 20px;-->
+<!--            font-weight: 700;-->
+<!--            color: #002752;-->
+<!--        }-->
+
+<!--        .student-page-subtitle {-->
+<!--            margin: 4px 0 0;-->
+<!--            color: #6c757d;-->
+<!--            font-size: 13px;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--           TOP ACTIONS-->
+<!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+<!--        .student-top-actions {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: space-between;-->
+<!--            flex-wrap: wrap;-->
+<!--            gap: 12px;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        .student-top-actions-left {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            flex-wrap: wrap;-->
+<!--            gap: 10px;-->
+<!--        }-->
+
+<!--        .student-top-actions .btn {-->
+<!--            border-radius: 7px;-->
+<!--            font-weight: 500;-->
+<!--            padding: 9px 15px;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--           FORM-->
+<!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+<!--        .student-form-card {-->
+<!--            border: 0;-->
+<!--            border-radius: 12px;-->
+<!--            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .student-form-card .card-header {-->
+<!--            background: #ffffff;-->
+<!--            border: 0;-->
+<!--            padding: 20px 24px 10px;-->
+<!--        }-->
+
+<!--        .student-form-card .card-body {-->
+<!--            padding: 24px;-->
+<!--        }-->
+
+<!--        .student-form-title {-->
+<!--            font-size: 20px;-->
+<!--            font-weight: 700;-->
+<!--            color: #002752;-->
+<!--            margin: 0;-->
+<!--        }-->
+
+<!--        .student-form-section-title {-->
+<!--            font-size: 15px;-->
+<!--            font-weight: 700;-->
+<!--            color: #002752;-->
+<!--            margin-bottom: 15px;-->
+<!--            padding-bottom: 8px;-->
+<!--            border-bottom: 1px solid #eeeeee;-->
+<!--        }-->
+
+<!--        .student-form-card label {-->
+<!--            font-weight: 600;-->
+<!--            font-size: 13px;-->
+<!--            color: #495057;-->
+<!--            margin-bottom: 6px;-->
+<!--        }-->
+
+<!--        .student-form-card .form-control {-->
+<!--            border-radius: 7px;-->
+<!--            min-height: 40px;-->
+<!--            border: 1px solid #dfe3e8;-->
+<!--        }-->
+
+<!--        .student-form-card .form-control:focus {-->
+<!--            border-color: #80bdff;-->
+<!--            box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, .10);-->
+<!--        }-->
+
+<!--        .student-form-card .form-group {-->
+<!--            margin-bottom: 16px;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--           PICTURE-->
+<!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+<!--        .student-picture-box {-->
+<!--            background: #f8f9fa;-->
+<!--            border: 1px dashed #ced4da;-->
+<!--            border-radius: 10px;-->
+<!--            padding: 18px;-->
+<!--            text-align: center;-->
+<!--            min-height: 240px;-->
+<!--        }-->
+
+<!--        .student-picture-box label {-->
+<!--            display: block;-->
+<!--            text-align: left;-->
+<!--        }-->
+
+<!--        .student-existing-picture {-->
+<!--            width: 150px;-->
+<!--            height: 150px;-->
+<!--            object-fit: cover;-->
+<!--            border-radius: 10px;-->
+<!--            border: 1px solid #dee2e6;-->
+<!--            background: #ffffff;-->
+<!--            margin: 10px auto 15px;-->
+<!--            display: block;-->
+<!--        }-->
+
+<!--        .student-preview-picture {-->
+<!--            width: 150px;-->
+<!--            height: 150px;-->
+<!--            object-fit: cover;-->
+<!--            border-radius: 10px;-->
+<!--            border: 1px solid #dee2e6;-->
+<!--            background: #ffffff;-->
+<!--            margin: 10px auto 15px;-->
+<!--            display: block;-->
+<!--        }-->
+
+<!--        .student-picture-caption {-->
+<!--            font-size: 12px;-->
+<!--            color: #6c757d;-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--           STUDENT TABLE-->
+<!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+<!--        .student-table-card {-->
+<!--            border: 0;-->
+<!--            border-radius: 12px;-->
+<!--            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);-->
+<!--            background: #ffffff;-->
+<!--            overflow: visible;-->
+<!--        }-->
+
+<!--        .student-table-header {-->
+<!--            padding: 20px 24px;-->
+<!--            border-bottom: 1px solid #eeeeee;-->
+<!--            background: #ffffff;-->
+<!--            border-radius: 12px 12px 0 0;-->
+<!--        }-->
+
+<!--        .student-table-title {-->
+<!--            margin: 0;-->
+<!--            color: #002752;-->
+<!--            font-size: 19px;-->
+<!--            font-weight: 700;-->
+<!--        }-->
+
+<!--        .student-table-subtitle {-->
+<!--            margin: 4px 0 0;-->
+<!--            font-size: 13px;-->
+<!--            color: #6c757d;-->
+<!--        }-->
+
+<!--        .student-table-wrapper {-->
+<!--            width: 100%;-->
+<!--            overflow-x: auto;-->
+<!--            overflow-y: visible;-->
+<!--        }-->
+
+<!--        .student-table {-->
+<!--            width: 100%;-->
+<!--            margin-bottom: 0;-->
+<!--            border-collapse: separate;-->
+<!--            border-spacing: 0;-->
+<!--            min-width: 900px;-->
+<!--        }-->
+
+<!--        .student-table thead th {-->
+<!--            background: #f7f9fc;-->
+<!--            color: #495057;-->
+<!--            font-size: 12px;-->
+<!--            font-weight: 700;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: .3px;-->
+<!--            padding: 14px 15px;-->
+<!--            border-top: 0;-->
+<!--            border-bottom: 1px solid #e9ecef;-->
+<!--            white-space: nowrap;-->
+<!--        }-->
+
+<!--        .student-table tbody td {-->
+<!--            padding: 13px 15px;-->
+<!--            vertical-align: middle;-->
+<!--            border-top: 1px solid #f0f1f3;-->
+<!--            color: #343a40;-->
+<!--            font-size: 13px;-->
+<!--            background: #ffffff;-->
+<!--        }-->
+
+<!--        .student-table tbody tr:hover td {-->
+<!--            background: #f8fbff;-->
+<!--        }-->
+
+<!--        .student-table tbody tr {-->
+<!--            transition: background-color .15s ease;-->
+<!--        }-->
+
+<!--        .student-picture-small {-->
+<!--            width: 48px;-->
+<!--            height: 48px;-->
+<!--            object-fit: cover;-->
+<!--            border-radius: 8px;-->
+<!--            border: 1px solid #dee2e6;-->
+<!--            background: #f8f9fa;-->
+<!--        }-->
+
+<!--        .student-id-text {-->
+<!--            font-weight: 700;-->
+<!--            color: #002752;-->
+<!--        }-->
+
+<!--        .student-reference-text {-->
+<!--            color: #6c757d;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--           CUSTOM ACTION DROPDOWN-->
+<!--           Does NOT require Bootstrap Popper.js-->
+<!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+<!--        .student-action-dropdown {-->
+<!--            position: relative;-->
+<!--            display: inline-block;-->
+<!--        }-->
+
+<!--        .student-action-btn {-->
+<!--            width: 38px;-->
+<!--            height: 36px;-->
+<!--            padding: 0;-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            border-radius: 7px;-->
+<!--            background: #ffffff;-->
+<!--            border: 1px solid #dee2e6;-->
+<!--            color: #495057;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        .student-action-btn:hover,-->
+<!--        .student-action-btn:focus {-->
+<!--            background: #f1f5f9;-->
+<!--            color: #002752;-->
+<!--            outline: none;-->
+<!--        }-->
+
+<!--        .student-action-menu {-->
+<!--            display: none;-->
+<!--            position: absolute;-->
+<!--            right: 0;-->
+<!--            top: calc(100% + 6px);-->
+<!--            width: 230px;-->
+<!--            background: #ffffff;-->
+<!--            border: 1px solid #e5e7eb;-->
+<!--            border-radius: 9px;-->
+<!--            box-shadow: 0 10px 30px rgba(0, 0, 0, .14);-->
+<!--            padding: 6px 0;-->
+<!--            z-index: 10000;-->
+<!--        }-->
+
+<!--        .student-action-menu.show {-->
+<!--            display: block;-->
+<!--        }-->
+
+<!--        .student-action-item {-->
+<!--            width: 100%;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 10px;-->
+<!--            padding: 10px 14px;-->
+<!--            background: #ffffff;-->
+<!--            border: 0;-->
+<!--            text-decoration: none !important;-->
+<!--            color: #343a40;-->
+<!--            font-size: 13px;-->
+<!--            text-align: left;-->
+<!--            cursor: pointer;-->
+<!--            white-space: nowrap;-->
+<!--        }-->
+
+<!--        .student-action-item:hover {-->
+<!--            background: #f5f8fb;-->
+<!--            color: #002752;-->
+<!--        }-->
+
+<!--        .student-action-item i {-->
+<!--            width: 18px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .student-action-divider {-->
+<!--            height: 1px;-->
+<!--            background: #eeeeee;-->
+<!--            margin: 5px 0;-->
+<!--        }-->
+
+<!--        .student-action-stop {-->
+<!--            color: #dc3545 !important;-->
+<!--        }-->
+
+<!--        .student-action-stop:hover {-->
+<!--            background: #fff5f5;-->
+<!--            color: #bd2130 !important;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--           PAGINATION-->
+<!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+<!--        .student-pagination-wrapper {-->
+<!--            padding: 18px 20px;-->
+<!--            background: #ffffff;-->
+<!--            border-top: 1px solid #eeeeee;-->
+<!--            border-radius: 0 0 12px 12px;-->
+<!--        }-->
+
+<!--        .student-pagination .page-link {-->
+<!--            border-radius: 6px;-->
+<!--            margin: 0 3px;-->
+<!--            color: #002752;-->
+<!--            border: 1px solid #dee2e6;-->
+<!--            min-width: 36px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .student-pagination .page-item.active .page-link {-->
+<!--            background: #002752;-->
+<!--            border-color: #002752;-->
+<!--            color: #ffffff;-->
+<!--        }-->
+
+<!--        .student-pagination .page-item.disabled .page-link {-->
+<!--            color: #adb5bd;-->
+<!--            background: #f8f9fa;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--           MODAL-->
+<!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+<!--        #StoppedAction .modal-content {-->
+<!--            border: 0;-->
+<!--            border-radius: 10px;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        #StoppedAction .modal-header {-->
+<!--            background: #002752;-->
+<!--            color: #ffffff;-->
+<!--            border: 0;-->
+<!--        }-->
+
+<!--        #StoppedAction .modal-footer {-->
+<!--            border-top: 1px solid #eeeeee;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--           RESPONSIVE-->
+<!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+<!--        @media (max-width: 768px) {-->
+
+<!--            .student-top-actions {-->
+<!--                align-items: stretch;-->
+<!--                flex-direction: column;-->
+<!--            }-->
+
+<!--            .student-top-actions-left {-->
+<!--                width: 100%;-->
+<!--            }-->
+
+<!--            .student-top-actions-left .btn {-->
+<!--                flex: 1;-->
+<!--            }-->
+
+<!--            .student-form-card .card-body {-->
+<!--                padding: 16px;-->
+<!--            }-->
+
+<!--            .student-picture-box {-->
+<!--                margin-top: 10px;-->
+<!--            }-->
+
+<!--            .student-action-menu {-->
+<!--                right: 0;-->
+<!--                width: 210px;-->
+<!--            }-->
+<!--        }-->
+
+<!--    </style>-->
+
+
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+<!--    &lt;!&ndash; TOP ACTION AREA                                            &ndash;&gt;-->
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+
+<!--    <div th:if="${StudentList}"-->
+<!--         class="student-top-actions">-->
+
+<!--        <div class="student-top-actions-left">-->
+
+<!--            &lt;!&ndash; ADD STUDENT &ndash;&gt;-->
+<!--            <a th:href="@{/AddStudentForm}"-->
+<!--               class="btn btn-primary">-->
+<!--                <i class="fa fa-plus mr-1"></i>-->
+<!--                Add Student-->
+<!--            </a>-->
+
+<!--            &lt;!&ndash; DOWNLOAD &ndash;&gt;-->
+<!--            <a th:href="@{/DownloadStudentExcelSheet/{ClassId}(ClassId=${classId})}"-->
+<!--               class="btn btn-outline-primary">-->
+<!--                <i class="fa fa-file-excel-o mr-1"></i>-->
+<!--                Download Student File-->
+<!--            </a>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+<!--    &lt;!&ndash; ADD STUDENT                                                &ndash;&gt;-->
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+
+<!--    <div th:if="${newStudent}"-->
+<!--         class="student-form-card card mb-4">-->
+
+<!--        <div class="card-header">-->
+<!--            <h5 class="student-form-title">-->
+<!--                <i class="fa fa-user-plus mr-2"></i>-->
+<!--                Add Student-->
+<!--            </h5>-->
+
+<!--            <p class="student-page-subtitle">-->
+<!--                Enter the student's information below.-->
+<!--            </p>-->
+<!--        </div>-->
+
+<!--        <div class="card-body">-->
+
+<!--            <form th:method="post"-->
+<!--                  id="form"-->
+<!--                  th:action="@{/SaveStudent}"-->
+<!--                  th:object="${newStudent}"-->
+<!--                  enctype="multipart/form-data">-->
+
+<!--                <div class="row">-->
+
+<!--                    &lt;!&ndash; LEFT COLUMN &ndash;&gt;-->
+<!--                    <div class="col-lg-8 col-md-12">-->
+
+<!--                        <div class="row">-->
+
+<!--                            &lt;!&ndash; BASIC INFORMATION &ndash;&gt;-->
+<!--                            <div class="col-md-6">-->
+
+<!--                                <div class="student-form-section-title">-->
+<!--                                    Basic Information-->
+<!--                                </div>-->
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="text">-->
+<!--                                        Student Id-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{StudentId}"-->
+<!--                                           readonly="true">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="inputAddress">-->
+<!--                                        First Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{FirstName}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="inputAddress">-->
+<!--                                        Sur Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{surname}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="inputAddress2">-->
+<!--                                        Other Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{LastName}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="inputAddress">-->
+<!--                                        Sex-->
+<!--                                    </label>-->
+
+<!--                                    <select th:field="*{Sex}"-->
+<!--                                            class="form-control">-->
+
+<!--                                        <option value="Male">-->
+<!--                                            Male-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Female">-->
+<!--                                            Female-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="dob">-->
+<!--                                        Date of Birth-->
+<!--                                    </label>-->
+
+<!--                                    <input type="date"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{dateOfBirth}"-->
+<!--                                           id="dob"-->
+<!--                                           onchange="calculateAge();">-->
+
+<!--                                    <small class="text-muted">-->
+<!--                                        Current age:-->
+<!--                                        <strong id="result"></strong>-->
+<!--                                    </small>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="class">-->
+<!--                                        Class-->
+<!--                                    </label>-->
+
+<!--                                    <select id="class"-->
+<!--                                            class="form-control"-->
+<!--                                            th:field="*{studentklass}">-->
+
+<!--                                        <option th:each="klass : ${StudentClass}"-->
+<!--                                                th:value="${klass.ClassName}"-->
+<!--                                                th:text="${klass.ClassName}">-->
+<!--                                            kg1-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Physical Disability-->
+<!--                                    </label>-->
+
+<!--                                    <select class="form-control"-->
+<!--                                            th:field="*{physicalDisability}">-->
+
+<!--                                        <option th:value="No">-->
+<!--                                            No-->
+<!--                                        </option>-->
+
+<!--                                        <option th:value="Yes">-->
+<!--                                            Yes-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+<!--                            </div>-->
+
+
+<!--                            &lt;!&ndash; GUARDIAN INFORMATION &ndash;&gt;-->
+<!--                            <div class="col-md-6">-->
+
+<!--                                <div class="student-form-section-title">-->
+<!--                                    Guardian Information-->
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="NewStudent">-->
+<!--                                        New Student-->
+<!--                                    </label>-->
+
+<!--                                    <select class="form-control"-->
+<!--                                            id="NewStudent"-->
+<!--                                            name="NewStudent">-->
+
+<!--                                        <option value="No">-->
+<!--                                            No-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Yes">-->
+<!--                                            Yes-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="ParentCategory">-->
+<!--                                        Select Category-->
+<!--                                    </label>-->
+
+<!--                                    <select class="form-control"-->
+<!--                                            id="ParentCategory"-->
+<!--                                            th:field="*{ParentCategory}"-->
+<!--                                            onchange="ShowTextField();">-->
+
+<!--                                        <option value="Junior-Staff">-->
+<!--                                            Junior-Staff-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Senior-Staff">-->
+<!--                                            Senior-Staff-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Non-Staff">-->
+<!--                                            Non-Staff-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="inputAddress2">-->
+<!--                                        NHIS Card number-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{NHISCardumber}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="inputAddress2">-->
+<!--                                        Guardian Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{GuadiaName}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="inputAddress2">-->
+<!--                                        Guardian GH. card number-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{GhanaCardNumber}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group d-none"-->
+<!--                                     id="staff">-->
+
+<!--                                    <label for="inputAddress2">-->
+<!--                                        (Only Staff) Staff Id-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{staffId}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="inputAddress2">-->
+<!--                                        Guardian Number-->
+<!--                                    </label>-->
+
+<!--                                    <input type="tel"-->
+<!--                                           pattern="[0-9]{3}[0-9]{3}[0-9]{4}"-->
+<!--                                           required-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{parentNumber}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="inputAddress2">-->
+<!--                                        Occupation-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{Occupation}">-->
+
+<!--                                </div>-->
+
+<!--                            </div>-->
+
+<!--                        </div>-->
+
+<!--                    </div>-->
+
+
+<!--                    &lt;!&ndash; PICTURE &ndash;&gt;-->
+<!--                    <div class="col-lg-4 col-md-12">-->
+
+<!--                        <div class="student-picture-box">-->
+
+<!--                            <label for="file-image">-->
+<!--                                Student Picture-->
+<!--                            </label>-->
+
+<!--                            <input type="file"-->
+<!--                                   class="form-control form-control-file"-->
+<!--                                   id="file-image"-->
+<!--                                   name="file-image"-->
+<!--                                   accept="image/*"-->
+<!--                                   onchange="showImageThumbnail(this);">-->
+
+
+<!--                            <img id="thumbnail"-->
+<!--                                 alt="Student Picture Preview"-->
+<!--                                 class="student-preview-picture d-none">-->
+
+
+<!--                            <p class="student-picture-caption">-->
+<!--                                Select a clear picture of the student.-->
+<!--                            </p>-->
+
+
+<!--                            <div class="mt-3">-->
+
+<!--                                <input type="submit"-->
+<!--                                       class="btn btn-primary btn-block"-->
+<!--                                       value="Save Student"-->
+<!--                                       id="upload_btn"-->
+<!--                                       onclick="spinOnload();">-->
+
+
+<!--                                <button class="btn btn-primary btn-block d-none"-->
+<!--                                        id="loading_btn"-->
+<!--                                        type="button">-->
+
+<!--                                    <span class="spinner-border spinner-border-sm"-->
+<!--                                          role="status"-->
+<!--                                          aria-hidden="true">-->
+<!--                                    </span>-->
+
+<!--                                    Uploading...-->
+
+<!--                                </button>-->
+
+<!--                            </div>-->
+
+<!--                        </div>-->
+
+<!--                    </div>-->
+
+<!--                </div>-->
+
+<!--            </form>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+<!--    &lt;!&ndash; UPDATE STUDENT                                             &ndash;&gt;-->
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+
+<!--    <div th:if="${UpdateStudent}"-->
+<!--         class="student-form-card card mb-4">-->
+
+<!--        <div class="card-header">-->
+
+<!--            <h5 class="student-form-title">-->
+<!--                <i class="fa fa-pencil mr-2"></i>-->
+<!--                Update Student-->
+<!--            </h5>-->
+
+<!--            <p class="student-page-subtitle">-->
+<!--                Update the student's information.-->
+<!--            </p>-->
+
+<!--        </div>-->
+
+
+<!--        <div class="card-body">-->
+
+<!--            <form th:method="post"-->
+<!--                  id="form"-->
+<!--                  th:action="@{/update}"-->
+<!--                  th:object="${UpdateStudent}"-->
+<!--                  enctype="multipart/form-data">-->
+
+<!--                <div class="row">-->
+
+<!--                    <div class="col-lg-8 col-md-12">-->
+
+<!--                        <div class="row">-->
+
+<!--                            &lt;!&ndash; BASIC INFORMATION &ndash;&gt;-->
+<!--                            <div class="col-md-6">-->
+
+<!--                                <div class="student-form-section-title">-->
+<!--                                    Basic Information-->
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Student Id-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{StudentId}"-->
+<!--                                           readonly="true">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        First Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{FirstName}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Sur Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{surname}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Other Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{LastName}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Sex-->
+<!--                                    </label>-->
+
+<!--                                    <select th:field="*{Sex}"-->
+<!--                                            class="form-control">-->
+
+<!--                                        <option value="Male">-->
+<!--                                            Male-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Female">-->
+<!--                                            Female-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Date of Birth-->
+<!--                                    </label>-->
+
+<!--                                    <input type="date"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{dateOfBirth}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Class-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:value="${StudentClass}"-->
+<!--                                           name="studentKlass"-->
+<!--                                           id="studentKlass">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Physical Disability-->
+<!--                                    </label>-->
+
+<!--                                    <select class="form-control"-->
+<!--                                            th:field="*{physicalDisability}">-->
+
+<!--                                        <option value="No">-->
+<!--                                            No-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Yes">-->
+<!--                                            Yes-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+<!--                            </div>-->
+
+
+<!--                            &lt;!&ndash; GUARDIAN &ndash;&gt;-->
+<!--                            <div class="col-md-6">-->
+
+<!--                                <div class="student-form-section-title">-->
+<!--                                    Guardian Information-->
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="NewStudent">-->
+<!--                                        New Student-->
+<!--                                    </label>-->
+
+<!--                                    <select class="form-control"-->
+<!--                                            id="NewStudent"-->
+<!--                                            name="NewStudent">-->
+
+<!--                                        <option value="No">-->
+<!--                                            No-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Yes">-->
+<!--                                            Yes-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="ParentCategory">-->
+<!--                                        Select Category-->
+<!--                                    </label>-->
+
+<!--                                    <select class="form-control"-->
+<!--                                            id="ParentCategory"-->
+<!--                                            th:field="*{ParentCategory}"-->
+<!--                                            onchange="ShowTextField();">-->
+
+<!--                                        <option value="Junior-Staff">-->
+<!--                                            Junior-Staff-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Senior-Staff">-->
+<!--                                            Senior-Staff-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Non-Staff">-->
+<!--                                            Non-Staff-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        NHIS Card number-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{NHISCardumber}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Guardian Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{GuadiaName}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Guardian GH. card number-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{GhanaCardNumber}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group d-none"-->
+<!--                                     id="staff">-->
+
+<!--                                    <label>-->
+<!--                                        (Only Staff) Staff Id-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{staffId}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Guardian Number-->
+<!--                                    </label>-->
+
+<!--                                    <input type="tel"-->
+<!--                                           pattern="[0-9]{3}[0-9]{3}[0-9]{4}"-->
+<!--                                           required-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{parentNumber}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Occupation-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{Occupation}">-->
+
+<!--                                </div>-->
+
+<!--                            </div>-->
+
+<!--                        </div>-->
+
+<!--                    </div>-->
+
+
+<!--                    &lt;!&ndash; UPDATE BUTTON &ndash;&gt;-->
+<!--                    <div class="col-lg-4 col-md-12">-->
+
+<!--                        <div class="student-picture-box">-->
+
+<!--                            <div class="mb-3">-->
+
+<!--                                <i class="fa fa-user-edit fa-2x text-primary"></i>-->
+
+<!--                            </div>-->
+
+<!--                            <h6 class="font-weight-bold">-->
+<!--                                Update Student Information-->
+<!--                            </h6>-->
+
+<!--                            <p class="student-picture-caption">-->
+<!--                                Save the changes made to this student's information.-->
+<!--                            </p>-->
+
+<!--                            <input type="submit"-->
+<!--                                   class="btn btn-primary btn-block"-->
+<!--                                   value="Save Student"-->
+<!--                                   id="upload_btn"-->
+<!--                                   onclick="spinOnload();">-->
+
+
+<!--                            <button class="btn btn-primary btn-block d-none"-->
+<!--                                    id="loading_btn"-->
+<!--                                    type="button">-->
+
+<!--                                <span class="spinner-border spinner-border-sm"-->
+<!--                                      role="status"-->
+<!--                                      aria-hidden="true">-->
+<!--                                </span>-->
+
+<!--                                Updating...-->
+
+<!--                            </button>-->
+
+<!--                        </div>-->
+
+<!--                    </div>-->
+
+<!--                </div>-->
+
+<!--            </form>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+<!--    &lt;!&ndash; UPDATE STUDENT PICTURE                                     &ndash;&gt;-->
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+
+<!--    <div th:if="${UpdateStudentPicture}"-->
+<!--         class="student-form-card card mb-4">-->
+
+<!--        <div class="card-header">-->
+
+<!--            <h5 class="student-form-title">-->
+<!--                <i class="fa fa-camera mr-2"></i>-->
+<!--                Update Student Picture-->
+<!--            </h5>-->
+
+<!--            <p class="student-page-subtitle">-->
+<!--                Change the student's existing picture.-->
+<!--            </p>-->
+
+<!--        </div>-->
+
+
+<!--        <div class="card-body">-->
+
+<!--            <form th:method="post"-->
+<!--                  id="form"-->
+<!--                  th:action="@{/updateWithPicture}"-->
+<!--                  th:object="${UpdateStudentPicture}"-->
+<!--                  enctype="multipart/form-data">-->
+
+<!--                <div class="row">-->
+
+<!--                    &lt;!&ndash; STUDENT INFORMATION &ndash;&gt;-->
+<!--                    <div class="col-lg-8 col-md-12">-->
+
+<!--                        <div class="row">-->
+
+<!--                            <div class="col-md-6">-->
+
+<!--                                <div class="student-form-section-title">-->
+<!--                                    Student Information-->
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Student Id-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{StudentId}"-->
+<!--                                           readonly="true">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        First Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{FirstName}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Sur Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{surname}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Other Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{LastName}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Sex-->
+<!--                                    </label>-->
+
+<!--                                    <select th:field="*{Sex}"-->
+<!--                                            class="form-control">-->
+
+<!--                                        <option value="Male">-->
+<!--                                            Male-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Female">-->
+<!--                                            Female-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Date of Birth-->
+<!--                                    </label>-->
+
+<!--                                    <input type="date"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{dateOfBirth}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Class-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:value="${StudentClass}"-->
+<!--                                           name="studentKlass"-->
+<!--                                           id="studentKlass">-->
+
+<!--                                </div>-->
+
+<!--                            </div>-->
+
+
+<!--                            <div class="col-md-6">-->
+
+<!--                                <div class="student-form-section-title">-->
+<!--                                    Additional Information-->
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Physical Disability-->
+<!--                                    </label>-->
+
+<!--                                    <select class="form-control"-->
+<!--                                            th:field="*{physicalDisability}">-->
+
+<!--                                        <option value="No">-->
+<!--                                            No-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Yes">-->
+<!--                                            Yes-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label for="ParentCategory">-->
+<!--                                        Select Category-->
+<!--                                    </label>-->
+
+<!--                                    <select class="form-control"-->
+<!--                                            id="ParentCategory"-->
+<!--                                            th:field="*{ParentCategory}"-->
+<!--                                            onchange="ShowTextField();">-->
+
+<!--                                        <option value="Junior-Staff">-->
+<!--                                            Junior-Staff-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Senior-Staff">-->
+<!--                                            Senior-Staff-->
+<!--                                        </option>-->
+
+<!--                                        <option value="Non-Staff">-->
+<!--                                            Non-Staff-->
+<!--                                        </option>-->
+
+<!--                                    </select>-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        NHIS Card number-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{NHISCardumber}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Guardian Name-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{GuadiaName}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Guardian GH. card number-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{GhanaCardNumber}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group d-none"-->
+<!--                                     id="staff">-->
+
+<!--                                    <label>-->
+<!--                                        (Only Staff) Staff Id-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{staffId}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Guardian Number-->
+<!--                                    </label>-->
+
+<!--                                    <input type="tel"-->
+<!--                                           pattern="[0-9]{3}[0-9]{3}[0-9]{4}"-->
+<!--                                           required-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{parentNumber}">-->
+
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+
+<!--                                    <label>-->
+<!--                                        Occupation-->
+<!--                                    </label>-->
+
+<!--                                    <input type="text"-->
+<!--                                           class="form-control"-->
+<!--                                           th:field="*{Occupation}">-->
+
+<!--                                </div>-->
+
+<!--                            </div>-->
+
+<!--                        </div>-->
+
+<!--                    </div>-->
+
+
+<!--                    &lt;!&ndash; PICTURE &ndash;&gt;-->
+<!--                    <div class="col-lg-4 col-md-12">-->
+
+<!--                        <div class="student-picture-box">-->
+
+<!--                            <label>-->
+<!--                                Existing Student Picture-->
+<!--                            </label>-->
+
+
+<!--                            &lt;!&ndash; EXISTING PICTURE &ndash;&gt;-->
+<!--                            <img th:if="${UpdateStudentPicture.productPicturePath != null and UpdateStudentPicture.productPicturePath != ''}"-->
+<!--                                 th:src="@{${UpdateStudentPicture.productPicturePath}}"-->
+<!--                                 class="student-existing-picture"-->
+<!--                                 alt="Existing Student Picture">-->
+
+
+<!--                            &lt;!&ndash; No picture message &ndash;&gt;-->
+<!--                            <div th:if="${UpdateStudentPicture.productPicturePath == null or UpdateStudentPicture.productPicturePath == ''}"-->
+<!--                                 class="py-4 text-muted">-->
+
+<!--                                <i class="fa fa-image fa-3x mb-2"></i>-->
+
+<!--                                <p class="mb-0">-->
+<!--                                    No existing picture-->
+<!--                                </p>-->
+
+<!--                            </div>-->
+
+
+<!--                            &lt;!&ndash; KEEP EXISTING PATH &ndash;&gt;-->
+<!--                            <input type="hidden"-->
+<!--                                   th:field="*{productPicturePath}">-->
+
+
+<!--                            <hr>-->
+
+
+<!--                            <label for="file-image">-->
+<!--                                Select New Picture-->
+<!--                            </label>-->
+
+<!--                            <input type="file"-->
+<!--                                   class="form-control form-control-file"-->
+<!--                                   id="file-image"-->
+<!--                                   name="file-image"-->
+<!--                                   accept="image/*"-->
+<!--                                   onchange="showImageThumbnail(this);">-->
+
+
+<!--                            &lt;!&ndash; NEW PICTURE PREVIEW &ndash;&gt;-->
+<!--                            <img id="thumbnail"-->
+<!--                                 alt="New Picture Preview"-->
+<!--                                 class="student-preview-picture d-none">-->
+
+
+<!--                            <p class="student-picture-caption">-->
+<!--                                Select a new image only if you want to replace the current picture.-->
+<!--                            </p>-->
+
+
+<!--                            <div class="mt-3">-->
+
+<!--                                <input type="submit"-->
+<!--                                       class="btn btn-primary btn-block"-->
+<!--                                       value="Save Student"-->
+<!--                                       id="upload_btn"-->
+<!--                                       onclick="spinOnload();">-->
+
+
+<!--                                <button class="btn btn-primary btn-block d-none"-->
+<!--                                        id="loading_btn"-->
+<!--                                        type="button">-->
+
+<!--                                    <span class="spinner-border spinner-border-sm"-->
+<!--                                          role="status"-->
+<!--                                          aria-hidden="true">-->
+<!--                                    </span>-->
+
+<!--                                    Updating...-->
+
+<!--                                </button>-->
+
+<!--                            </div>-->
+
+<!--                        </div>-->
+
+<!--                    </div>-->
+
+<!--                </div>-->
+
+<!--            </form>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+<!--    &lt;!&ndash; STUDENT LIST                                               &ndash;&gt;-->
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+
+<!--    <div th:if="${StudentList}"-->
+<!--         class="student-table-card">-->
+
+<!--        &lt;!&ndash; TABLE HEADER &ndash;&gt;-->
+<!--        <div class="student-table-header">-->
+
+<!--            <div class="d-flex justify-content-between align-items-center flex-wrap">-->
+
+<!--                <div>-->
+
+<!--                    <h5 class="student-table-title">-->
+<!--                        <i class="fa fa-users mr-2"></i>-->
+<!--                        Students-->
+<!--                    </h5>-->
+
+<!--                    <p class="student-table-subtitle">-->
+<!--                        Manage students in this class.-->
+<!--                    </p>-->
+
+<!--                </div>-->
+
+
+<!--                <div class="mt-2 mt-md-0">-->
+
+<!--                    <span class="badge badge-light border px-3 py-2">-->
+
+<!--                        <i class="fa fa-list mr-1"></i>-->
+
+<!--                        <span th:text="${studentPage.totalElements}">-->
+<!--                            0-->
+<!--                        </span>-->
+
+<!--                        Students-->
+
+<!--                    </span>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+
+<!--        &lt;!&ndash; TABLE &ndash;&gt;-->
+<!--        <div class="student-table-wrapper">-->
+
+<!--            <table class="student-table table">-->
+
+<!--                <thead>-->
+
+<!--                <tr>-->
+
+<!--                    <th>-->
+<!--                        Student ID-->
+<!--                    </th>-->
+
+<!--                    <th>-->
+<!--                        Student Reference-->
+<!--                    </th>-->
+
+<!--                    <th>-->
+<!--                        First Name-->
+<!--                    </th>-->
+
+<!--                    <th>-->
+<!--                        Other Name-->
+<!--                    </th>-->
+
+<!--                    <th>-->
+<!--                        Sur Name-->
+<!--                    </th>-->
+
+<!--                    <th>-->
+<!--                        Picture-->
+<!--                    </th>-->
+
+<!--                    <th class="text-center">-->
+<!--                        Action-->
+<!--                    </th>-->
+
+<!--                </tr>-->
+
+<!--                </thead>-->
+
+
+<!--                <tbody>-->
+
+<!--                <tr th:each="student : ${StudentList}">-->
+
+<!--                    &lt;!&ndash; STUDENT ID &ndash;&gt;-->
+<!--                    <td>-->
+
+<!--                        <span class="student-id-text"-->
+<!--                              th:text="${student.StudentId}">-->
+<!--                            Student ID-->
+<!--                        </span>-->
+
+<!--                    </td>-->
+
+
+<!--                    &lt;!&ndash; REFERENCE &ndash;&gt;-->
+<!--                    <td>-->
+
+<!--                        <span class="student-reference-text"-->
+<!--                              th:text="${student.StudentReference}">-->
+<!--                            Reference-->
+<!--                        </span>-->
+
+<!--                    </td>-->
+
+
+<!--                    &lt;!&ndash; FIRST NAME &ndash;&gt;-->
+<!--                    <td th:text="${student.FirstName}">-->
+<!--                        First Name-->
+<!--                    </td>-->
+
+
+<!--                    &lt;!&ndash; OTHER NAME &ndash;&gt;-->
+<!--                    <td th:text="${student.LastName}">-->
+<!--                        Other Name-->
+<!--                    </td>-->
+
+
+<!--                    &lt;!&ndash; SURNAME &ndash;&gt;-->
+<!--                    <td th:text="${student.surname}">-->
+<!--                        Sur Name-->
+<!--                    </td>-->
+
+
+<!--                    &lt;!&ndash; PICTURE &ndash;&gt;-->
+<!--                    <td>-->
+
+<!--                        <img th:if="${student.productPicturePath != null and student.productPicturePath != ''}"-->
+<!--                             th:src="@{${student.productPicturePath}}"-->
+<!--                             class="student-picture-small"-->
+<!--                             alt="Student Picture">-->
+
+<!--                        <div th:if="${student.productPicturePath == null or student.productPicturePath == ''}"-->
+<!--                             class="student-picture-small d-flex align-items-center justify-content-center">-->
+
+<!--                            <i class="fa fa-user text-muted"></i>-->
+
+<!--                        </div>-->
+
+<!--                    </td>-->
+
+
+<!--                    &lt;!&ndash; ACTION &ndash;&gt;-->
+<!--                    <td class="text-center">-->
+
+<!--                        <div class="student-action-dropdown">-->
+
+<!--                            <button type="button"-->
+<!--                                    class="student-action-btn"-->
+<!--                                    title="Student Actions"-->
+<!--                                    onclick="toggleStudentMenu(this);">-->
+
+<!--                                <i class="fa fa-ellipsis-v">:</i>-->
+
+<!--                            </button>-->
+
+
+<!--                            <div class="student-action-menu">-->
+
+<!--                                &lt;!&ndash; DETAILS &ndash;&gt;-->
+<!--                                <a th:href="@{/StudentDetails/{id}(id=${student.StudentId})}"-->
+<!--                                   class="student-action-item">-->
+
+<!--                                    <i class="fa fa-eye text-primary"></i>-->
+
+<!--                                    <span>-->
+<!--                                        View Details-->
+<!--                                    </span>-->
+
+<!--                                </a>-->
+
+
+<!--                                &lt;!&ndash; UPDATE DETAILS &ndash;&gt;-->
+<!--                                <a th:href="@{/UpdateDetails/{id}(id=${student.StudentId})}"-->
+<!--                                   class="student-action-item">-->
+
+<!--                                    <i class="fa fa-pencil text-warning"></i>-->
+
+<!--                                    <span>-->
+<!--                                        Update Details-->
+<!--                                    </span>-->
+
+<!--                                </a>-->
+
+
+<!--                                &lt;!&ndash; UPDATE PICTURE &ndash;&gt;-->
+<!--                                <a th:href="@{/UpdateDetailsPicture/{id}(id=${student.StudentId})}"-->
+<!--                                   class="student-action-item">-->
+
+<!--                                    <i class="fa fa-camera text-info"></i>-->
+
+<!--                                    <span>-->
+<!--                                        Update Picture-->
+<!--                                    </span>-->
+
+<!--                                </a>-->
+
+
+<!--                                <div class="student-action-divider"></div>-->
+
+
+<!--                                &lt;!&ndash; STOP STUDENT &ndash;&gt;-->
+<!--                                <button type="button"-->
+<!--                                        class="student-action-item student-action-stop"-->
+<!--                                        th:onclick="SaveBusiness('[[${student.StudentId}]]','[[${classId}]]');">-->
+
+<!--                                    <i class="fa fa-user-times"></i>-->
+
+<!--                                    <span>-->
+<!--                                        Stop Student-->
+<!--                                    </span>-->
+
+<!--                                </button>-->
+
+<!--                            </div>-->
+
+<!--                        </div>-->
+
+<!--                    </td>-->
+
+<!--                </tr>-->
+
+
+<!--                &lt;!&ndash; EMPTY STATE &ndash;&gt;-->
+<!--                <tr th:if="${#lists.isEmpty(StudentList)}">-->
+
+<!--                    <td colspan="7"-->
+<!--                        class="text-center py-5">-->
+
+<!--                        <div class="text-muted">-->
+
+<!--                            <i class="fa fa-users fa-3x mb-3"></i>-->
+
+<!--                            <h6 class="font-weight-bold">-->
+<!--                                No Students Found-->
+<!--                            </h6>-->
+
+<!--                            <p class="mb-0">-->
+<!--                                There are currently no students in this class.-->
+<!--                            </p>-->
+
+<!--                        </div>-->
+
+<!--                    </td>-->
+
+<!--                </tr>-->
+
+<!--                </tbody>-->
+
+<!--            </table>-->
+
+<!--        </div>-->
+
+
+<!--        &lt;!&ndash; ===================================================== &ndash;&gt;-->
+<!--        &lt;!&ndash; PAGINATION                                             &ndash;&gt;-->
+<!--        &lt;!&ndash; ===================================================== &ndash;&gt;-->
+
+<!--        <div class="student-pagination-wrapper"-->
+<!--             th:if="${studentPage.totalPages > 1}">-->
+
+<!--            <nav>-->
+
+<!--                <ul class="pagination student-pagination justify-content-center mb-0">-->
+
+<!--                    &lt;!&ndash; PREVIOUS &ndash;&gt;-->
+<!--                    <li class="page-item"-->
+<!--                        th:classappend="${studentPage.first} ? 'disabled'">-->
+
+<!--                        <a class="page-link"-->
+<!--                           th:href="@{/Studentlist/{id}(id=${classId}, page=${studentPage.number - 1}, size=${studentPage.size})}">-->
+
+<!--                            <i class="fa fa-chevron-left mr-1"></i>-->
+<!--                            Previous-->
+
+<!--                        </a>-->
+
+<!--                    </li>-->
+
+
+<!--                    &lt;!&ndash; PAGE NUMBERS &ndash;&gt;-->
+<!--                    <li class="page-item"-->
+<!--                        th:each="i : ${#numbers.sequence(0, studentPage.totalPages - 1)}"-->
+<!--                        th:classappend="${i == studentPage.number} ? 'active'">-->
+
+<!--                        <a class="page-link"-->
+<!--                           th:href="@{/Studentlist/{id}(id=${classId}, page=${i}, size=${studentPage.size})}"-->
+<!--                           th:text="${i + 1}">-->
+
+<!--                            1-->
+
+<!--                        </a>-->
+
+<!--                    </li>-->
+
+
+<!--                    &lt;!&ndash; NEXT &ndash;&gt;-->
+<!--                    <li class="page-item"-->
+<!--                        th:classappend="${studentPage.last} ? 'disabled'">-->
+
+<!--                        <a class="page-link"-->
+<!--                           th:href="@{/Studentlist/{id}(id=${classId}, page=${studentPage.number + 1}, size=${studentPage.size})}">-->
+
+<!--                            Next-->
+<!--                            <i class="fa fa-chevron-right ml-1"></i>-->
+
+<!--                        </a>-->
+
+<!--                    </li>-->
+
+<!--                </ul>-->
+
+<!--            </nav>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+<!--    &lt;!&ndash; STOP STUDENT MODAL                                        &ndash;&gt;-->
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+
+<!--    <div class="modal fade"-->
+<!--         id="StoppedAction"-->
+<!--         tabindex="-1"-->
+<!--         role="dialog"-->
+<!--         aria-labelledby="exampleModalLabel"-->
+<!--         aria-hidden="true">-->
+
+<!--        <div class="modal-dialog modal-dialog-centered"-->
+<!--             role="document">-->
+
+<!--            <div class="modal-content">-->
+
+<!--                <div class="modal-header">-->
+
+<!--                    <h5 class="modal-title"-->
+<!--                        id="exampleModalLabel">-->
+
+<!--                        <i class="fa fa-user-times mr-2"></i>-->
+<!--                        Stop Student-->
+
+<!--                    </h5>-->
+
+
+<!--                    <button type="button"-->
+<!--                            class="close text-white"-->
+<!--                            data-dismiss="modal"-->
+<!--                            aria-label="Close">-->
+
+<!--                        <span aria-hidden="true">-->
+<!--                            &times;-->
+<!--                        </span>-->
+
+<!--                    </button>-->
+
+<!--                </div>-->
+
+
+<!--                <div class="modal-body">-->
+
+<!--                    <div class="text-center py-2">-->
+
+<!--                        <div class="mb-3">-->
+
+<!--                            <i class="fa fa-exclamation-triangle fa-3x text-warning"></i>-->
+
+<!--                        </div>-->
+
+<!--                        <h6 class="font-weight-bold">-->
+<!--                            Are you sure?-->
+<!--                        </h6>-->
+
+<!--                        <p class="text-muted mb-0">-->
+<!--                            Do you want to stop this student?-->
+<!--                        </p>-->
+
+<!--                    </div>-->
+
+
+<!--                    &lt;!&ndash; HIDDEN VALUES &ndash;&gt;-->
+<!--                    <input type="hidden"-->
+<!--                           id="studIdModal"-->
+<!--                           value="">-->
+
+
+<!--                    <input type="hidden"-->
+<!--                           id="studClassModal"-->
+<!--                           value="">-->
+
+<!--                </div>-->
+
+
+<!--                <div class="modal-footer">-->
+
+<!--                    <button type="button"-->
+<!--                            class="btn btn-secondary"-->
+<!--                            data-dismiss="modal">-->
+
+<!--                        Cancel-->
+
+<!--                    </button>-->
+
+
+<!--                    <button type="button"-->
+<!--                            class="btn btn-danger"-->
+<!--                            onclick="submitDropStudent();">-->
+
+<!--                        <i class="fa fa-check mr-1"></i>-->
+<!--                        Approve-->
+
+<!--                    </button>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+
+
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+<!--    &lt;!&ndash; JAVASCRIPT                                                 &ndash;&gt;-->
+<!--    &lt;!&ndash; ========================================================= &ndash;&gt;-->
+
+<!--    <script>-->
+
+<!--        /* =========================================================-->
+<!--           ACTION DROPDOWN-->
+<!--           Custom dropdown - NO Popper.js required-->
+<!--        ========================================================= */-->
+
+<!--        function toggleStudentMenu(button) {-->
+
+<!--            if (!button) {-->
+<!--                return;-->
+<!--            }-->
+
+<!--            var menu = button.parentElement-->
+<!--                    ? button.parentElement.querySelector(".student-action-menu")-->
+<!--                    : null;-->
+
+<!--            if (!menu) {-->
+<!--                return;-->
+<!--            }-->
+
+<!--            /* Close every other menu */-->
+<!--            var menus = document.querySelectorAll(".student-action-menu.show");-->
+
+<!--            menus.forEach(function (item) {-->
+
+<!--                if (item !== menu) {-->
+<!--                    item.classList.remove("show");-->
+<!--                }-->
+
+<!--            });-->
+
+
+<!--            /* Toggle current menu */-->
+<!--            menu.classList.toggle("show");-->
+<!--        }-->
+
+
+<!--        /* Close dropdown when clicking outside */-->
+<!--        document.addEventListener("click", function (event) {-->
+
+<!--            var target = event.target;-->
+
+<!--            if (!target.closest(".student-action-dropdown")) {-->
+
+<!--                var menus = document.querySelectorAll(".student-action-menu.show");-->
+
+<!--                menus.forEach(function (menu) {-->
+<!--                    menu.classList.remove("show");-->
+<!--                });-->
+
+<!--            }-->
+
+<!--        });-->
+
+
+<!--        /* =========================================================-->
+<!--           PARENT CATEGORY-->
+<!--        ========================================================= */-->
+
+<!--        function ShowTextField() {-->
+
+<!--            var category = document.getElementById("ParentCategory");-->
+<!--            var staff = document.getElementById("staff");-->
+
+<!--            /*-->
+<!--             * Important:-->
+<!--             * Some pages do not contain these fields.-->
+<!--             * Therefore we check before accessing .value.-->
+<!--             */-->
+<!--            if (!category || !staff) {-->
+<!--                return;-->
+<!--            }-->
+
+
+<!--            var value = category.value;-->
+
+
+<!--            if (value === "Senior-Staff" ||-->
+<!--                value === "Junior-Staff" ||-->
+<!--                value === "Senior-Member") {-->
+
+<!--                staff.classList.remove("d-none");-->
+
+<!--            } else {-->
+
+<!--                staff.classList.add("d-none");-->
+
+<!--            }-->
+
+<!--        }-->
+
+
+<!--        /* =========================================================-->
+<!--           CALCULATE AGE-->
+<!--        ========================================================= */-->
+
+<!--        function calculateAge() {-->
+
+<!--            var dob = document.getElementById("dob");-->
+<!--            var result = document.getElementById("result");-->
+
+
+<!--            /*-->
+<!--             * This prevents:-->
+<!--             *-->
+<!--             * Cannot read properties of null (reading 'value')-->
+<!--             *-->
+<!--             * on pages where dob/result do not exist.-->
+<!--             */-->
+<!--            if (!dob || !result) {-->
+<!--                return;-->
+<!--            }-->
+
+
+<!--            if (!dob.value) {-->
+
+<!--                result.innerText = "";-->
+
+<!--                return;-->
+<!--            }-->
+
+
+<!--            var birthDate = new Date(dob.value);-->
+<!--            var today = new Date();-->
+
+
+<!--            if (isNaN(birthDate.getTime())) {-->
+
+<!--                result.innerText = "";-->
+
+<!--                return;-->
+<!--            }-->
+
+
+<!--            var age = today.getFullYear() - -->
+<!--                      birthDate.getFullYear();-->
+
+
+<!--            var month = today.getMonth() - -->
+<!--                        birthDate.getMonth();-->
+
+
+<!--            if (month < 0 ||-->
+<!--                (month === 0 &&-->
+<!--                 today.getDate() < birthDate.getDate())) {-->
+
+<!--                age&#45;&#45;;-->
+
+<!--            }-->
+
+
+<!--            result.innerText = age;-->
+<!--        }-->
+
+
+<!--        /* =========================================================-->
+<!--           IMAGE PREVIEW-->
+<!--        ========================================================= */-->
+
+<!--        function showImageThumbnail(input) {-->
+
+<!--            var thumbnail = document.getElementById("thumbnail");-->
+
+
+<!--            if (!thumbnail) {-->
+<!--                return;-->
+<!--            }-->
+
+
+<!--            if (!input ||-->
+<!--                !input.files ||-->
+<!--                input.files.length === 0) {-->
+
+<!--                thumbnail.classList.add("d-none");-->
+
+<!--                thumbnail.removeAttribute("src");-->
+
+<!--                return;-->
+<!--            }-->
+
+
+<!--            var file = input.files[0];-->
+
+
+<!--            /*-->
+<!--             * Only preview image files.-->
+<!--             */-->
+<!--            if (!file.type ||-->
+<!--                file.type.indexOf("image/") !== 0) {-->
+
+<!--                thumbnail.classList.add("d-none");-->
+
+<!--                thumbnail.removeAttribute("src");-->
+
+<!--                return;-->
+<!--            }-->
+
+
+<!--            var reader = new FileReader();-->
+
+
+<!--            reader.onload = function (event) {-->
+
+<!--                if (!event.target) {-->
+<!--                    return;-->
+<!--                }-->
+
+<!--                thumbnail.src = event.target.result;-->
+
+<!--                thumbnail.classList.remove("d-none");-->
+
+<!--            };-->
+
+
+<!--            reader.onerror = function () {-->
+
+<!--                thumbnail.classList.add("d-none");-->
+
+<!--            };-->
+
+
+<!--            reader.readAsDataURL(file);-->
+<!--        }-->
+
+
+<!--        /* =========================================================-->
+<!--           STOP STUDENT-->
+<!--        ========================================================= */-->
+
+<!--        function SaveBusiness(studentId, classId) {-->
+
+<!--            var studentField =-->
+<!--                document.getElementById("studIdModal");-->
+
+<!--            var classField =-->
+<!--                document.getElementById("studClassModal");-->
+
+
+<!--            if (studentField) {-->
+<!--                studentField.value = studentId || "";-->
+<!--            }-->
+
+
+<!--            if (classField) {-->
+<!--                classField.value = classId || "";-->
+<!--            }-->
+
+
+<!--            /*-->
+<!--             * Use the existing Bootstrap modal.-->
+<!--             * This does NOT use Bootstrap dropdown/Popper.-->
+<!--             */-->
+<!--            if (typeof $ !== "undefined" &&-->
+<!--                $("#StoppedAction").length) {-->
+
+<!--                $("#StoppedAction").modal("show");-->
+
+<!--            } else {-->
+
+<!--                /*-->
+<!--                 * Fallback if jQuery/Bootstrap modal is unavailable.-->
+<!--                 */-->
+<!--                var modal =-->
+<!--                    document.getElementById("StoppedAction");-->
+
+<!--                if (modal) {-->
+
+<!--                    modal.style.display = "block";-->
+<!--                    modal.classList.add("show");-->
+<!--                    modal.setAttribute("aria-hidden", "false");-->
+
+<!--                }-->
+
+<!--            }-->
+
+<!--        }-->
+
+
+<!--        /* =========================================================-->
+<!--           SUBMIT STOP STUDENT-->
+<!--        ========================================================= */-->
+
+<!--        function submitDropStudent() {-->
+
+<!--            var studentField =-->
+<!--                document.getElementById("studIdModal");-->
+
+<!--            var classField =-->
+<!--                document.getElementById("studClassModal");-->
+
+
+<!--            if (!studentField || !classField) {-->
+
+<!--                alert("Student information is missing.");-->
+
+<!--                return;-->
+<!--            }-->
+
+
+<!--            var studentId =-->
+<!--                studentField.value;-->
+
+<!--            var ClassId =-->
+<!--                classField.value;-->
+
+
+<!--            if (!studentId || !ClassId) {-->
+
+<!--                alert("Student information is missing.");-->
+
+<!--                return;-->
+<!--            }-->
+
+
+<!--            /*-->
+<!--             * Existing Spring MVC route.-->
+<!--             */-->
+<!--            var url =-->
+<!--                "/FlagStudent/" +-->
+<!--                encodeURIComponent(studentId) +-->
+<!--                "/" +-->
+<!--                encodeURIComponent(ClassId);-->
+
+
+<!--            if (typeof $ === "undefined") {-->
+
+<!--                /*-->
+<!--                 * No jQuery available.-->
+<!--                 * Use normal browser navigation.-->
+<!--                 */-->
+<!--                window.location.href = url;-->
+
+<!--                return;-->
+<!--            }-->
+
+
+<!--            $.ajax({-->
+
+<!--                url: url,-->
+
+<!--                method: "GET",-->
+
+<!--                success: function () {-->
+
+<!--                    window.location.reload();-->
+
+<!--                },-->
+
+<!--                error: function (xhr, status, error) {-->
+
+<!--                    console.error(-->
+<!--                        status + ": " +-->
+<!--                        error,-->
+<!--                        xhr-->
+<!--                    );-->
+
+
+<!--                    alert(-->
+<!--                        "Unable to stop the student."-->
+<!--                    );-->
+
+<!--                }-->
+
+<!--            });-->
+
+<!--        }-->
+
+
+<!--        /* =========================================================-->
+<!--           SAFE LOADING-->
+<!--        ========================================================= */-->
+
+<!--        document.addEventListener(-->
+<!--            "DOMContentLoaded",-->
+<!--            function () {-->
+
+<!--                /*-->
+<!--                 * These functions are now safe even when-->
+<!--                 * their elements are not present.-->
+<!--                 */-->
+<!--                ShowTextField();-->
+
+<!--                calculateAge();-->
+
+<!--            }-->
+<!--        );-->
+
+
+<!--    </script>-->
+
+<!--</div>-->
+
+
+This version stays aligned with the original Thymeleaf fragment and its existing form bindings/actions.
+
+**Important:** the existing-picture field now uses `UpdateStudentPicture.productPicturePath`, so the image is loaded from the path already stored on the student rather than requiring a `default.jpg`. Your original code was binding that same property in the picture form.
+
+Also, the Action menu is deliberately **not** a Bootstrap `.dropdown`; therefore the `Bootstrap's dropdowns require Popper.js` error should no longer be caused by this student table.
+<div th:fragment="students-table"
+     xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <style>
+
+        /* =========================================================
+           GENERAL
+           ========================================================= */
+
+        .student-page {
+            width: 100%;
+        }
+
+        .student-card {
+            border: 0;
+            border-radius: 12px;
+            overflow: visible;
+            background: #ffffff;
+        }
+
+        .student-card-header {
+            padding: 18px 22px;
+            background: #ffffff;
+            border-bottom: 1px solid #eef0f2;
+        }
+
+        .student-card-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .student-card-subtitle {
+            margin-top: 4px;
+            margin-bottom: 0;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        /* =========================================================
+           TOP ACTION BAR
+           ========================================================= */
+
+        .student-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 18px 20px;
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .student-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 40px;
+            padding: 8px 15px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none !important;
+        }
+
+        /* =========================================================
+           SEARCH
+           ========================================================= */
+
+        .student-search-filter-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .student-search-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .student-search-box {
+            position: relative;
+            width: 100%;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+
+            background: #ffffff;
+            border: 1px solid #dfe3e8;
+            border-radius: 8px;
+
+            transition: all 0.2s ease;
+        }
+
+        .student-search-box:focus-within {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.08);
+        }
+
+        .student-search-icon {
+            width: 45px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: #6c757d;
+        }
+
+        .student-search-input {
+            flex: 1;
+            height: 42px;
+
+            border: 0 !important;
+            outline: none !important;
+
+            padding: 0 45px 0 0;
+
+            font-size: 14px;
+            background: transparent;
+            box-shadow: none !important;
+        }
+
+        .student-search-input::placeholder {
+            color: #9aa0a6;
+        }
+
+        .student-search-clear {
+            position: absolute;
+            right: 9px;
+            top: 8px;
+
+            width: 28px;
+            height: 28px;
+
+            border: 0;
+            border-radius: 50%;
+
+            background: #f1f3f5;
+            color: #6c757d;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transition: all 0.2s ease;
+        }
+
+        .student-search-clear:hover {
+            background: #e2e6ea;
+            color: #212529;
+        }
+
+        /* =========================================================
+           FILTER BUTTON
+           ========================================================= */
+
+        .student-filter-container {
+            position: relative;
+        }
+
+        .student-filter-button {
+            height: 44px;
+            min-width: 105px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            padding: 0 15px;
+
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+
+            background: #ffffff;
+            color: #343a40;
+
+            font-size: 13px;
+            font-weight: 500;
+
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .student-filter-button:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        .student-filter-button.active {
+            background: #f0f6ff;
+            border-color: #80bdff;
+            color: #0069d9;
+        }
+
+        .student-filter-badge {
+            display: none;
+
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+
+            border-radius: 10px;
+
+            background: #007bff;
+            color: #ffffff;
+
+            font-size: 10px;
+            font-weight: 600;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+        .student-filter-badge.show {
+            display: inline-flex;
+        }
+
+        /* =========================================================
+           FILTER DROPDOWN
+           ========================================================= */
+
+        .student-filter-menu {
+            position: absolute;
+            z-index: 1050;
+
+            top: calc(100% + 8px);
+            right: 0;
+
+            width: 285px;
+
+            padding: 17px;
+
+            background: #ffffff;
+
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+            display: none;
+        }
+
+        .student-filter-menu.show {
+            display: block;
+        }
+
+        .student-filter-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .student-filter-title {
+            margin: 0;
+
+            font-size: 14px;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .student-filter-close {
+            border: 0;
+            background: transparent;
+
+            color: #6c757d;
+
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .student-filter-group {
+            margin-bottom: 15px;
+        }
+
+        .student-filter-label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            font-size: 12px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .student-filter-select {
+            width: 100%;
+            height: 40px;
+
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+
+            padding: 0 10px;
+
+            background: #ffffff;
+
+            font-size: 13px;
+            color: #343a40;
+
+            outline: none;
+        }
+
+        .student-filter-select:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.08);
+        }
+
+        .student-filter-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+
+            padding-top: 5px;
+        }
+
+        .student-filter-clear {
+            height: 36px;
+
+            padding: 0 13px;
+
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+
+            background: #ffffff;
+            color: #495057;
+
+            font-size: 12px;
+
+            cursor: pointer;
+        }
+
+        .student-filter-apply {
+            height: 36px;
+
+            padding: 0 15px;
+
+            border: 0;
+            border-radius: 6px;
+
+            background: #007bff;
+            color: #ffffff;
+
+            font-size: 12px;
+
+            cursor: pointer;
+        }
+
+        /* =========================================================
+           SEARCH INFO
+           ========================================================= */
+
+        .student-search-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 10px;
+
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .student-active-filter-text {
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        /* =========================================================
+           TABLE
+           ========================================================= */
+
+        .student-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+
+            background: #ffffff;
+
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .student-table {
+            width: 100%;
+            margin: 0;
+
+            border-collapse: separate;
+            border-spacing: 0;
+
+            min-width: 900px;
+        }
+
+        .student-table thead th {
+            background: #f8f9fa;
+
+            color: #495057;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            padding: 14px 13px;
+
+            border-bottom: 1px solid #e9ecef;
+            border-top: 0;
+
+            white-space: nowrap;
+        }
+
+        .student-table tbody td {
+            padding: 12px 13px;
+
+            vertical-align: middle;
+
+            border-top: 1px solid #f1f3f5;
+
+            font-size: 13px;
+
+            color: #343a40;
+
+            background: #ffffff;
+        }
+
+        .student-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .student-table tbody tr:hover td {
+            background: #f8fbff;
+        }
+
+        .student-table tbody tr.hidden-search-row {
+            display: none;
+        }
+
+        /* =========================================================
+           STUDENT PICTURE
+           ========================================================= */
+
+        .student-table-picture {
+            width: 42px;
+            height: 42px;
+
+            object-fit: cover;
+
+            border-radius: 50%;
+
+            border: 2px solid #ffffff;
+
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .student-picture-preview {
+            width: 150px;
+            height: 150px;
+
+            object-fit: cover;
+
+            border-radius: 10px;
+
+            border: 1px solid #dee2e6;
+
+            background: #f8f9fa;
+        }
+
+        /* =========================================================
+           ACTION DROPDOWN
+           ========================================================= */
+
+        .student-action-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .student-action-button-small {
+            width: 36px;
+            height: 36px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid #dee2e6;
+            border-radius: 7px;
+
+            background: #ffffff;
+            color: #495057;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+        }
+
+        .student-action-button-small:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        .student-action-menu {
+            position: absolute;
+
+            right: 0;
+            top: calc(100% + 5px);
+
+            z-index: 1040;
+
+            width: 190px;
+
+            padding: 6px;
+
+            background: #ffffff;
+
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+
+            display: none;
+        }
+
+        .student-action-menu.show {
+            display: block;
+        }
+
+        .student-action-item {
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            padding: 9px 10px;
+
+            border: 0;
+            border-radius: 6px;
+
+            background: transparent;
+
+            color: #343a40;
+
+            font-size: 13px;
+
+            text-decoration: none !important;
+
+            cursor: pointer;
+
+            text-align: left;
+
+            transition: background 0.15s ease;
+        }
+
+        .student-action-item:hover {
+            background: #f5f7f9;
+        }
+
+        .student-action-item.danger {
+            color: #dc3545;
+        }
+
+        .student-action-item.danger:hover {
+            background: #fff5f5;
+        }
+
+        /* =========================================================
+           PAGINATION
+           ========================================================= */
+
+        .student-pagination {
+            padding: 18px 0;
+        }
+
+        .student-pagination .pagination {
+            margin-bottom: 0;
+        }
+
+        .student-pagination .page-link {
+            border-radius: 6px !important;
+            margin: 0 3px;
+
+            color: #495057;
+            font-size: 13px;
+        }
+
+        .student-pagination .page-item.active .page-link {
+            background: #007bff;
+            border-color: #007bff;
+            color: #ffffff;
+        }
+
+        /* =========================================================
+           EMPTY SEARCH RESULT
+           ========================================================= */
+
+        .student-no-results {
+            display: none;
+            padding: 45px 20px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .student-no-results i {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #adb5bd;
+        }
+
+        .student-no-results h6 {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .student-no-results p {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        /* =========================================================
+           FORMS
+           ========================================================= */
+
+        .student-form-card {
+            border: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .student-form-card .card-header {
+            background: #ffffff;
+            border-bottom: 1px solid #eeeeee;
+            padding: 18px 22px;
+        }
+
+        .student-form-card .card-header h5 {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .student-form-card .card-body {
+            padding: 22px;
+        }
+
+        .student-form-card label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .student-form-card .form-control {
+            border-radius: 7px;
+            font-size: 13px;
+        }
+
+        /* =========================================================
+           MOBILE
+           ========================================================= */
+
+        @media (max-width: 768px) {
+
+            .student-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .student-toolbar-left,
+            .student-toolbar-right {
+                width: 100%;
+            }
+
+            .student-action-button {
+                flex: 1;
+            }
+
+            .student-search-filter-row {
+                align-items: stretch;
+            }
+
+            .student-filter-button {
+                min-width: 90px;
+            }
+
+            .student-filter-menu {
+                right: 0;
+                width: 270px;
+            }
+
+            .student-search-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+
+    </style>
+
+
+    <!-- =========================================================
+         MAIN PAGE
+         ========================================================= -->
+
+    <div class="student-page">
+
+
+        <!-- =====================================================
+             ADD STUDENT FORM
+             ===================================================== -->
+
+        <div th:if="${newStudent}">
+
+            <div class="card student-form-card">
+
+                <div class="card-header">
+                    <h5>Add Student</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form th:method="post"
+                          id="form"
+                          th:action="@{/SaveStudent}"
+                          th:object="${newStudent}"
+                          enctype="multipart/form-data">
+
+                        <div class="row">
+
+                            <div class="col-md-8">
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label>Student Id</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{StudentId}"
+                                                   readonly="true">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>First Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{FirstName}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Sur Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{surname}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Other Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{LastName}">
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label>Sex</label>
+
+                                            <select th:field="*{Sex}"
+                                                    class="form-control">
+
+                                                <option value="Male">
+                                                    Male
+                                                </option>
+
+                                                <option value="Female">
+                                                    Female
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label>Date of Birth</label>
+
+                                            <input type="date"
+                                                   class="form-control"
+                                                   th:field="*{dateOfBirth}"
+                                                   id="dob"
+                                                   onchange="calculateAge();">
+
+                                            <span class="small text-muted">
+                                                Current age:
+                                                <span id="result"></span>
+                                            </span>
+
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label>Class</label>
+
+                                            <select id="class"
+                                                    class="form-control"
+                                                    th:field="*{studentklass}">
+
+                                                <option id="class"
+                                                        th:each="klass:${StudentClass}"
+                                                        th:value="${klass.ClassName}"
+                                                        th:text="${klass.ClassName}">
+                                                    kg1
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label>Physical Disability</label>
+
+                                            <select class="form-control"
+                                                    th:field="*{physicalDisability}">
+
+                                                <option th:value="No">
+                                                    No
+                                                </option>
+
+                                                <option th:value="Yes">
+                                                    Yes
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label>New Student</label>
+
+                                            <select class="form-control"
+                                                    id="NewStudent"
+                                                    name="NewStudent">
+
+                                                <option th:value="No">
+                                                    No
+                                                </option>
+
+                                                <option th:value="Yes">
+                                                    Yes
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Select Category</label>
+
+                                            <select class="form-control"
+                                                    th:field="*{ParentCategory}"
+                                                    onchange="ShowTextField()">
+
+                                                <option th:value="Junior-Staff">
+                                                    Junior-Staff
+                                                </option>
+
+                                                <option th:value="Senior-Staff">
+                                                    Senior-Staff
+                                                </option>
+
+                                                <option th:value="Non-Staff">
+                                                    Non-Staff
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>NHIS Card number</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{NHISCardumber}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Guardian Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{GuadiaName}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Guardian GH. card number</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{GhanaCardNumber}">
+
+                                        </div>
+
+
+                                        <hr>
+
+
+                                        <div class="form-group d-none"
+                                             id="staff">
+
+                                            <label>
+                                                (Only Staff) Staff Id
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{staffId}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Guardian Number</label>
+
+                                            <input type="tel"
+                                                   pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                                                   required
+                                                   class="form-control"
+                                                   th:field="*{parentNumber}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Occupation</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{Occupation}">
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label>Student Picture</label>
+
+                                    <input type="file"
+                                           class="form-control-file"
+                                           id="file-image"
+                                           name="file-image"
+                                           onchange="showImageThumbnail(this)">
+
+                                </div>
+
+                                <p>
+
+                                    <img id="thumbnail"
+                                         alt="logo-preview"
+                                         class="d-none img-thumbnail student-picture-preview">
+
+                                </p>
+
+
+                                <div class="mt-3">
+
+                                    <input type="submit"
+                                           class="btn btn-primary"
+                                           value="Save Student"
+                                           id="upload_btn"
+                                           th:onclick="spinOnload()">
+
+                                    <button class="btn btn-primary d-none"
+                                            id="loading_btn"
+                                            type="button">
+
+                                        <span class="spinner-border spinner-border-sm"
+                                              role="status"
+                                              aria-hidden="true">
+                                        </span>
+
+                                        Uploading.................
+
+                                    </button>
+
+                                </div>
+
+                                <button class="btn btn-secondary d-none mt-2"
+                                        id="cancel_btn"
+                                        type="button">
+
+                                    Cancel Button
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div th:if="${UpdateStudent}">
+
+            <div class="card student-form-card">
+
+                <div class="card-header">
+
+                    <h5>Update Student</h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form th:method="post"
+                          id="form"
+                          th:action="@{/update}"
+                          th:object="${UpdateStudent}"
+                          enctype="multipart/form-data">
+
+                        <div class="row">
+
+                            <div class="col-md-8">
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label>Student Id</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{StudentId}"
+                                                   readonly="true">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>First Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{FirstName}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Sur Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{surname}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Other Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{LastName}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Sex</label>
+
+                                            <select th:field="*{Sex}"
+                                                    class="form-control">
+
+                                                <option value="Male">
+                                                    Male
+                                                </option>
+
+                                                <option value="Female">
+                                                    Female
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Date of Birth</label>
+
+                                            <input type="date"
+                                                   class="form-control"
+                                                   th:field="*{dateOfBirth}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Class</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${StudentClass}"
+                                                   name="studentKlass"
+                                                   id="studentKlass">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Physical Disability</label>
+
+                                            <select class="form-control"
+                                                    th:field="*{physicalDisability}">
+
+                                                <option th:value="No">
+                                                    No
+                                                </option>
+
+                                                <option th:value="Yes">
+                                                    Yes
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label>New Student</label>
+
+                                            <select class="form-control"
+                                                    id="NewStudent"
+                                                    name="NewStudent">
+
+                                                <option th:value="No">
+                                                    No
+                                                </option>
+
+                                                <option th:value="Yes">
+                                                    Yes
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Select Category</label>
+
+                                            <select class="form-control"
+                                                    th:field="*{ParentCategory}"
+                                                    onchange="ShowTextField()">
+
+                                                <option th:value="Junior-Staff">
+                                                    Junior-Staff
+                                                </option>
+
+                                                <option th:value="Senior-Staff">
+                                                    Senior-Staff
+                                                </option>
+
+                                                <option th:value="Non-Staff">
+                                                    Non-Staff
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>NHIS Card number</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{NHISCardumber}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Guardian Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{GuadiaName}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Guardian GH. card number</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{GhanaCardNumber}">
+
+                                        </div>
+
+
+                                        <hr>
+
+
+                                        <div class="form-group d-none"
+                                             id="staff">
+
+                                            <label>
+                                                (Only Staff) Staff Id
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{staffId}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Guardian Number</label>
+
+                                            <input type="tel"
+                                                   pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                                                   required
+                                                   class="form-control"
+                                                   th:field="*{parentNumber}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Occupation</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{Occupation}">
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="mt-4">
+
+                                    <input type="submit"
+                                           class="btn btn-primary"
+                                           value="Save Student"
+                                           id="upload_btn"
+                                           th:onclick="spinOnload()">
+
+                                    <button class="btn btn-primary d-none"
+                                            id="loading_btn"
+                                            type="button">
+
+                                        <span class="spinner-border spinner-border-sm"
+                                              role="status"
+                                              aria-hidden="true">
+                                        </span>
+
+                                        Uploading.................
+
+                                    </button>
+
+                                </div>
+
+                                <button class="btn btn-secondary d-none mt-2"
+                                        id="cancel_btn"
+                                        type="button">
+
+                                    Cancel Button
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             UPDATE STUDENT PICTURE
+             ===================================================== -->
+
+        <div th:if="${UpdateStudentPicture}">
+
+            <div class="card student-form-card">
+
+                <div class="card-header">
+
+                    <h5>Update Student Picture</h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form th:method="post"
+                          id="form"
+                          th:action="@{/updateWithPicture}"
+                          th:object="${UpdateStudentPicture}"
+                          enctype="multipart/form-data">
+
+                        <div class="row">
+
+                            <div class="col-md-8">
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label>Student Id</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{StudentId}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>First Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{FirstName}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Sur Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{surname}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Other Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{LastName}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Sex</label>
+
+                                            <select th:field="*{Sex}"
+                                                    class="form-control">
+
+                                                <option value="Male">
+                                                    Male
+                                                </option>
+
+                                                <option value="Female">
+                                                    Female
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Date of Birth</label>
+
+                                            <input type="date"
+                                                   class="form-control"
+                                                   th:field="*{dateOfBirth}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Class</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${StudentClass}"
+                                                   name="studentKlass"
+                                                   id="studentKlass">
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label>Physical Disability</label>
+
+                                            <select class="form-control"
+                                                    th:field="*{physicalDisability}">
+
+                                                <option th:value="No">
+                                                    No
+                                                </option>
+
+                                                <option th:value="Yes">
+                                                    Yes
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Select Category</label>
+
+                                            <select class="form-control"
+                                                    th:field="*{ParentCategory}"
+                                                    onchange="ShowTextField()">
+
+                                                <option th:value="Junior-Staff">
+                                                    Junior-Staff
+                                                </option>
+
+                                                <option th:value="Senior-Staff">
+                                                    Senior-Staff
+                                                </option>
+
+                                                <option th:value="Non-Staff">
+                                                    Non-Staff
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>NHIS Card number</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{NHISCardumber}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Guardian Name</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{GuadiaName}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Guardian GH. card number</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{GhanaCardNumber}">
+
+                                        </div>
+
+
+                                        <hr>
+
+
+                                        <div class="form-group d-none"
+                                             id="staff">
+
+                                            <label>
+                                                (Only Staff) Staff Id
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{staffId}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Guardian Number</label>
+
+                                            <input type="tel"
+                                                   pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                                                   required
+                                                   class="form-control"
+                                                   th:field="*{parentNumber}">
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+                                            <label>Occupation</label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{Occupation}">
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label>Current Student Picture</label>
+
+                                    <!-- Keep existing picture path -->
+                                    <input type="text"
+                                           class="form-control mb-3"
+                                           th:field="*{studentPicture}"
+                                           readonly>
+
+                                    <img th:src="${UpdateStudentPicture.productPicturePath}"
+                                         class="student-picture-preview mb-3"
+                                         alt="Current Student Picture"
+                                         onerror="this.onerror=null;this.src='/images/default.jpg';">
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label>Choose New Picture</label>
+
+                                    <input type="file"
+                                           class="form-control-file"
+                                           required
+                                           id="file-image"
+                                           name="file-image"
+                                           onchange="showImageThumbnail(this)">
+
+                                </div>
+
+
+                                <p>
+
+                                    <img id="thumbnail"
+                                         alt="New Picture Preview"
+                                         class="d-none img-thumbnail student-picture-preview">
+
+                                </p>
+
+
+                                <div class="mt-3">
+
+                                    <input type="submit"
+                                           class="btn btn-primary"
+                                           value="Save Student"
+                                           id="upload_btn"
+                                           th:onclick="spinOnload()">
+
+                                    <button class="btn btn-primary d-none"
+                                            id="loading_btn"
+                                            type="button">
+
+                                        <span class="spinner-border spinner-border-sm"
+                                              role="status"
+                                              aria-hidden="true">
+                                        </span>
+
+                                        Uploading.................
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             STUDENT LIST
+             ===================================================== -->
+
+        <div th:if="${StudentList}"
+             class="mt-3">
+
+
+            <!-- =================================================
+                 TOP TOOLBAR
+                 ================================================= -->
+
+            <div class="student-toolbar">
+
+                <div class="student-toolbar-left">
+
+                    <div>
+
+                        <h5 class="student-card-title">
+                            Students
+                        </h5>
+
+                        <p class="student-card-subtitle">
+                            Manage students in this class
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="student-toolbar-right">
+
+                    <!-- ADD STUDENT -->
+
+                    <a th:href="@{/AddStudentForm}"
+                       class="btn btn-primary student-action-button">
+
+                        <i class="fa fa-plus"></i>
+
+                        Add Student
+
+                    </a>
+
+
+                    <!-- DOWNLOAD -->
+
+                    <a th:href="@{/DownloadStudentExcelSheet/{ClassId}(ClassId=${classId})}"
+                       class="btn btn-outline-primary student-action-button">
+
+                        <i class="fa fa-download"></i>
+
+                        Download
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SEARCH + FILTER
+                 ================================================= -->
+
+            <div class="student-search-filter-row">
+
+
+                <!-- SEARCH -->
+
+                <div class="student-search-wrapper">
+
+                    <div class="student-search-box">
+
+                        <div class="student-search-icon">
+
+                            <i class="fa fa-search"></i>
+
+                        </div>
+
+                        <form th:action="@{/Studentlist/{id}(id=${classId})}"
+                              method="get"
+                              class="student-search-form">
+
+
+                                <input type="text"
+                                       name="search"
+                                       id="studentSearch"
+                                       class="student-search-input"
+                                       th:value="${search}"
+                                       placeholder="Search by Student ID, reference, first name, other name or surname..."
+                                       autocomplete="off">
+
+                                <button type="submit"
+                                        class="btn btn-primary"
+                                        style="height:44px; border-radius:0 8px 8px 0;">
+
+                                    <i class="fa fa-search"></i>
+                                    Search
+
+                                </button>
+
+
+
+                            <input type="hidden"
+                                   name="size"
+                                   th:value="${studentPage.size}">
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILTER -->
+
+                <div class="student-filter-container">
+
+                    <button type="button"
+                            id="studentFilterButton"
+                            class="student-filter-button"
+                            onclick="toggleStudentFilter(event)">
+
+                        <i class="fa fa-filter"></i>
+
+                        Filter
+
+                        <span id="studentFilterBadge"
+                              class="student-filter-badge">
+                            0
+                        </span>
+
+                    </button>
+
+
+                    <!-- FILTER MENU -->
+
+                    <div id="studentFilterMenu"
+                         class="student-filter-menu"
+                         onclick="event.stopPropagation();">
+
+
+                        <div class="student-filter-header">
+
+                            <h6 class="student-filter-title">
+                                Filter Students
+                            </h6>
+
+                            <button type="button"
+                                    class="student-filter-close"
+                                    onclick="closeStudentFilter()">
+
+                                <i class="fa fa-times"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- PARENT CATEGORY -->
+
+                        <div class="student-filter-group">
+
+                            <label class="student-filter-label"
+                                   for="parentCategoryFilter">
+
+                                Parent Category
+
+                            </label>
+
+                            <select id="parentCategoryFilter"
+                                    class="student-filter-select">
+
+                                <option value="">
+                                    All Categories
+                                </option>
+
+                                <option value="Junior-Staff">
+                                    Junior-Staff
+                                </option>
+
+                                <option value="Senior-Staff">
+                                    Senior-Staff
+                                </option>
+
+                                <option value="Senior-Member">
+                                    Senior-Member
+                                </option>
+
+                                <option value="Non-Staff">
+                                    Non-Staff
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- SEX -->
+
+                        <div class="student-filter-group">
+
+                            <label class="student-filter-label"
+                                   for="sexFilter">
+
+                                Sex
+
+                            </label>
+
+                            <select id="sexFilter"
+                                    class="student-filter-select">
+
+                                <option value="">
+                                    All Sex
+                                </option>
+
+                                <option value="Male">
+                                    Male
+                                </option>
+
+                                <option value="Female">
+                                    Female
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- FILTER FOOTER -->
+
+                        <div class="student-filter-footer">
+
+                            <button type="button"
+                                    class="student-filter-clear"
+                                    onclick="clearStudentFilters()">
+
+                                Clear
+
+                            </button>
+
+
+                            <button type="button"
+                                    class="student-filter-apply"
+                                    onclick="applyStudentFilters()">
+
+                                Apply Filter
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SEARCH INFORMATION
+                 ================================================= -->
+
+            <div class="student-search-info">
+
+                <div>
+
+                    <span id="studentSearchCount">
+                        Showing students
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <span id="studentActiveFilterText"
+                          class="student-active-filter-text">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 TABLE
+                 ================================================= -->
+
+            <div class="student-table-wrapper">
+
+                <table class="table student-table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>
+                            Student ID
+                        </th>
+
+                        <th>
+                            Student Reference
+                        </th>
+
+                        <th>
+                            First Name
+                        </th>
+
+                        <th>
+                            Other Name
+                        </th>
+
+                        <th>
+                            Sur Name
+                        </th>
+
+                        <th>
+                            Picture
+                        </th>
+
+                        <th class="text-center">
+                            Action
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="studentTableBody">
+
+
+                    <!-- =========================================
+                         STUDENT ROW
+                         ========================================= -->
+
+                    <tr th:each="student : ${StudentList}"
+                        data-student-row="true"
+
+                        th:attr="
+                            data-student-id=${student.StudentId},
+                            data-student-reference=${student.StudentReference},
+                            data-first-name=${student.FirstName},
+                            data-last-name=${student.LastName},
+                            data-surname=${student.surname},
+                            data-parent-category=${student.ParentCategory},
+                            data-sex=${student.Sex}
+                        ">
+
+
+                        <!-- STUDENT ID -->
+
+                        <td>
+
+                            <span th:text="${student.StudentId}">
+                            </span>
+
+                        </td>
+
+
+                        <!-- REFERENCE -->
+
+                        <td>
+
+                            <span th:text="${student.StudentReference}">
+                            </span>
+
+                        </td>
+
+
+                        <!-- FIRST NAME -->
+
+                        <td>
+
+                            <span th:text="${student.FirstName}">
+                            </span>
+
+                        </td>
+
+
+                        <!-- OTHER NAME -->
+
+                        <td>
+
+                            <span th:text="${student.LastName}">
+                            </span>
+
+                        </td>
+
+
+                        <!-- SURNAME -->
+
+                        <td>
+
+                            <span th:text="${student.surname}">
+                            </span>
+
+                        </td>
+
+
+                        <!-- PICTURE -->
+
+                        <td>
+
+                            <img th:src="${student.studentPicture}"
+                                 class="student-table-picture"
+                                 alt="Student Picture"
+                                 onerror="this.onerror=null;this.src='/images/default.jpg';">
+
+                        </td>
+
+
+                        <!-- ACTION -->
+
+                        <td class="text-center">
+
+
+                            <div class="student-action-wrapper">
+
+
+                                <button type="button"
+                                        class="student-action-button-small"
+                                        onclick="toggleStudentAction(this, event)"
+                                        title="Actions">
+
+                                    <i class="fa fa-ellipsis-v"></i>
+
+                                </button>
+
+
+                                <div class="student-action-menu">
+
+
+                                    <!-- DETAILS -->
+
+                                    <a th:href="@{/StudentDetails/{id}(id=${student.StudentId})}"
+                                       class="student-action-item">
+
+                                        <i class="fa fa-eye"></i>
+
+                                        View Details
+
+                                    </a>
+
+
+                                    <!-- UPDATE -->
+
+                                    <a th:href="@{/UpdateDetails/{id}(id=${student.StudentId})}"
+                                       class="student-action-item">
+
+                                        <i class="fa fa-edit"></i>
+
+                                        Update Student
+
+                                    </a>
+
+
+                                    <!-- UPDATE PICTURE -->
+
+                                    <a th:href="@{/UpdateDetailsPicture/{id}(id=${student.StudentId})}"
+                                       class="student-action-item">
+
+                                        <i class="fa fa-camera"></i>
+
+                                        Update Picture
+
+                                    </a>
+
+
+                                    <!-- STOP -->
+
+                                    <button type="button"
+                                            class="student-action-item danger"
+                                            th:onclick="SaveBusiness('[[${student.StudentId}]]','[[${classId}]]')">
+
+                                        <i class="fa fa-user-times"></i>
+
+                                        Stop Student
+
+                                    </button>
+
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                    </tr>
+
+
+                    </tbody>
+
+                </table>
+
+
+                <!-- NO RESULTS -->
+
+                <div id="studentNoResults"
+                     class="student-no-results">
+
+                    <i class="fa fa-search"></i>
+
+                    <h6>
+                        No students found
+                    </h6>
+
+                    <p>
+                        Try changing your search or filter options.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PAGINATION
+                 ================================================= -->
+
+            <div class="student-pagination"
+                 th:if="${studentPage.totalPages > 1}">
+
+                <nav>
+
+                    <ul class="pagination justify-content-center">
+
+
+                        <!-- PREVIOUS -->
+
+                        <li class="page-item"
+                            th:classappend="${studentPage.first} ? 'disabled'">
+
+                            <a class="page-link"
+                               th:href="@{/Studentlist/{id}(id=${classId}, page=${studentPage.number - 1}, size=${studentPage.size})}">
+
+                                <i class="fa fa-chevron-left mr-1"></i>
+
+                                Previous
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- PAGE NUMBERS -->
+
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, studentPage.totalPages - 1)}"
+                            th:classappend="${i == studentPage.number} ? 'active'">
+
+                            <a class="page-link"
+                               th:href="@{/Studentlist/{id}(id=${classId}, page=${i}, size=${studentPage.size})}"
+                               th:text="${i + 1}">
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- NEXT -->
+
+                        <li class="page-item"
+                            th:classappend="${studentPage.last} ? 'disabled'">
+
+                            <a class="page-link"
+                               th:href="@{/Studentlist/{id}(id=${classId}, page=${studentPage.number + 1}, size=${studentPage.size})}">
+
+                                Next
+
+                                <i class="fa fa-chevron-right ml-1"></i>
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+
+            <!-- =================================================
+                 STOP STUDENT MODAL
+                 ================================================= -->
+
+            <div class="modal fade"
+                 id="StoppedAction"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+
+
+                <div class="modal-dialog"
+                     role="document">
+
+
+                    <div class="modal-content">
+
+
+                        <div class="modal-header"
+                             style="background-color:#002752; color:#fff;">
+
+                            <h5 class="modal-title"
+                                id="exampleModalLabel">
+
+                                Stop Student
+
+                            </h5>
+
+
+                            <button type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+
+                                <span aria-hidden="true">
+                                    &times;
+                                </span>
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="modal-body">
+
+                            <p>
+                                Do you want to stop this student?
+                            </p>
+
+
+                            <input type="hidden"
+                                   id="studIdModal"
+                                   value="">
+
+
+                            <input type="hidden"
+                                   id="studClassModal"
+                                   value="">
+
+                        </div>
+
+
+                        <div class="modal-footer">
+
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-dismiss="modal">
+
+                                Close
+
+                            </button>
+
+
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    onclick="submitDropStudent()">
+
+                                Approve
+
+                            </button>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+         ========================================================= -->
+
+    <script>
+
+        /* =========================================================
+           SAFE AGE CALCULATOR
+           Prevents:
+           Cannot read properties of null (reading 'value')
+           ========================================================= */
+
+        function calculateAge() {
+
+            var dobElement = document.getElementById("dob");
+            var resultElement = document.getElementById("result");
+
+            if (!dobElement || !resultElement) {
+                return;
+            }
+
+            if (!dobElement.value) {
+
+                resultElement.innerHTML = "";
+
+                return;
+            }
+
+            var dob = new Date(dobElement.value);
+
+            if (isNaN(dob.getTime())) {
+
+                resultElement.innerHTML = "";
+
+                return;
+            }
+
+            var today = new Date();
+
+            var age = today.getFullYear() - dob.getFullYear();
+
+            var monthDifference =
+                today.getMonth() - dob.getMonth();
+
+            if (
+                monthDifference < 0 ||
+                (
+                    monthDifference === 0 &&
+                    today.getDate() < dob.getDate()
+                )
+            ) {
+
+                age--;
+
+            }
+
+            resultElement.innerHTML = age;
+
+        }
+
+
+        /* =========================================================
+           PARENT CATEGORY FIELD
+           ========================================================= */
+
+        function ShowTextField() {
+
+            var parentCategory =
+                document.getElementById("ParentCategory");
+
+            var staff =
+                document.getElementById("staff");
+
+            if (!parentCategory || !staff) {
+                return;
+            }
+
+            var value =
+                parentCategory.value;
+
+            if (
+                value === "Senior-Staff" ||
+                value === "Junior-Staff" ||
+                value === "Senior-Member"
+            ) {
+
+                staff.classList.remove("d-none");
+
+            } else {
+
+                staff.classList.add("d-none");
+
+            }
+
+        }
+
+
+        /* =========================================================
+           STUDENT SEARCH
+           ========================================================= */
+
+        function searchStudents() {
+
+            var searchInput =
+                document.getElementById("studentSearch");
+
+            if (!searchInput) {
+                return;
+            }
+
+            var searchValue =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+            var rows =
+                document.querySelectorAll(
+                    "tr[data-student-row='true']"
+                );
+
+            var selectedParentCategory =
+                document.getElementById(
+                    "parentCategoryFilter"
+                );
+
+            var selectedSex =
+                document.getElementById(
+                    "sexFilter"
+                );
+
+            var parentCategory =
+                selectedParentCategory
+                    ? selectedParentCategory.value.toLowerCase()
+                    : "";
+
+            var sex =
+                selectedSex
+                    ? selectedSex.value.toLowerCase()
+                    : "";
+
+            var visibleCount = 0;
+
+
+            rows.forEach(function (row) {
+
+                var rowText =
+                    row.innerText.toLowerCase();
+
+                var rowParentCategory =
+                    (
+                        row.getAttribute(
+                            "data-parent-category"
+                        ) || ""
+                    ).toLowerCase();
+
+                var rowSex =
+                    (
+                        row.getAttribute(
+                            "data-sex"
+                        ) || ""
+                    ).toLowerCase();
+
+
+                var matchesSearch =
+                    searchValue === "" ||
+                    rowText.includes(searchValue);
+
+
+                var matchesParentCategory =
+                    parentCategory === "" ||
+                    rowParentCategory === parentCategory;
+
+
+                var matchesSex =
+                    sex === "" ||
+                    rowSex === sex;
+
+
+                var shouldShow =
+                    matchesSearch &&
+                    matchesParentCategory &&
+                    matchesSex;
+
+
+                if (shouldShow) {
+
+                    row.style.display = "";
+
+                    visibleCount++;
+
+                } else {
+
+                    row.style.display = "none";
+
+                }
+
+            });
+
+
+            updateStudentSearchCount(
+                visibleCount,
+                rows.length,
+                searchValue,
+                parentCategory,
+                sex
+            );
+
+
+            var clearButton =
+                document.getElementById(
+                    "clearStudentSearch"
+                );
+
+
+            if (clearButton) {
+
+                clearButton.style.display =
+                    searchValue.length > 0
+                        ? "flex"
+                        : "none";
+
+            }
+
+
+            var noResults =
+                document.getElementById(
+                    "studentNoResults"
+                );
+
+
+            if (noResults) {
+
+                noResults.style.display =
+                    visibleCount === 0
+                        ? "block"
+                        : "none";
+
+            }
+
+        }
+
+
+        /* =========================================================
+           APPLY FILTERS
+           ========================================================= */
+
+        function applyStudentFilters() {
+
+            searchStudents();
+
+            updateFilterButton();
+
+            closeStudentFilter();
+
+        }
+
+
+        /* =========================================================
+           UPDATE FILTER BUTTON
+           ========================================================= */
+
+        function updateFilterButton() {
+
+            var parentCategoryElement =
+                document.getElementById(
+                    "parentCategoryFilter"
+                );
+
+            var sexElement =
+                document.getElementById(
+                    "sexFilter"
+                );
+
+            var filterButton =
+                document.getElementById(
+                    "studentFilterButton"
+                );
+
+            var badge =
+                document.getElementById(
+                    "studentFilterBadge"
+                );
+
+
+            if (
+                !parentCategoryElement ||
+                !sexElement ||
+                !filterButton ||
+                !badge
+            ) {
+
+                return;
+
+            }
+
+
+            var count = 0;
+
+            var activeFilters = [];
+
+
+            if (parentCategoryElement.value !== "") {
+
+                count++;
+
+                activeFilters.push(
+                    "Parent Category: " +
+                    parentCategoryElement.value
+                );
+
+            }
+
+
+            if (sexElement.value !== "") {
+
+                count++;
+
+                activeFilters.push(
+                    "Sex: " +
+                    sexElement.value
+                );
+
+            }
+
+
+            if (count > 0) {
+
+                badge.innerText = count;
+
+                badge.classList.add("show");
+
+                filterButton.classList.add("active");
+
+            } else {
+
+                badge.innerText = "0";
+
+                badge.classList.remove("show");
+
+                filterButton.classList.remove("active");
+
+            }
+
+
+            var activeFilterText =
+                document.getElementById(
+                    "studentActiveFilterText"
+                );
+
+
+            if (activeFilterText) {
+
+                activeFilterText.innerHTML =
+                    activeFilters.length > 0
+                        ? activeFilters.join(" &nbsp; | &nbsp; ")
+                        : "";
+
+            }
+
+        }
+
+
+        /* =========================================================
+           CLEAR FILTERS
+           ========================================================= */
+
+        function clearStudentFilters() {
+
+            var parentCategory =
+                document.getElementById(
+                    "parentCategoryFilter"
+                );
+
+            var sex =
+                document.getElementById(
+                    "sexFilter"
+                );
+
+
+            if (parentCategory) {
+
+                parentCategory.value = "";
+
+            }
+
+
+            if (sex) {
+
+                sex.value = "";
+
+            }
+
+
+            updateFilterButton();
+
+            searchStudents();
+
+        }
+
+
+        /* =========================================================
+           CLEAR SEARCH
+           ========================================================= */
+
+        function clearStudentSearch() {
+
+            var input =
+                document.getElementById(
+                    "studentSearch"
+                );
+
+
+            if (!input) {
+                return;
+            }
+
+
+            input.value = "";
+
+            searchStudents();
+
+            input.focus();
+
+        }
+
+
+        /* =========================================================
+           SEARCH COUNT
+           ========================================================= */
+
+        function updateStudentSearchCount(
+            visibleCount,
+            totalCount,
+            searchValue,
+            parentCategory,
+            sex
+        ) {
+
+            var countElement =
+                document.getElementById(
+                    "studentSearchCount"
+                );
+
+
+            if (!countElement) {
+                return;
+            }
+
+
+            var hasFilter =
+                parentCategory !== "" ||
+                sex !== "";
+
+
+            if (
+                searchValue === "" &&
+                !hasFilter
+            ) {
+
+                countElement.innerHTML =
+                    "Showing <strong>" +
+                    totalCount +
+                    "</strong> student" +
+                    (
+                        totalCount === 1
+                            ? ""
+                            : "s"
+                    );
+
+                return;
+
+            }
+
+
+            if (visibleCount === 0) {
+
+                countElement.innerHTML =
+                    '<span class="text-danger">' +
+                    '<i class="fa fa-info-circle"></i> ' +
+                    'No students found' +
+                    '</span>';
+
+                return;
+
+            }
+
+
+            countElement.innerHTML =
+                "Showing <strong>" +
+                visibleCount +
+                "</strong> of <strong>" +
+                totalCount +
+                "</strong> students";
+
+        }
+
+
+        /* =========================================================
+           FILTER DROPDOWN
+           ========================================================= */
+
+        function toggleStudentFilter(event) {
+
+            if (event) {
+                event.stopPropagation();
+            }
+
+            var menu =
+                document.getElementById(
+                    "studentFilterMenu"
+                );
+
+
+            if (!menu) {
+                return;
+            }
+
+
+            menu.classList.toggle("show");
+
+        }
+
+
+        function closeStudentFilter() {
+
+            var menu =
+                document.getElementById(
+                    "studentFilterMenu"
+                );
+
+
+            if (!menu) {
+                return;
+            }
+
+
+            menu.classList.remove("show");
+
+        }
+
+
+        /* =========================================================
+           ACTION DROPDOWN
+           ========================================================= */
+
+        function toggleStudentAction(
+            button,
+            event
+        ) {
+
+            if (event) {
+
+                event.stopPropagation();
+
+            }
+
+
+            var currentMenu =
+                button
+                    .parentElement
+                    .querySelector(
+                        ".student-action-menu"
+                    );
+
+
+            if (!currentMenu) {
+                return;
+            }
+
+
+            document
+                .querySelectorAll(
+                    ".student-action-menu.show"
+                )
+                .forEach(function (menu) {
+
+                    if (menu !== currentMenu) {
+
+                        menu.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                });
+
+
+            currentMenu.classList.toggle(
+                "show"
+            );
+
+        }
+
+
+        /* =========================================================
+           STOP STUDENT
+           ========================================================= */
+
+        function SaveBusiness(
+            studentId,
+            classId
+        ) {
+
+            var studentIdModal =
+                document.getElementById(
+                    "studIdModal"
+                );
+
+            var studentClassModal =
+                document.getElementById(
+                    "studClassModal"
+                );
+
+
+            if (
+                !studentIdModal ||
+                !studentClassModal
+            ) {
+
+                return;
+
+            }
+
+
+            studentIdModal.value =
+                studentId;
+
+            studentClassModal.value =
+                classId;
+
+
+            /*
+             * Existing Bootstrap modal.
+             *
+             * This does not use Bootstrap dropdowns,
+             * so Popper is not required for the
+             * student Action and Filter menus.
+             */
+
+            if (
+                typeof $ !== "undefined" &&
+                typeof $("#StoppedAction").modal === "function"
+            ) {
+
+                $("#StoppedAction").modal("show");
+
+            } else {
+
+                var modal =
+                    document.getElementById(
+                        "StoppedAction"
+                    );
+
+                if (modal) {
+
+                    modal.style.display = "block";
+
+                }
+
+            }
+
+        }
+
+
+        /* =========================================================
+           SUBMIT STOP STUDENT
+           ========================================================= */
+
+        function submitDropStudent() {
+
+            var studentIdElement =
+                document.getElementById(
+                    "studIdModal"
+                );
+
+            var classIdElement =
+                document.getElementById(
+                    "studClassModal"
+                );
+
+
+            if (
+                !studentIdElement ||
+                !classIdElement
+            ) {
+
+                return;
+
+            }
+
+
+            var studentId =
+                studentIdElement.value;
+
+            var ClassId =
+                classIdElement.value;
+
+
+            if (
+                !studentId ||
+                !ClassId
+            ) {
+
+                return;
+
+            }
+
+
+            var url =
+                '/FlagStudent/' +
+                studentId +
+                '/' +
+                ClassId;
+
+
+            if (typeof $ !== "undefined") {
+
+                $.ajax({
+
+                    url: url,
+
+                    method: 'GET',
+
+                    success: function (data) {
+
+                        window.location.reload();
+
+                    },
+
+                    error: function (
+                        xhr,
+                        status,
+                        error
+                    ) {
+
+                        console.error(
+                            status +
+                            ": " +
+                            error,
+                            xhr
+                        );
+
+                        alert(
+                            error +
+                            " -- " +
+                            status
+                        );
+
+                        window.location.reload();
+
+                    }
+
+                });
+
+            } else {
+
+                /*
+                 * Fallback if jQuery is not loaded.
+                 */
+
+                window.location.href = url;
+
+            }
+
+        }
+
+
+        /* =========================================================
+           IMAGE PREVIEW
+           ========================================================= */
+
+        function showImageThumbnail(input) {
+
+            var thumbnail =
+                document.getElementById(
+                    "thumbnail"
+                );
+
+
+            if (!thumbnail) {
+                return;
+            }
+
+
+            if (
+                input &&
+                input.files &&
+                input.files[0]
+            ) {
+
+                var reader =
+                    new FileReader();
+
+
+                reader.onload =
+                    function (event) {
+
+                        thumbnail.src =
+                            event.target.result;
+
+                        thumbnail.classList.remove(
+                            "d-none"
+                        );
+
+                    };
+
+
+                reader.readAsDataURL(
+                    input.files[0]
+                );
+
+            } else {
+
+                thumbnail.src = "";
+
+                thumbnail.classList.add(
+                    "d-none"
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           CLOSE DROPDOWNS WHEN CLICKING OUTSIDE
+           ========================================================= */
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+
+                var filterMenu =
+                    document.getElementById(
+                        "studentFilterMenu"
+                    );
+
+
+                var filterButton =
+                    document.getElementById(
+                        "studentFilterButton"
+                    );
+
+
+                if (
+                    filterMenu &&
+                    filterButton &&
+                    !filterMenu.contains(event.target) &&
+                    !filterButton.contains(event.target)
+                ) {
+
+                    filterMenu.classList.remove(
+                        "show"
+                    );
+
+                }
+
+
+                document
+                    .querySelectorAll(
+                        ".student-action-menu.show"
+                    )
+                    .forEach(function (menu) {
+
+                        var wrapper =
+                            menu.parentElement;
+
+
+                        if (
+                            wrapper &&
+                            !wrapper.contains(
+                                event.target
+                            )
+                        ) {
+
+                            menu.classList.remove(
+                                "show"
+                            );
+
+                        }
+
+                    });
+
+            }
+        );
+
+
+        /* =========================================================
+           INITIALIZE
+           ========================================================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                var rows =
+                    document.querySelectorAll(
+                        "tr[data-student-row='true']"
+                    );
+
+
+                var countElement =
+                    document.getElementById(
+                        "studentSearchCount"
+                    );
+
+
+                if (countElement) {
+
+                    countElement.innerHTML =
+                        "Showing <strong>" +
+                        rows.length +
+                        "</strong> student" +
+                        (
+                            rows.length === 1
+                                ? ""
+                                : "s"
+                        );
+
+                }
+
+
+                /*
+                 * Initialize filter button.
+                 */
+
+                updateFilterButton();
+
+
+                /*
+                 * Initialize category field.
+                 */
+
+                ShowTextField();
+
+            }
+        );
+
+    </script>
+
+</div>

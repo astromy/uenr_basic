@@ -19,19 +19,20 @@ public class SchoolStatisticsModel {
     private int TotalStudentsNursery;
     private int TotalStudentsKindagarten;
     private float TotalAmountPaid;
+    private double TotalExpenses;
+    private double NetProfit;
 
 
     public String toString() {
-        return "SchoolStatisticsModel{TotalStudents=" + this.TotalStudents + ", NonStaff=" + this.NonStaff + ", Junior_Staff=" + this.Junior_Staff + ", SeniorMember=" + this.SeniorMember + ", TotalStudentsJuniorHigh=" + this.TotalStudentsJuniorHigh + ", TotalStudentsLowerPrimary=" + this.TotalStudentsLowerPrimary + ", TotalStudentsUpperPrimary=" + this.TotalStudentsUpperPrimary + ", TotalStudentsCreche=" + this.TotalStudentsCreche + ", TotalStudentsNursery=" + this.TotalStudentsNursery + ", TotalStudentsKindagarten=" + this.TotalStudentsKindagarten + ", TotalAmountPaid=" + this.TotalAmountPaid + '}';
+        return "SchoolStatisticsModel{TotalStudents=" + this.TotalStudents + ", NonStaff=" + this.NonStaff + ", Junior_Staff=" + this.Junior_Staff + ", SeniorMember=" + this.SeniorMember + ", TotalStudentsJuniorHigh=" + this.TotalStudentsJuniorHigh + ", TotalStudentsLowerPrimary=" + this.TotalStudentsLowerPrimary + ", TotalStudentsUpperPrimary=" + this.TotalStudentsUpperPrimary + ", TotalStudentsCreche=" + this.TotalStudentsCreche + ", TotalStudentsNursery=" + this.TotalStudentsNursery + ", TotalStudentsKindagarten=" + this.TotalStudentsKindagarten + ", TotalAmountPaid=" + this.TotalAmountPaid + ", TotalExpenses=" + this.TotalExpenses + ", NetProfit=" + this.NetProfit + '}';
     }
 
     public SchoolStatisticsModel() {
     }
 
-    public SchoolStatisticsModel(int TotalStudents, int NonStaff, int Junior_Staff, int SeniorMember, int TotalStudentsKindagarten, int TotalStudentsJuniorHigh, int TotalStudentsLowerPrimary, int TotalStudentsUpperPrimary, int TotalStudentsCreche, int TotalStudentsNursery, float TotalAmountPaid) {
+    public SchoolStatisticsModel(int TotalStudents, int NonStaff, int Junior_Staff, int SeniorMember, int TotalStudentsKindagarten, int TotalStudentsJuniorHigh, int TotalStudentsLowerPrimary, int TotalStudentsUpperPrimary, int TotalStudentsCreche, int TotalStudentsNursery, float TotalAmountPaid, double TotalExpenses, double NetProfit) {
         this.TotalStudents = TotalStudents;
         this.NonStaff = NonStaff;
-        this.Junior_Staff = Junior_Staff;
         this.Junior_Staff = Junior_Staff;
         this.SeniorMember = SeniorMember;
         this.TotalStudentsJuniorHigh = TotalStudentsJuniorHigh;
@@ -41,6 +42,8 @@ public class SchoolStatisticsModel {
         this.TotalStudentsNursery = TotalStudentsNursery;
         this.TotalStudentsKindagarten = TotalStudentsKindagarten;
         this.TotalAmountPaid = TotalAmountPaid;
+        this.TotalExpenses = TotalExpenses;
+        this.NetProfit = NetProfit;
     }
 
     public int getTotalStudents() {
@@ -129,5 +132,21 @@ public class SchoolStatisticsModel {
 
     public void setTotalAmountPaid(float TotalAmountPaid) {
         this.TotalAmountPaid = TotalAmountPaid;
+    }
+
+    public double getTotalExpenses() {
+        return this.TotalExpenses;
+    }
+
+    public void setTotalExpenses(double TotalExpenses) {
+        this.TotalExpenses = TotalExpenses;
+    }
+
+    public double getNetProfit() {
+        return this.NetProfit;
+    }
+
+    public void setNetProfit(double NetProfit) {
+        this.NetProfit = NetProfit;
     }
 }

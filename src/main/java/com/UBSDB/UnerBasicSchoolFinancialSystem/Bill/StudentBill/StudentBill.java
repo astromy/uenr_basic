@@ -1,6 +1,7 @@
 package com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill;
 
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.Bill;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
 import jakarta.persistence.*;
@@ -21,7 +22,7 @@ public class StudentBill {
     @ManyToOne
     private Student student;
     @ManyToOne
-    private Bill bill;
+    private SchoolFees fees;
     @ManyToOne
     private Term term;
 

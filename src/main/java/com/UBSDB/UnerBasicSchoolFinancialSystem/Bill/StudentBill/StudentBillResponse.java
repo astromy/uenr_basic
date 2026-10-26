@@ -82,14 +82,14 @@ public class StudentBillResponse {
             this.studentId = sb.getStudent().getStudentId();
             this.studentName = sb.getStudent().getFirstName() + " " + sb.getStudent().getLastName();
         }
-        if (sb.getBill() != null) {
-            this.billId = sb.getBill().getId();
-            List<SchoolFees> fees = sb.getBill().getFee();
-            if (fees != null && !fees.isEmpty()) {
-                SchoolFees fee = fees.get(0);
-                this.billDescription = fee.getFeeType();
-                this.billAmount = fee.getAmount();
-            }
+        if (sb.getFees() != null) {
+            this.billId = sb.getFees().getId();
+            SchoolFees fees = sb.getFees();
+//            if (fees != null && !fees.isEmpty()) {
+//                SchoolFees fee = fees.get(0);
+//                this.billDescription = fee.getFeeType();
+//                this.billAmount = fee.getAmount();
+//            }
         }
     }
 }

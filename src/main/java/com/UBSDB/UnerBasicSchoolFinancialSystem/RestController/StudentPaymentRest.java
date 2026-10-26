@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lys
  */
+@Slf4j
 @RestController
 public class StudentPaymentRest {
     private @Autowired StudentService SS;private @Autowired PaymentService PS;@Autowired ReceiptService RS;@Autowired private TermService TS;
@@ -140,16 +142,15 @@ public class StudentPaymentRest {
     }
     
       @GetMapping("/searchStudent/{name}")
-    public ResponseEntity <List<StudentResponse>>getStudents(@PathVariable ("name")String seacrhInput) throws Exception{
+    public ResponseEntity <List<StudentResponse>>getStudents(@PathVariable ("name")String name) throws Exception{
     try{
          
-        //List<StudentResponse>stud;
-         List<Student>stud=SS.SearchStudent(seacrhInput);
-   
+   //List<StudentResponse>stud;
+    List<Student>stud=SS.SearchStudent(name);
+    log.info(stud.stream().map(Student::getStudentResponse).toList().toString());
     return ResponseEntity.ok(stud.stream().map(Student::getStudentResponse).collect(Collectors.toList()));
-    
-    
-   }catch (Exception ex){
+
+     }catch (Exception ex){
    ex.printStackTrace();
     return ResponseEntity.ok(new ArrayList<StudentResponse>());
     
@@ -157,36 +158,37 @@ public class StudentPaymentRest {
     
     }
     
-    @GetMapping("dashboard")
-    public @ResponseBody
-    SchoolStatisticsModel ShowFinancePortalStatistics(Model model, Principal principal,HttpSession session) throws Exception {
-        try{
+     @GetMapping("dashboard")
+     public @ResponseBody
+     SchoolStatisticsModel ShowFinancePortalStatistics(Model model, Principal principal,HttpSession session) throws Exception {
+         try{
 
-        model.addAttribute("user", principal.getName());
-    final   SchoolStatisticsModel sc = new SchoolStatisticsModel();
-    Runnable r4 = ()->{
-        System.out.println("start Time "+ LocalTime.now());
-          SchoolStatisticsModel sc1=FS.getSchoolStaticsModel();
-               sc.setJunior_Staff(sc1.getJunior_Staff());
-               sc.setNonStaff(sc1.getNonStaff());sc.setSeniorMember(sc1.getSeniorMember());
-               sc.setTotalAmountPaid(sc1.getTotalAmountPaid());sc.setTotalStudents(sc1.getTotalStudents());
-               sc.setTotalStudentsCreche(sc1.getTotalStudentsCreche()); 
-               sc.setTotalStudentsJuniorHigh(sc1.getTotalStudentsJuniorHigh());
-               sc.setTotalStudentsKindagarten(sc1.getTotalStudentsKindagarten());
-               sc.setTotalStudentsLowerPrimary(sc1.getTotalStudentsLowerPrimary());
-               sc.setTotalStudentsNursery(sc1.getTotalStudentsNursery());sc.setTotalStudentsUpperPrimary(sc1.getTotalStudentsUpperPrimary());
+         model.addAttribute("user", principal.getName());
+     final   SchoolStatisticsModel sc = new SchoolStatisticsModel();
+     Runnable r4 = ()->{
+         System.out.println("start Time "+ LocalTime.now());
+           SchoolStatisticsModel sc1=FS.getSchoolStaticsModel();
+                sc.setJunior_Staff(sc1.getJunior_Staff());
+                sc.setNonStaff(sc1.getNonStaff());sc.setSeniorMember(sc1.getSeniorMember());
+                sc.setTotalAmountPaid(sc1.getTotalAmountPaid());sc.setTotalStudents(sc1.getTotalStudents());
+                sc.setTotalStudentsCreche(sc1.getTotalStudentsCreche());
+                sc.setTotalStudentsJuniorHigh(sc1.getTotalStudentsJuniorHigh());
+                sc.setTotalStudentsKindagarten(sc1.getTotalStudentsKindagarten());
+                sc.setTotalStudentsLowerPrimary(sc1.getTotalStudentsLowerPrimary());
+                sc.setTotalStudentsNursery(sc1.getTotalStudentsNursery());sc.setTotalStudentsUpperPrimary(sc1.getTotalStudentsUpperPrimary());
                 sc.setTotalAmountPaid(sc1.getTotalAmountPaid());
-        System.out.println("Done Loading Data "+sc.toString());
-         System.out.println("stop Time "+ LocalTime.now());
-       
+                sc.setTotalExpenses(sc1.getTotalExpenses());
+                sc.setNetProfit(sc1.getNetProfit());
+         System.out.println("Done Loading Data "+sc.toString());
+          System.out.println("stop Time "+ LocalTime.now());
 
 
-            } ;
-            Thread t3 = new Thread(r4);
-            t3.run();
-            return  sc;
-        }catch (Exception ex){
-            ex.printStackTrace();
-        return new  SchoolStatisticsModel();
-        }
-    }}
+             } ;
+             Thread t3 = new Thread(r4);
+             t3.run();
+             return  sc;
+         }catch (Exception ex){
+             ex.printStackTrace();
+         return new  SchoolStatisticsModel();
+         }
+     }}

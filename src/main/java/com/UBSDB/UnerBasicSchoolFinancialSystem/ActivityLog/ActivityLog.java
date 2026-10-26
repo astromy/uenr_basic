@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Builder
-@Table(name = "activity_logs")
+@Table(name = "logs")
 public class ActivityLog {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
@@ -41,6 +41,12 @@ public class ActivityLog {
 
     @Column(nullable = false)
     private boolean isActive = true;
+
+    @Column(nullable = false, length = 30)
+    private String activityType = "LOGIN";
+
+    @Column(length = 500)
+    private String description;
 
     @PrePersist
     protected void onCreate() {

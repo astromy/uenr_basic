@@ -64,7 +64,7 @@ public class TermService {
             AS.EditAcademic(a);
 
         }
-        if (term.equals("ThirdTerm")) {
+        if (term.getTermName().equals("ThirdTerm")) {
             a.setEndDate(LocalDate.parse(term.getEndDate()));
             a.setAcademicName(a.getStartDate().getYear() + "-" + a.getEndDate().getYear());
             a.setSuccessorAcademicYear(a.getEndDate().getYear() + "-");
@@ -83,17 +83,38 @@ public class TermService {
     }
 
     public Term getCurrentTerm() {
-        try {
-            for (Term t : terms()) {
-                if (LocalDate.now().isBefore(LocalDate.parse(t.getStartDate())) || LocalDate.now().
-                        isAfter(LocalDate.parse(t.getEndDate())) == true) {
-                } else {
-                    return t;
-                }
+        LocalDate today = LocalDate.now();
+        List<Term> allTerms = terms();
+
+        // First, prefer the term whose date range covers today exactly.
+        for (Term t : allTerms) {
+            LocalDate start = LocalDate.parse(t.getStartDate());
+            LocalDate end = LocalDate.parse(t.getEndDate());
+            if (!today.isBefore(start) && !today.isAfter(end)) {
+                return t;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
+
+        // No term covers today exactly. Fall back to the term with the latest
+        // EndDate so the daily billing process does not silently stop working.
+        Term fallback = null;
+        LocalDate latestEnd = null;
+        for (Term t : allTerms) {
+            LocalDate end = LocalDate.parse(t.getEndDate());
+            if (latestEnd == null || end.isAfter(latestEnd)) {
+                latestEnd = end;
+                fallback = t;
+            }
+        }
+
+        if (fallback != null) {
+            log.warn("No term covers today ({}). Falling back to term: {} - {} (ended {})",
+                    today, fallback.getTermName(),
+                    fallback.getAcademicyear().getAcademicName(), latestEnd);
+            return fallback;
+        }
+
+        log.error("No term configured in the system. Daily billing cannot run.");
         return null;
     }
 
@@ -139,7 +160,7 @@ public class TermService {
             AS.EditAcademic(a);
 
         }
-        if (term.equals("ThirdTerm")) {
+        if (term.getTermName().equals("ThirdTerm")) {
             a.setEndDate(LocalDate.parse(term.getEndDate()));
             a.setAcademicName(a.getStartDate().getYear() + "-" + a.getEndDate().getYear());
             a.setSuccessorAcademicYear(a.getEndDate().getYear() + "-");
@@ -152,7 +173,7 @@ public class TermService {
 
     }
 
-    public List<Term> BasedOnAcademicYear(Academic academic) {
+  public List<Term> BasedOnAcademicYear(Academic academic) {
         List<Term> t = new ArrayList<>();
         for (Term term : TS.findAll()) {
             if (term.getAcademicyear().getAcademicYear().equals(academic.getAcademicYear())) {
@@ -165,7 +186,7 @@ public class TermService {
         return t;
     }
 
-    public Optional<Term> findTermById(long termId) {
+   public Optional<Term> findTermById(long termId) {
 
         return TS.findById(termId);
     }
@@ -176,23 +197,27 @@ public class TermService {
     }
 
     public Optional<Term> findNextTermBasedOnTerm(Term term) {
-
-        Set<Term> terms = TS.findById(term.getId()).get().getAcademicyear().getTerm();
-
-        System.out.print("term_successor term___[[[]]]----->"
+      try{
+          log.info(term.getTermResponse().toString());
+         term=TS.findById(term.getId()).get();
+        Set<Term> terms =term.getAcademicyear().getTerm();
+            System.out.print("term_successor term___[[[]]]----->"
                 + term.getAcademicyear().getSuccessorAcademicYear());
-        if (term.getTermName().equals("FirstTerm")) {
+          if (term.getTermName().equals("FirstTerm")) {
             return terms.stream().filter(c -> c.getTermName().equals("SecondTerm")).findFirst();
-
         } else if (term.getTermName().equals("SecondTerm")) {
-
-            return terms.stream().filter(c -> c.getTermName().equals("ThirdTerm")).findFirst();
+         return terms.stream().filter(c -> c.getTermName().equals("ThirdTerm")).findFirst();
         } else {
-            Optional<Term> t = TS.findAll().stream().filter(c -> c.getAcademicyear().getAcademicName()
-                    .equals((Integer.parseInt(term.getAcademicyear()
-                            .getSuccessorAcademicYear()) - 1) + " - " + term.getAcademicyear()
+            Term finalTerm = term;
+            Optional<Term> t = TS.findAll().stream().filter(
+                    c -> c.getAcademicyear().getAcademicName()
+                    .equals((Integer.parseInt(finalTerm.getAcademicyear()
+                            .getSuccessorAcademicYear()) - 1) + " - " + finalTerm.getAcademicyear()
                                     .getSuccessorAcademicYear()))
-                    .filter(c -> c.getTermName().equals("FirstTerm")).findFirst();
+                    .filter(c ->
+                            c.getTermName()
+                                    .equals("FirstTerm"))
+                    .findFirst();
 
             if (t.isPresent()) {
 
@@ -202,6 +227,8 @@ public class TermService {
                 System.out.println("Not present");
             }
             return t;
-        }
+        }} catch (Exception e) {
+          throw new RuntimeException(e);
+      }
     }
 }

@@ -30,7 +30,7 @@ and open the template in the editor.
                 <td th:text="${student.FirstName}"></td>
                 <td th:text="${student.LastName}"></td>
                 <td th:text="${student.surname}"></td>
-                <TD>   <img th:src="@{${student.productPicturePath}}" class=" img-thumbnail img-fluid "/></td>
+                <TD>   <img th:src="@{${student.studentPicture}}" class=" img-thumbnail img-fluid "/></td>
 
                 <td><a th:href="@{/StudentDetails/{id}(id=${student.StudentId})}" class="btn btn-primary ">Details</a></td>
                 <td><a class="btn btn-primary "
@@ -71,7 +71,7 @@ and open the template in the editor.
                 <td th:text="${student.FirstName}"></td>
                 <td th:text="${student.LastName}"></td>
                 <td th:text="${student.surname}"></td>
-                <TD>   <img th:src="@{${student.productPicturePath}}" class=" img-thumbnail img-fluid "/></td>
+                <TD>   <img th:src="@{${student.studentPicture}}" class=" img-thumbnail img-fluid "/></td>
 
                 
 
@@ -167,7 +167,7 @@ and open the template in the editor.
                         "columns": [
                             {"data":"studentId"},
                             {"data": "fullName"},
-                              {"data": "studentklass"},
+                              {"data": "className"},
                             {"data":"dateOfBirth"},
                             {"data": "parentNumber"},
                               {"data": "studentStatus"}

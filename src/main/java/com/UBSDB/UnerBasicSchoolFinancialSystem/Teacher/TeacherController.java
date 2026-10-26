@@ -27,9 +27,12 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.security.users;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author enock
  */
 
+@Slf4j
 @Controller
 public class TeacherController {
   @Autowired
@@ -138,7 +142,7 @@ private StudentService StudS;
     @PostMapping("/saveTeacher")
     public String saveTeacher(Principal principal,Model model,Teacher teacher) throws Exception{
         try {
-        teacher.setStaffId("KCPT"+TS.listOfTeachers().size()+1);
+       // teacher.setStaffId("KCPT"+TS.listOfTeachers().size()+1);
         teacher.setTeacherStatus("True");
  
         model.addAttribute("msg",TS.addTeacher(teacher));
@@ -178,7 +182,7 @@ private StudentService StudS;
     {
        model.addAttribute("TeacherId",TeacherId);
     model.addAttribute("Teacher",TS.findTeacher(TeacherId));
-    model.addAttribute("TeacherKlass",TS.Teacher_Assigned_Klasses(TeacherId));
+    model.addAttribute("TeacherKlass",TS.Teacher_Assigned_Klasses(TeacherId).stream().map(klass::getClassName).toList());
    users user=US.FindUserById(principal.getName());
     for(role r:user.roles){
     if(r.getName().equals("HeadTeacher")){
@@ -192,7 +196,7 @@ private StudentService StudS;
     public String getTeacherSubjets(Model model,@PathVariable("TeacherId")Long TeacherId,@PathVariable("ClassId")String ClassId,Principal principal)
     {
     model.addAttribute("Teacher",TS.findTeacher(TeacherId));
-   model.addAttribute("TeacherKlass",TS.Teacher_Assigned_Klasses(TeacherId));
+   model.addAttribute("TeacherKlass",TS.Teacher_Assigned_Klasses(TeacherId).stream().map(klass::getClassName).toList());
      model.addAttribute("TeacherId",TeacherId);
    
     model.addAttribute("subjects",TS.getSubjectsThoughtByATeacherInAClass(TeacherId, ClassId));
@@ -234,14 +238,16 @@ private StudentService StudS;
     return "index";
     }
     
-    @GetMapping("/AssignClassAndSubjectToTeacher/{TeacherId}/{ClassId}")
+    @PostMapping("/AssignClassAndSubjectToTeacher/{TeacherId}/{ClassId}")
     public String AssignSubjectAndKlassToTeacher(Principal principal,@PathVariable("TeacherId") Long TeacherId,
       @RequestParam("subjectsAssign")List <Long>subjectsAssign,@PathVariable("ClassId")String ClassId,Model model) throws Exception
   
     {  
         try {
         subjectsAssign.forEach(c->{
-        TS.AssignTeacherToClass(TeacherId, ClassId, c);
+
+     var output=   TS.AssignTeacherToClass(TeacherId, ClassId, c);
+        log.info("Assigning subjects=> "+output+" : "+ ClassId+": c ");
         });
           //  List <Integer>Sujectsdata=(List<Integer>)(subjectsAssign); 
     

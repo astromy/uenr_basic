@@ -19,4 +19,6 @@ public class ActivityLogResponse {
     private String ipAddress;
     private String userAgent;
     private boolean isActive;
+    private String activityType;
+    private String description;
 }

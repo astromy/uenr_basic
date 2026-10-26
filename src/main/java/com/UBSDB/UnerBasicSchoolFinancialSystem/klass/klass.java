@@ -45,6 +45,10 @@ public class klass implements Serializable {
     private String className;
     private String floralName;
 
+    public klass(String studentKlass) {
+        this.className=studentKlass;
+    }
+
     public String getFloralName() {
         return floralName;
     }

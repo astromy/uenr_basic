@@ -71,7 +71,7 @@ public class CourseController {
         model.addAttribute("termWeeks", termWeeks);
 
         List<klass> klasses = klassService.AllKlass();
-        model.addAttribute("Courseklasses", klasses);
+        model.addAttribute("coursesKlasses", klasses);
 
         List<Teacher> teachers = teacherService.listOfTeachers();
         model.addAttribute("teachers", teachers);
@@ -105,7 +105,7 @@ public class CourseController {
         model.addAttribute("termWeeks", termWeeks);
 
         List<klass> klasses = klassService.AllKlass();
-        model.addAttribute("klasses", klasses);
+        model.addAttribute("coursesKlasses", klasses);
 
         List<Teacher> teachers = teacherService.listOfTeachers();
         model.addAttribute("teachers", teachers);
@@ -139,7 +139,7 @@ public class CourseController {
         model.addAttribute("termWeeks", termWeeks);
 
         List<klass> klasses = klassService.AllKlass();
-        model.addAttribute("klasses", klasses);
+        model.addAttribute("coursesKlasses", klasses);
 
         List<Teacher> teachers = teacherService.listOfTeachers();
         model.addAttribute("teachers", teachers);

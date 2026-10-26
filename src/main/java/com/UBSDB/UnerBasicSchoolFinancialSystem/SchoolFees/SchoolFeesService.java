@@ -150,7 +150,7 @@ public class SchoolFeesService {
                 && fee.getFeeSpecification() != null
                 && fee.getFeeSpecification().equals(student.getParentCategory())) {
             StudentBill studentBil = StudentBill.builder()
-                    .bill(bill)
+                    .fees(fee)
                     .student(student)
                     .build();
             studentBillService.saveStudentBill(studentBil);
@@ -226,7 +226,7 @@ public List<klass>SortedListOfKlasses(List<String>level){
 
             StudentBill studBill =StudentBill
                     .builder().student(stud)
-                    .bill(fees.getBill())
+                    .fees(fees)
                     .build();
             studentBillService.saveStudentBill(studBill);
 

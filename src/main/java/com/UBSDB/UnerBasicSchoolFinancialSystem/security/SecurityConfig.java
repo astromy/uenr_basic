@@ -42,9 +42,8 @@ public class SecurityConfig {
                 .requestMatchers("/edit/**").hasAnyAuthority("Admin", "Admin").
                 requestMatchers("/FinancePortal/**").hasAnyAuthority("Finance","Admin")
                 .requestMatchers("/reset","/reset/**","/api/allStudents/","/GetStudentDetails/**",
-                        "/StudentPayment","/AddUserRoles","/AddUserAdmin","/bankPortal/home","/BankPortal/CheckStudent",
-                        "/Paystack/**").permitAll().requestMatchers
-                ("/css/**","/script/**","/pro-pics/**","/stud-pics/**").permitAll()
+                        "/StudentPayment","/AddUserRoles","/AddUserAdmin","/bankPortal/home","/BankPortal/CheckStudent").permitAll().requestMatchers
+                ("/css/**","/script/**","/css/pro-pics/**","/css/stud-pics/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login").successHandler(customAuthenticationSuccessHandler).permitAll()
@@ -64,7 +63,7 @@ http.authorizeRequests().and().csrf().disable();
                 antMatchers("/StudentPortal/**").hasAnyAuthority("Student")
             .antMatchers("/edit/**").hasAnyAuthority("Admin", "Admin").
                 antMatchers("/FinancePortal/**").hasAnyAuthority("Finance","Admin")
-            .antMatchers("/AddUserAdmin","/AddUserRoles","/reset","/reset/**","/api/allStudents/","/GetStudentDetails/**","/StudentPayment").permitAll().antMatchers("/css/**","/script/**","/pro-pics/**","/stud-pics/**").permitAll()
+            .antMatchers("/AddUserAdmin","/AddUserRoles","/reset","/reset/**","/api/allStudents/","/GetStudentDetails/**","/StudentPayment").permitAll().antMatchers("/css/**","/script/**","/css/pro-pics/**","/css/stud-pics/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin().loginPage("/login").defaultSuccessUrl("/RouteUser",true).permitAll()

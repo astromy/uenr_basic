@@ -9,13 +9,15 @@ package com.UBSDB.UnerBasicSchoolFinancialSystem.TKS;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 /**
  *
  * @author enock
  */
 
 @Repository
-public interface TeachrKlassSubjectRepository extends JpaRepository<TeachrKlassSubject,Integer> {
+public interface TeachrKlassSubjectRepository extends JpaRepository<TeachrKlassSubject, UUID> {
     
     
 }
