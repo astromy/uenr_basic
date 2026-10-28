@@ -302,7 +302,7 @@ public class PaymentService {
    }
 
    
-    public double sumPaymentsByDateAndTerm(java.time.LocalDate date, Long termId){  
+    public double sumPaymentsByDateAndTerm(LocalDate date, Long termId){
         return PR.sumPaymentsByDateAndTerm(date, termId);
     }
 }

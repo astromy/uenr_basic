@@ -21,7 +21,7 @@ import java.time.LocalDate;
 public interface PayementRepository extends JpaRepository<Payment,Long> {
 
     @Query("SELECT COALESCE(SUM(p.Amount), 0.0) FROM Payment p WHERE p.date = :date AND p.term.id = :termId")
-    double sumPaymentsByDateAndTerm(@Param("date") java.time.LocalDate date, @Param("termId") Long termId);
+    double sumPaymentsByDateAndTerm(@Param("date") LocalDate date, @Param("termId") Long termId);
 
 
 }

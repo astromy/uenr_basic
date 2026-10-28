@@ -10,6 +10,7 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.Academic.AcademicService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.BillService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.Bill;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBill;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.SMS.SmsService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentID_Checker.IDChecker;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentID_Checker.IDCheckerService;
@@ -64,7 +65,7 @@ public class StudentService {
      private StudentPromotion SP;
        private @Autowired IDCheckerService checkIds;
        private @Autowired AcademicService AYS;
-       
+
     public String promoteStudent(Student student){
     klass klas=null;
   if(student.getStudentStatus().equals("Stopped")){
@@ -210,6 +211,7 @@ public class StudentService {
     student.setGuadiaName(stud.getGuadiaName());
     student.setSex(stud.getSex());
     student.setStaffId(stud.getStaffId());
+
      return "updated Successfully";
        }catch(Exception ez){
                  System.out.println(ez);
@@ -267,7 +269,7 @@ public class StudentService {
             US.updateUser(u);
         }
         student.setStudentStatus("in School");
-        String fileName=org.springframework.util.StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName= StringUtils.cleanPath(file.getOriginalFilename());
        
             System.out.println(fileName+" ........update side");
         
@@ -284,7 +286,7 @@ public class StudentService {
     //student.setStudentStatus(stud.getStudentStatus());
           System.out.println(studentRepository.save(student).getFirstName()+" update");
    // SR.save(student);
-   
+
 
     return "updated Successfully";
        }catch(Exception ez){
@@ -392,7 +394,7 @@ public class StudentService {
     
     }
     
-     public String saveStudentWithPicture(Student stud,MultipartFile file) throws Exception{
+     public Student saveStudentWithPicture(Student stud,MultipartFile file) throws Exception{
      Optional <Academic>academicYear=AYS.getAcademicyear_Date(LocalDate.now());
      if (academicYear.isPresent()){
          String size = academicYear.get().getIDCheckers().size()+"";
@@ -409,12 +411,12 @@ public class StudentService {
        stud.setNewComer(true);
        try{
               if(studentRepository.findById(stud.getStudentId()).isPresent()){
-              return "please User Id alreasy assigned";
+              return null ;
               }
               if(file.isEmpty()){
              
               }
-     String fileName=org.springframework.util.StringUtils.cleanPath(file.getOriginalFilename());
+     String fileName= StringUtils.cleanPath(file.getOriginalFilename());
      stud.setStudentPicture(fileName);
    stud.setProductPicturePath("/var/data/stud-pics/"+LocalDate.now().getYear()+"/"+stud.getStudentId()+"/"+stud.getStudentPicture());
    stud.setProductPicturePathPDF(LocalDate.now().getYear()+"/"+stud.getStudentId()+"/"+stud.getStudentPicture());
@@ -428,14 +430,14 @@ public class StudentService {
 
     checkIds.Savechecker(new IDChecker(Integer.parseInt(size), academicYear.get()));
 
-    return "Student "+stud.getFirstName()+" "+stud.getSurname()
-            +" have been added successfully with user name "+ stud.getStudentId() + "and password "+stud.getStudentId()+"1234";
-    }catch (Exception ex){
-    
-    return " fatal error please contact admin "+ex.toString();
+
+           return stud;
+   }catch (Exception ex){
+    ex.printStackTrace();
+    return null;
     }
      }else{
-     return "Please set current academic year ";
+     return null;
      }
     }
    

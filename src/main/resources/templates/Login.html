@@ -3,95 +3,541 @@
 
 <head>
     <meta charset="utf-8">
+
     <meta name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description"
+          content="UBS - University of Energy and Natural Resources Basic School">
 
-    <title>SMS - Login</title>
+    <meta name="author"
+          content="University of Energy and Natural Resources Basic School">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    <title>UBS - School Management System</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
           rel="stylesheet">
 
-    <!-- Bootstrap core CSS -->
+    <!-- Bootstrap -->
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 
-    <!-- Login page CSS -->
+    <!-- Existing page CSS -->
     <link th:href="@{/css/login.css}" rel="stylesheet">
 
     <link th:href="@{/css/fontawesome.css}"
           rel="stylesheet"
           type="text/css">
+
+
+    <style>
+
+        /* =====================================================
+           UBS BRAND COLORS
+        ====================================================== */
+
+        :root {
+            --ubs-blue: #073b66;
+            --ubs-dark-blue: #032b4a;
+            --ubs-light-blue: #0b568f;
+            --ubs-gold: #f4b400;
+            --ubs-light-gold: #ffd45c;
+            --ubs-white: #ffffff;
+        }
+
+
+        /* =====================================================
+           EVENTS CAROUSEL
+        ====================================================== */
+
+        .school-events {
+            margin-top: 35px;
+            position: relative;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .section-heading small {
+            display: block;
+            color: var(--ubs-gold);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .section-heading h3 {
+            margin: 0;
+            color: var(--ubs-white);
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .event-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+        }
+
+        .event-track {
+            display: flex;
+            transition: transform .55s ease-in-out;
+        }
+
+        .event-slide {
+            min-width: 100%;
+            height: 235px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            background: var(--ubs-dark-blue);
+        }
+
+        .event-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .event-slide::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background: linear-gradient(
+                to top,
+                rgba(3, 20, 35, .94),
+                rgba(3, 20, 35, .05)
+            );
+        }
+
+        .event-content {
+            position: absolute;
+            z-index: 2;
+            left: 22px;
+            right: 22px;
+            bottom: 20px;
+            color: white;
+        }
+
+        .event-date {
+            display: inline-block;
+            background: var(--ubs-gold);
+            color: var(--ubs-dark-blue);
+            padding: 5px 10px;
+            border-radius: 5px;
+
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .8px;
+
+            margin-bottom: 7px;
+        }
+
+        .event-content h4 {
+            margin: 0 0 5px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .event-content p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: rgba(255,255,255,.85);
+        }
+
+
+        /* =====================================================
+           CAROUSEL BUTTONS
+        ====================================================== */
+
+        .carousel-controls {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+
+            z-index: 5;
+
+            display: flex;
+            gap: 7px;
+        }
+
+        .carousel-btn {
+            width: 35px;
+            height: 35px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: rgba(255,255,255,.94);
+            color: var(--ubs-blue);
+
+            font-size: 19px;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+        }
+
+        .carousel-btn:hover {
+            background: var(--ubs-gold);
+            transform: scale(1.05);
+        }
+
+
+        /* =====================================================
+           CAROUSEL DOTS
+        ====================================================== */
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+
+            gap: 7px;
+
+            margin-top: 13px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+
+            padding: 0;
+            border: none;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,.35);
+
+            cursor: pointer;
+
+            transition: .25s ease;
+        }
+
+        .carousel-dot.active {
+            width: 24px;
+            border-radius: 10px;
+
+            background: var(--ubs-gold);
+        }
+
+
+        /* =====================================================
+           UBS INFORMATION SECTION
+        ====================================================== */
+
+        .ubs-section {
+            margin-top: 30px;
+
+            padding: 24px;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(244,180,0,.18),
+                    rgba(7,59,102,.65)
+                );
+
+            border: 1px solid rgba(255,255,255,.14);
+        }
+
+        .ubs-content {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .ubs-logo {
+            width: 78px;
+            height: 78px;
+
+            flex-shrink: 0;
+
+            border-radius: 15px;
+
+            background: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.2);
+        }
+
+        .ubs-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .ubs-text small {
+            display: block;
+
+            color: var(--ubs-gold);
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1.3px;
+
+            margin-bottom: 5px;
+        }
+
+        .ubs-text h3 {
+            color: white;
+
+            font-size: 18px;
+            line-height: 1.3;
+
+            margin: 0 0 7px;
+
+            font-weight: 800;
+        }
+
+        .ubs-text p {
+            margin: 0;
+
+            color: rgba(255,255,255,.75);
+
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .ubs-badge {
+            display: inline-flex;
+
+            margin-top: 16px;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            background: rgba(244,180,0,.16);
+
+            color: var(--ubs-gold);
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: .7px;
+        }
+
+
+        /* =====================================================
+           UBS HEADER BRAND
+        ====================================================== */
+
+        .ubs-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ubs-brand-logo {
+            width: 55px;
+            height: 55px;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            background: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ubs-brand-logo img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+        }
+
+        .ubs-brand-text span {
+            display: block;
+
+            color: white;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            letter-spacing: .8px;
+        }
+
+        .ubs-brand-text strong {
+            display: block;
+
+            color: var(--ubs-gold);
+
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 768px) {
+
+            .event-slide {
+                height: 215px;
+            }
+
+            .ubs-content {
+                align-items: flex-start;
+            }
+
+            .ubs-logo {
+                width: 62px;
+                height: 62px;
+            }
+
+            .ubs-text h3 {
+                font-size: 15px;
+            }
+
+            .ubs-section {
+                padding: 18px;
+            }
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
 <div class="school-login-page">
 
+
     <!-- =====================================================
-         LEFT - SCHOOL INFORMATION
+         LEFT SIDE - UBS INFORMATION
     ====================================================== -->
+
     <section class="school-showcase">
 
-        <!-- Background decorative shapes -->
         <div class="shape shape-one"></div>
         <div class="shape shape-two"></div>
 
+
         <div class="showcase-content">
 
-            <!-- Header -->
+
+            <!-- =================================================
+                 UBS HEADER
+            ================================================== -->
+
             <header class="school-header">
 
-                <div class="school-brand">
-                    <div class="brand-logo">
-                        <img th:src="@{/css/images/joyheart.jpg}"
-                             alt="Joy Hearts Tech Kids Academy">
+                <div class="ubs-brand">
+
+                    <div class="ubs-brand-logo">
+
+                        <img
+                            th:src="@{/css/images/Logo.jpeg}"
+                            alt="UBS Logo"
+                        >
+
                     </div>
 
-                    <div class="brand-text">
-                        <span>JOY HEARTS TECH</span>
-                        <strong>KIDS ACADEMY</strong>
+
+                    <div class="ubs-brand-text">
+
+                        <span>
+                            UNIVERSITY OF ENERGY AND
+                        </span>
+
+                        <strong>
+                            NATURAL RESOURCES
+                        </strong>
+
                     </div>
+
                 </div>
 
+
                 <div class="academic-badge">
-                    <span>QUALITY</span>
-                    <strong>EDUCATION</strong>
+
+                    <span>
+                        QUALITY
+                    </span>
+
+                    <strong>
+                        EDUCATION
+                    </strong>
+
                 </div>
 
             </header>
 
 
-            <!-- Hero -->
+            <!-- =================================================
+                 HERO
+            ================================================== -->
+
             <div class="school-hero">
+
 
                 <div class="hero-copy">
 
                     <span class="hero-label">
-                        WELCOME TO JOY HEARTS
+                        WELCOME TO UBS
                     </span>
 
+
                     <h1>
-                        Building
+
+                        Inspiring
                         <span>Young Minds</span>
-                        Through Technology
+                        for Tomorrow
+
                     </h1>
 
+
                     <p>
-                        A nurturing learning environment where children
-                        discover, create, learn and develop the skills
-                        they need for a brighter future.
+
+                        Welcome to the University of Energy and
+                        Natural Resources Basic School, where we
+                        nurture creativity, knowledge, discipline
+                        and excellence in every learner.
+
                     </p>
+
 
                     <div class="hero-actions">
 
-                        <a href="#admission" class="primary-action">
+                        <a
+                            href="#admission"
+                            class="primary-action"
+                        >
                             ENROLL NOW
-                            <span>→</span>
+
+                            <span>
+                                →
+                            </span>
+
                         </a>
 
-                        <a href="#contact" class="secondary-action">
+
+                        <a
+                            href="#contact"
+                            class="secondary-action"
+                        >
                             Contact School
                         </a>
 
@@ -100,21 +546,31 @@
                 </div>
 
 
-                <!-- Hero Image -->
+                <!-- HERO IMAGE -->
+
                 <div class="hero-image-wrapper">
 
                     <div class="image-decoration"></div>
 
+
                     <div class="hero-image">
 
                         <img
-                                th:src="@{/css/images/joyheart.jpg}"
-                                alt="Students at Joy Hearts Tech Kids Academy"
+                            th:src="@{/css/images/cultural.jpeg}"
+                            alt="UBS Basic School students"
                         >
 
+
                         <div class="image-caption">
-                            <span>LEARNING</span>
-                            <strong>WITH PURPOSE</strong>
+
+                            <span>
+                                LEARNING
+                            </span>
+
+                            <strong>
+                                FOR THE FUTURE
+                            </strong>
+
                         </div>
 
                     </div>
@@ -124,33 +580,335 @@
             </div>
 
 
-            <!-- Admission Banner -->
-            <div class="admission-banner" id="admission">
+            <!-- =================================================
+                 ADMISSION
+            ================================================== -->
+
+            <div
+                class="admission-banner"
+                id="admission"
+            >
 
                 <div class="admission-icon">
                     ★
                 </div>
 
+
                 <div class="admission-text">
-                    <span>ADMISSIONS ARE NOW</span>
-                    <strong>OPEN</strong>
+
+                    <span>
+                        ADMISSIONS ARE NOW
+                    </span>
+
+                    <strong>
+                        OPEN
+                    </strong>
+
                 </div>
+
 
                 <div class="admission-levels">
-                    <span>CRECHE</span>
-                    <span>NURSERY</span>
-                    <span>KINDERGARTEN</span>
+
+                    <span>
+                        CRECHE
+                    </span>
+
+                    <span>
+                        NURSERY
+                    </span>
+
+                    <span>
+                        PRIMARY
+                    </span>
+
                 </div>
 
-                <a href="#contact" class="admission-button">
+
+                <a
+                    href="#contact"
+                    class="admission-button"
+                >
                     APPLY NOW →
                 </a>
 
             </div>
 
 
-            <!-- School Features -->
+            <!-- =================================================
+                 SCHOOL EVENTS
+            ================================================== -->
+
+            <section class="school-events">
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <small>
+                            WHAT'S HAPPENING
+                        </small>
+
+                        <h3>
+                            UBS School Events
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="event-carousel">
+
+
+                    <div
+                        class="event-track"
+                        id="eventTrack"
+                    >
+
+
+                        <!-- EVENT 1 -->
+
+                        <div class="event-slide">
+
+                            <img
+                                th:src="@{/css/images/sports.jpeg}"
+                                alt="UBS Sports Day"
+                            >
+
+                            <div class="event-content">
+
+                                <span class="event-date">
+                                 
+                                </span>
+
+                                <h4>
+                                    UBS Sports Day
+                                </h4>
+
+                                <p>
+                                    A day of teamwork, fitness,
+                                    fun and healthy competition.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- EVENT 2 -->
+
+                        <div class="event-slide">
+
+                            <img
+                                th:src="@{/css/images/joyheart.jpg}"
+                                alt="UBS Science Exhibition"
+                            >
+
+                            <div class="event-content">
+
+                                <span class="event-date">
+                                    
+                                </span>
+
+                                <h4>
+                                    Science Exhibition
+                                </h4>
+
+                                <p>
+                                    Exploring creativity,
+                                    innovation and discovery.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- EVENT 3 -->
+
+                        <div class="event-slide">
+
+                            <img
+                                th:src="@{/css/images/parents.jpeg}"
+                                alt="UBS Parents Meeting"
+                            >
+
+                            <div class="event-content">
+
+                                <span class="event-date">
+                                    
+                                </span>
+
+                                <h4>
+                                    Parents & Teachers Meeting
+                                </h4>
+
+                                <p>
+                                    Building a strong partnership
+                                    between home and school.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- EVENT 4 -->
+
+                        <div class="event-slide">
+
+                            <img
+                                th:src="@{/css/images/cultural.jpeg}"
+                                alt="UBS Cultural Day"
+                            >
+
+                            <div class="event-content">
+
+                                <span class="event-date">
+                                    DECEMBER 05
+                                </span>
+
+                                <h4>
+                                    UBS Cultural Day
+                                </h4>
+
+                                <p>
+                                    Celebrating culture, creativity
+                                    and diversity.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- CONTROLS -->
+
+                    <div class="carousel-controls">
+
+                        <button
+                            type="button"
+                            class="carousel-btn"
+                            id="eventPrev"
+                            aria-label="Previous event"
+                        >
+                            ‹
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="carousel-btn"
+                            id="eventNext"
+                            aria-label="Next event"
+                        >
+                            ›
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DOTS -->
+
+                <div
+                    class="carousel-dots"
+                    id="eventDots"
+                >
+
+                    <button
+                        type="button"
+                        class="carousel-dot active"
+                        aria-label="Event 1"
+                    ></button>
+
+                    <button
+                        type="button"
+                        class="carousel-dot"
+                        aria-label="Event 2"
+                    ></button>
+
+                    <button
+                        type="button"
+                        class="carousel-dot"
+                        aria-label="Event 3"
+                    ></button>
+
+                    <button
+                        type="button"
+                        class="carousel-dot"
+                        aria-label="Event 4"
+                    ></button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 UBS SCHOOL INFORMATION
+            ================================================== -->
+
+            <section class="ubs-section">
+
+
+                <div class="ubs-content">
+
+
+                    <div class="ubs-logo">
+
+                        <img
+                            th:src="@{/css/images/Logo.jpeg}"
+                            alt="University of Energy and Natural Resources Basic School"
+                        >
+
+                    </div>
+
+
+                    <div class="ubs-text">
+
+                        <small>
+                            UNIVERSITY OF ENERGY AND NATURAL RESOURCES BASIC SCHOOL
+                        </small>
+
+
+                        <h3>
+                            UBS – University of Energy and
+                            Natural Resources Basic School
+                        </h3>
+
+
+                        <p>
+                            Developing confident, creative and
+                            responsible learners through quality
+                            education, innovation and excellence.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="ubs-badge">
+
+                    UNIVERSITY OF ENERGY & NATURAL RESOURCES BASIC SCHOOL
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 FEATURES
+            ================================================== -->
+
             <div class="school-features">
+
 
                 <div class="feature-card">
 
@@ -158,11 +916,18 @@
                         <span>01</span>
                     </div>
 
+
                     <div>
-                        <strong>Early Learning</strong>
+
+                        <strong>
+                            Quality Education
+                        </strong>
+
                         <p>
-                            A strong foundation for curious young minds.
+                            Building a strong foundation for
+                            lifelong learning.
                         </p>
+
                     </div>
 
                 </div>
@@ -174,11 +939,18 @@
                         <span>02</span>
                     </div>
 
+
                     <div>
-                        <strong>Technology</strong>
+
+                        <strong>
+                            Innovation
+                        </strong>
+
                         <p>
-                            Preparing children for the digital future.
+                            Encouraging curiosity, creativity
+                            and problem solving.
                         </p>
+
                     </div>
 
                 </div>
@@ -190,53 +962,102 @@
                         <span>03</span>
                     </div>
 
+
                     <div>
-                        <strong>Safe Environment</strong>
+
+                        <strong>
+                            Safe Environment
+                        </strong>
+
                         <p>
-                            A caring and supportive learning community.
+                            A caring and supportive community
+                            for every learner.
                         </p>
+
                     </div>
 
                 </div>
 
+
             </div>
 
 
-            <!-- Footer information -->
-            <footer class="school-footer" id="contact">
+            <!-- =================================================
+                 CONTACT
+            ================================================== -->
+
+            <footer
+                class="school-footer"
+                id="contact"
+            >
+
 
                 <div class="contact-info">
 
+
                     <div class="contact-item">
-                        <span class="contact-symbol">⌖</span>
+
+                        <span class="contact-symbol">
+                            ⌖
+                        </span>
+
 
                         <div>
-                            <small>LOCATION</small>
-                            <strong>BereKum - Opp. Chris FM</strong>
+
+                            <small>
+                                LOCATION
+                            </small>
+
+                            <strong>
+                                University of Energy and
+                                Natural Resources BASIC SCHOOL
+                            </strong>
+
                         </div>
+
                     </div>
 
 
                     <div class="contact-item">
-                        <span class="contact-symbol">☎</span>
+
+                        <span class="contact-symbol">
+                            ☎
+                        </span>
+
 
                         <div>
-                            <small>CALL US</small>
-                            <strong>0241 232 915</strong>
+
+                            <small>
+                                SCHOOL
+                            </small>
+
+                            <strong>
+                                UENR Basic School
+                            </strong>
+
                         </div>
+
                     </div>
+
 
                 </div>
 
 
                 <div class="motto">
-                    <small>OUR MOTTO</small>
+
+                    <small>
+                        OUR MOTTO
+                    </small>
+
                     <strong>
-                        BUILDING YOUNG MINDS THROUGH TECHNOLOGY
+                        EXCELLENCE THROUGH EDUCATION
                     </strong>
+
                 </div>
 
+
             </footer>
+
 
         </div>
 
@@ -246,80 +1067,119 @@
     <!-- =====================================================
          RIGHT - LOGIN
     ====================================================== -->
+
     <section class="login-area">
+
 
         <div class="login-container">
 
-            <!-- Login logo -->
+
+            <!-- LOGIN BRAND -->
+
             <div class="login-brand">
 
+
                 <div class="login-logo">
+
                     <img
-                            th:src="@{/css/images/Logo.jpeg}"
-                            alt="Joy Hearts Tech Kids Academy"
+                        th:src="@{/css/images/Logo.jpeg}"
+                        alt="UBS Basic School"
                     >
+
                 </div>
 
+
                 <div>
-                    <strong>JOY HEARTS</strong>
-                    <span>TECH KIDS ACADEMY</span>
+
+                    <strong>
+                        UENR
+                    </strong>
+
+                    <span>
+                        BASIC SCHOOL
+                    </span>
+
                 </div>
 
             </div>
 
 
-            <!-- Login heading -->
+            <!-- LOGIN HEADING -->
+
             <div class="login-heading">
 
-                <span>WELCOME BACK</span>
+                <span>
+                    WELCOME BACK
+                </span>
+
 
                 <h2>
                     Sign in to your account
                 </h2>
 
+
                 <p>
                     Enter your credentials to access the
-                    school management system.
+                    UBS school management system.
                 </p>
 
             </div>
 
 
-            <!-- Error -->
+            <!-- ERROR -->
+
             <div
-                    th:if="${param.error}"
-                    class="login-alert"
+                th:if="${param.error}"
+                class="login-alert"
             >
-                <span>!</span>
+
+                <span>
+                    !
+                </span>
+
+
                 <div>
-                    <strong>Login failed</strong>
-                    <p>Invalid username or password.</p>
+
+                    <strong>
+                        Login failed
+                    </strong>
+
+                    <p>
+                        Invalid username or password.
+                    </p>
+
                 </div>
+
             </div>
 
 
-            <!-- Logout -->
+            <!-- LOGOUT -->
+
             <div
-                    th:if="${param.logout}"
-                    class="login-success"
+                th:if="${param.logout}"
+                class="login-success"
             >
                 You have been successfully logged out.
             </div>
 
 
-            <!-- Form -->
+            <!-- LOGIN FORM -->
+
             <form
-                    th:action="@{/login}"
-                    method="post"
-                    class="login-form"
+                th:action="@{/login}"
+                method="post"
+                class="login-form"
             >
 
-                <!-- Username -->
+
+                <!-- USERNAME -->
+
                 <div class="input-group">
 
                     <label for="username">
                         Username
                     </label>
+
 
                     <div class="input-wrapper">
 
@@ -327,13 +1187,14 @@
                             ◉
                         </span>
 
+
                         <input
-                                type="text"
-                                id="username"
-                                name="username"
-                                placeholder="Enter your username"
-                                autocomplete="username"
-                                required
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                            required
                         >
 
                     </div>
@@ -341,7 +1202,8 @@
                 </div>
 
 
-                <!-- Password -->
+                <!-- PASSWORD -->
+
                 <div class="input-group">
 
                     <div class="password-label">
@@ -350,9 +1212,8 @@
                             Password
                         </label>
 
-
-
                     </div>
+
 
                     <div class="input-wrapper">
 
@@ -360,13 +1221,14 @@
                             ◈
                         </span>
 
+
                         <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                placeholder="Enter your password"
-                                autocomplete="current-password"
-                                required
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
                         >
 
                     </div>
@@ -374,58 +1236,87 @@
                 </div>
 
 
-                <!-- Remember -->
+                <!-- OPTIONS -->
+
                 <div class="login-options">
+
 
                     <label class="remember-me">
 
                         <input
-                                type="checkbox"
-                                name="remember-me"
+                            type="checkbox"
+                            name="remember-me"
                         >
 
                         <span>
                             Remember me
                         </span>
+
                     </label>
+
+
                     <a th:href="@{/reset}">
                         Forgot password?
                     </a>
+
+
                 </div>
 
 
-                <!-- Button -->
+                <!-- SIGN IN -->
+
                 <button
-                        type="submit"
-                        class="sign-in-button"
+                    type="submit"
+                    class="sign-in-button"
                 >
-                    <span>SIGN IN</span>
-                    <strong>→</strong>
+
+                    <span>
+                        SIGN IN
+                    </span>
+
+                    <strong>
+                        →
+                    </strong>
+
                 </button>
+
 
             </form>
 
 
-            <!-- Security note -->
+            <!-- SECURITY -->
+
             <div class="security-note">
 
-                <span class="lock-icon">⌁</span>
+                <span class="lock-icon">
+                    ⌁
+                </span>
+
 
                 <div>
-                    <strong>Secure access</strong>
+
+                    <strong>
+                        Secure access
+                    </strong>
+
                     <p>
                         Your account information is protected
                         by our secure authentication system.
                     </p>
+
                 </div>
 
             </div>
 
 
-            <!-- Login footer -->
+            <!-- FOOTER -->
+
             <div class="login-bottom">
 
-                <span>© 2026 Joy Hearts Tech Kids Academy</span>
+                <span>
+                    © 2026 UBS Basic School
+                </span>
+
 
                 <span class="system-label">
                     SCHOOL MANAGEMENT SYSTEM
@@ -433,10 +1324,198 @@
 
             </div>
 
+
         </div>
 
     </section>
 
 </div>
+
+
+<!-- =====================================================
+     EVENTS CAROUSEL JAVASCRIPT
+====================================================== -->
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            const track =
+                document.getElementById("eventTrack");
+
+
+            const slides =
+                document.querySelectorAll(".event-slide");
+
+
+            const dots =
+                document.querySelectorAll(".carousel-dot");
+
+
+            const previousButton =
+                document.getElementById("eventPrev");
+
+
+            const nextButton =
+                document.getElementById("eventNext");
+
+
+            let currentSlide = 0;
+
+            let autoPlay;
+
+
+            function showSlide(index) {
+
+
+                if (index >= slides.length) {
+
+                    currentSlide = 0;
+
+                } else if (index < 0) {
+
+                    currentSlide = slides.length - 1;
+
+                } else {
+
+                    currentSlide = index;
+
+                }
+
+
+                track.style.transform =
+                    "translateX(-" +
+                    (currentSlide * 100) +
+                    "%)";
+
+
+                dots.forEach(
+                    function (dot, dotIndex) {
+
+                        dot.classList.toggle(
+                            "active",
+                            dotIndex === currentSlide
+                        );
+
+                    }
+                );
+
+            }
+
+
+            function nextSlide() {
+
+                showSlide(
+                    currentSlide + 1
+                );
+
+            }
+
+
+            function previousSlide() {
+
+                showSlide(
+                    currentSlide - 1
+                );
+
+            }
+
+
+            function startAutoPlay() {
+
+                clearInterval(autoPlay);
+
+
+                autoPlay =
+                    setInterval(
+                        nextSlide,
+                        5000
+                    );
+
+            }
+
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    nextSlide();
+
+                    startAutoPlay();
+
+                }
+            );
+
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    previousSlide();
+
+                    startAutoPlay();
+
+                }
+            );
+
+
+            dots.forEach(
+                function (dot, index) {
+
+                    dot.addEventListener(
+                        "click",
+                        function () {
+
+                            showSlide(index);
+
+                            startAutoPlay();
+
+                        }
+                    );
+
+                }
+            );
+
+
+            const carousel =
+                document.querySelector(
+                    ".event-carousel"
+                );
+
+
+            carousel.addEventListener(
+                "mouseenter",
+                function () {
+
+                    clearInterval(autoPlay);
+
+                }
+            );
+
+
+            carousel.addEventListener(
+                "mouseleave",
+                function () {
+
+                    startAutoPlay();
+
+                }
+            );
+
+
+            showSlide(0);
+
+            startAutoPlay();
+
+        }
+    );
+
+</script>
+
+
 </body>
+
 </html>

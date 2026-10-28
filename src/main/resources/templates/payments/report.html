@@ -1,0 +1,68 @@
+<div th:fragment="paymentReport">
+    <div class="container-fluid py-3" id="paymentReportPage">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h4 class="fw-bold mb-1">Payment Report</h4>
+                <p class="text-muted mb-0">Review all payments with date, search and filtering.</p>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold mb-1">Payment Records</h5>
+            </div>
+            <div class="card-body border-bottom bg-light-subtle">
+                <div class="row g-3">
+                    <div class="col-12 col-lg-4">
+                        <label class="form-label fw-semibold">Search Payments</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                            <input type="search" id="paymentSearch" class="form-control" placeholder="Student, type, reference...">
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <label class="form-label fw-semibold">Payment Type</label>
+                        <select id="filterPaymentType" class="form-select"><option value="">All Types</option></select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <label class="form-label fw-semibold">Date From</label>
+                        <input type="date" id="filterPaymentDateFrom" class="form-control">
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <label class="form-label fw-semibold">Date To</label>
+                        <input type="date" id="filterPaymentDateTo" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="paymentsReportTable">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Student</th>
+                        <th>Payment Type</th>
+                        <th class="text-end">Amount (GHC)</th>
+                        <th>Term</th>
+                        <th>Reference</th>
+                    </tr>
+                    </thead>
+                    <tbody id="paymentTableBody">
+                    <tr th:each="p : ${payments}" class="payment-row"
+                        th:attr="data-date=${p.paymentDate != null ? #temporals.format(p.paymentDate, 'yyyy-MM-dd') : ''},
+                                 data-student=${p.student != null ? p.student.getStudentName() : ''},
+                                 data-type=${p.paymentType},
+                                 data-amount=${p.amount != null ? p.amount : 0},
+                                 data-term=${p.term != null ? p.term.termName : ''},
+                                 data-reference=${p.referenceNumber}">
+                        <td th:text="${p.paymentDate != null ? #temporals.format(p.paymentDate, 'dd/MM/yyyy') : 'N/A'}">01/01/2026</td>
+                        <td th:text="${p.student != null ? p.student.getStudentName() : 'N/A'}">Student</td>
+                        <td th:text="${p.paymentType != null ? p.paymentType : 'N/A'}">SchoolFees</td>
+                        <td class="text-end" th:text="${#numbers.formatDecimal(p.amount != null ? p.amount : 0, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                        <td th:text="${p.term != null ? p.term.termName : 'N/A'}">Term</td>
+                        <td th:text="${p.referenceNumber != null ? p.referenceNumber : 'N/A'}">REF</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

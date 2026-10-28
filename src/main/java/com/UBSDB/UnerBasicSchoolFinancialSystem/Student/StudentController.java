@@ -25,6 +25,7 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.Position.AssessmentPosition;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Position.AssessmentPositionService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.MountedCourse.MountedCourse;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.MountedCourse.MountedCourseService;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.SMS.SmsService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFeesService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.TKS.TeachrKlassSubjectService;
@@ -122,6 +123,7 @@ public class StudentController {
     private MountedCourseService mountedCourseService;
     @Autowired
     private TermWeekService termWeekService;
+    private @Autowired SmsService smsService;
     @Autowired private StudentBillService studentBillService;
     public StudentController() {
     }
@@ -193,6 +195,10 @@ public class StudentController {
         try {
 
             Optional<Term> term = this.TS.findTermById(this.TS.getCurrentTerm().getId());
+            List<StudentBill>bills=new ArrayList<>();
+
+            var tempStudent = this.SS.saveStudentWithPicture(student, file);
+
             if (NewStudent.equalsIgnoreCase("Yes") && term.isPresent()) {
                 System.out.println("Checking Bills Total number " + ((Term) term.get()).getSchoolFees().size());
                 Optional<SchoolFees> bss = ((Term) term.get()).getSchoolFees().stream().filter((c) -> {
@@ -205,26 +211,25 @@ public class StudentController {
                     return "index";
                 } else {
 
-                    System.out.println("Checking Bill" + ((SchoolFees) bss.get()).getFeeSpecification() + " - " + ((SchoolFees) bss.get()).getAmount());
+                    log.info("Checking Bill" + ((SchoolFees) bss.get()).getFeeSpecification() + " - " + ((SchoolFees) bss.get()).getAmount());
                     Bill bill = bss.get().getBill();
                     StudentBill studBill = StudentBill
                             .builder()
                             .fees(bss.get())
-                            .student(student)
-
-                            .build();
+                            .student(tempStudent)
+                            .term(TS.getCurrentTerm())
+                         .build();
                     studentBillService.saveStudentBill(studBill);
+                    bills.add(studBill);
                 }
+                tempStudent.setStudentBills(bills);
+                smsService.sendAdmissionMessage(tempStudent);
             }
-
-
-            model.addAttribute("msg", this.SS.saveStudentWithPicture(student, file));
-            
-            return "redirect:/Studentlist/" + student.getStudentklass().getClassName();
+    return "redirect:/Studentlist/" + student.getStudentklass().getClassName();
         } catch (Exception var9) {
-            Exception ex = var9;
-            model.addAttribute("msg", ex);
-            return "index";
+            var9.printStackTrace();
+        return "redirect:/Studentlist/" + student.getStudentklass().getClassName();
+
         }
     }
 
@@ -450,7 +455,7 @@ public class StudentController {
                             .builder()
                             .fees(bss.get())
                             .student(student)
-
+                            .term(TS.getCurrentTerm())
                             .build();
                     studentBillService.saveStudentBill(studBill);
                 }
@@ -799,13 +804,13 @@ public class StudentController {
             mountedCourses = this.mountedCourseService.getActiveMountedCoursesByClassAndTerm(k, t);
         }
 
-        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("mountedCourses", mountedCourses.stream()
                 .map(MountedCourse::getMountedCourseResponse)
                 .collect(Collectors.toList()));
 
         if (currentWeek != null) {
-            java.util.Map<String, String> weekInfo = new java.util.HashMap<>();
+            Map<String, String> weekInfo = new HashMap<>();
             weekInfo.put("weekName", currentWeek.getWeekName());
             weekInfo.put("startDate", currentWeek.getStartDate() != null ? currentWeek.getStartDate().toString() : "");
             weekInfo.put("endDate", currentWeek.getEndDate() != null ? currentWeek.getEndDate().toString() : "");
