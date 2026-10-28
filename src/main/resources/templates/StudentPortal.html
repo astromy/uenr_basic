@@ -15,6 +15,8 @@
     <link th:href="@{/css/portal.css}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link th:href="@{/css/datatables.css}" rel="stylesheet" type="text/css"/>
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
@@ -23,7 +25,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top border-bottom">
         <div class="container-fluid px-4">
             <a class="navbar-brand d-flex align-items-center" th:href="@{/StudentPortal/}">
-                <img th:src="@{/pro-pics/UENR.PNG}" height="42" class="me-2">
+                <img th:src="@{/css/pro-pics/UENR.PNG}" height="42" class="me-2">
                 <div>
                     <div class="brand-title">School Management System</div>
                     <small class="brand-subtitle">Student Portal</small>
@@ -40,7 +42,7 @@
         <div class="row" style="margin-top: 96px;">
             <div class="col-lg-3 mb-4">
                 <div class="sidenav">
-                    <a th:href="@{/StudentPortal/Detail/}" class="nav-link">
+                    <a th:href="@{/StudentPortal/Detail/}" class="btn btn-link text-start px-0">
                         <i class="bi bi-person-circle me-2"></i>Personal Info
                     </a>
                     <hr class="sidebar-divider">
@@ -50,14 +52,14 @@
                     </button>
                     <hr class="sidebar-divider">
 
-                    <button class="btn btn-link text-start px-0" onclick="GetStudentTermlyBills();">
-                        <i class="bi bi-receipt me-2"></i>Term Bill
+                    <button class="btn btn-link text-start px-0" onclick="showAnalytics();">
+                        <i class="bi bi-bar-chart-line me-2"></i>Performance Analytics
                     </button>
                     <hr class="sidebar-divider">
 
-                    <a th:href="@{/Paystack/Pay/{id}(id=${user != null ? user : StudentId})}" target="_blank" class="nav-link text-success fw-bold">
-                        <i class="bi bi-credit-card me-2"></i>Pay Fees Online
-                    </a>
+                    <button class="btn btn-link text-start px-0" onclick="GetStudentTermlyBills();">
+                        <i class="bi bi-receipt me-2"></i>Term Bill
+                    </button>
                     <hr class="sidebar-divider">
 
                     <button class="btn btn-link text-start px-0" onclick="showTutorialForm();">
@@ -65,12 +67,18 @@
                     </button>
                     <hr class="sidebar-divider">
 
-                    <button class="btn btn-link text-start px-0" onclick="showMountedCourses();">
-                        <i class="bi bi-book me-2"></i>Mounted Courses
+                    <button class="btn btn-link text-start px-0"  onclick="showMountedCourses();">
+                        <i class="bi-book me-2"></i>Mounted Courses
                     </button>
                     <hr class="sidebar-divider">
 
-                    <a th:href="@{/updateUser}" class="nav-link">
+                    <button class="btn btn-link text-start px-0" onclick="showWeeklyActivities();">
+                        <i class="bi bi-calendar-event me-2"></i>Weekly Activities
+                        <span id="weeklyActivitiesBadge" class="badge bg-primary rounded-pill ms-2" style="display: none;">0</span>
+                    </button>
+                    <hr class="sidebar-divider">
+
+                    <a th:href="@{/updateUser}" class="btn btn-link text-start px-0">
                         <i class="bi bi-pencil-square me-2"></i>Update User Details
                     </a>
                     <hr class="sidebar-divider">
@@ -88,6 +96,13 @@
                 <div class="alert alert-success" th:if="${msg}" th:text="${msg}"></div>
                 <div class="alert alert-danger" th:if="${err}" th:text="${err}"></div>
 
+                <!-- Weekly Reminder Banner -->
+                <div id="weeklyReminderBanner" class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none;">
+                    <i class="bi bi-bell me-2"></i>
+                    <strong>Weekly Reminder!</strong> You have <span id="weeklyActivityCount">0</span> activity/reminder(s) for this week.
+                    <button type="button" class="btn-close" onclick="hideWeeklyReminder()"></button>
+                </div>
+
                 <div th:if="${updateUser}">
                     <div th:replace="users/AddUser::updateUser"></div>
                 </div>
@@ -98,7 +113,7 @@
                 <div th:if="${StudentAssessment}" id="StudentAssessment">
                     <div class="card border-0 shadow-sm rounded-lg">
                         <div class="card-body">
-                            <img th:src="@{/pro-pics/Assessment.jpg}" class="img-fluid mb-3" />
+                            <img th:src="@{/css/pro-pics/Assessment.jpg}" class="img-fluid mb-3" />
                             <div class="row">
                                 <div class="col-md-9">
                                     <table class="table table-hover">
@@ -153,7 +168,7 @@
                                     </th:block>
                                 </tbody>
                             </table>
-                            <img th:src="@{/pro-pics/gradeExplanation.png}" class="img-fluid mb-3" />
+                            <img th:src="@{/css/pro-pics/gradeExplanation.png}" class="img-fluid mb-3" />
                             <table class="table table-hover">
                                 <tr>
                                     <td><strong>Attendance</strong></td>
@@ -173,49 +188,49 @@
                     </div>
                 </div>
 
-                <div th:if="${StudentDetails}" id="assessment">
+                <div th:if="${studentDetails}" id="assessment">
                     <div class="card border-0 shadow-sm rounded-lg">
                         <div class="card-body p-0">
                             <table class="table table-hover mb-0">
                                 <tr>
                                     <td><strong>First Name</strong></td>
-                                    <td th:text="${StudentDetails.FirstName}"></td>
+                                    <td th:text="${studentDetails.FirstName}"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Other Name</strong></td>
-                                    <td th:text="${StudentDetails.LastName}"></td>
+                                    <td th:text="${studentDetails.LastName}"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Surname</strong></td>
-                                    <td th:text="${StudentDetails.surname}"></td>
+                                    <td th:text="${studentDetails.surname}"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Class Name</strong></td>
-                                    <td th:text="${StudentDetails.studentklass.ClassName}"></td>
+                                    <td th:text="${studentDetails.studentklass.ClassName}"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Date Of Birth</strong></td>
-                                    <td th:text="${StudentDetails.dateOfBirth}"></td>
+                                    <td th:text="${studentDetails.dateOfBirth}"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Sex</strong></td>
-                                    <td th:text="${StudentDetails.Sex}"></td>
+                                    <td th:text="${studentDetails.Sex}"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>NHIS Card Number</strong></td>
-                                    <td th:text="${StudentDetails.NHISCardumber}"></td>
+                                    <td th:text="${studentDetails.NHISCardumber}"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Guardian Name</strong></td>
-                                    <td th:text="${StudentDetails.GuadiaName}"></td>
+                                    <td th:text="${studentDetails.GuadiaName}"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Phone Number</strong></td>
-                                    <td th:text="${StudentDetails.parentNumber}"></td>
+                                    <td th:text="${studentDetails.parentNumber}"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Residential Address</strong></td>
-                                    <td th:text="${StudentDetails.residentialAddress}"></td>
+                                    <td th:text="${studentDetails.residentialAddress}"></td>
                                 </tr>
                             </table>
                         </div>
@@ -253,37 +268,144 @@
                             </table>
                         </div>
                     </div>
-    
-                    <div th:if="${mountedCourses}" id="mountedCourses">
-                        <div class="card border-0 shadow-sm rounded-lg">
-                            <div class="card-body">
-                                <h5 class="card-title">Mounted Courses</h5>
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Course</th>
-                                            <th>Class</th>
-                                            <th>Term</th>
-                                            <th>Teacher</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each="mc:${mountedCourses}">
-                                            <td th:text="${mc.subject.subjectName}"></td>
-                                            <td th:text="${mc.course.courseName}"></td>
-                                            <td th:text="${mc.klass.className}"></td>
-                                            <td th:text="${mc.term.termName}"></td>
-                                            <td th:text="${mc.teacherName != null ? mc.teacherName : 'Not Assigned'}"></td>
-                                            <td th:text="${mc.status}"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                </div>
+
+                <div id="mountedCourses" style="display: none;">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Weekly Courses</h5>
+                                <div>
+                                    <span id="currentWeekBadge" class="badge bg-info me-2" style="display: none;">
+                                        <span id="currentWeekName"></span>
+                                        (<span id="currentWeekDates"></span>)
+                                    </span>
+                                    <a th:href="@{/StudentPortal/DownloadWeeklyCoursesPDF}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-download"></i> Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Course</th>
+                                        <th>Class</th>
+                                        <th>Term</th>
+                                        <th>Teacher</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mountedCoursesTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center">Loading courses...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="weeklyActivities" style="display: none;">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-calendar-event me-2"></i>Weekly Activities & Reminders
+                                </h5>
+                                <span id="currentWeekBadge" class="badge bg-info" style="display: none;">
+                                    <span id="currentWeekName"></span>
+                                    (<span id="currentWeekDates"></span>)
+                                </span>
+                            </div>
+                            <div id="weeklyActivitiesContent">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                    <p class="mt-2">Loading weekly activities...</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-    
+                </div>
+
+                <div id="analytics" style="display: none;">
+                    <div class="card border-0 shadow-sm rounded-lg">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">Performance Analytics</h5>
+
+                            <!-- Term Selector -->
+                            <div class="mb-4">
+                                <label for="termSelect" class="form-label">Select Term:</label>
+                                <select class="form-select" id="termSelect" onchange="loadAnalytics()">
+                                    <option value="">All Terms</option>
+                                </select>
+                            </div>
+
+                            <!-- Summary Cards -->
+                            <div class="row mb-4" id="summaryCards">
+                                <div class="col-md-4">
+                                    <div class="card bg-primary text-white">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Overall Average</h6>
+                                            <h3 id="overallAverage">--</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Best Subject</h6>
+                                            <h5 id="bestSubject">--</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-warning text-dark">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Needs Improvement</h6>
+                                            <h5 id="needsImprovement">--</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Performance Chart -->
+                            <div class="mb-4">
+                                <canvas id="performanceChart" height="100"></canvas>
+                            </div>
+
+                            <!-- Subject Performance Table -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">Subject Performance</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Subject</th>
+                                                <th>Score</th>
+                                                <th>Grade</th>
+                                                <th>Performance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="subjectPerformanceTable">
+                                            <tr>
+                                                <td colspan="4" class="text-center">Loading...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Suggestions Section -->
+                            <div class="mt-4" id="suggestionsSection" style="display: none;">
+                                <h6 class="mb-3 text-danger">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>Suggestions for Improvement
+                                </h6>
+                                <div id="suggestionsList">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -415,33 +537,396 @@
         // Show mounted courses for the student
         async function showMountedCourses() {
             try {
-                const response = await fetch('/StudentPortal/MountedCourses');
-                const mountedCourses = await response.json();
-                const tbody = document.querySelector('#mountedCourses tbody');
+                const response = await fetch('/StudentPortal/MountedCoursesJSON');
+                const data = await response.json();
                 const mountedCoursesDiv = document.getElementById('mountedCourses');
-                if (!mountedCoursesDiv) return;
+                const tbody = document.getElementById('mountedCoursesTableBody');
+                const currentWeekBadge = document.getElementById('currentWeekBadge');
+                const currentWeekName = document.getElementById('currentWeekName');
+                const currentWeekDates = document.getElementById('currentWeekDates');
 
-                if (mountedCourses && mountedCourses.length > 0) {
-                    mountedCoursesDiv.style.display = 'block';
-                    if (tbody) {
-                        tbody.innerHTML = '';
-                        mountedCourses.forEach(function(mc) {
-                            const row = document.createElement('tr');
-                            row.innerHTML = '<td>' + (mc.subject ? mc.subject.subjectName : '') + '</td>' +
-                                '<td>' + (mc.course ? mc.course.courseName : '') + '</td>' +
-                                '<td>' + (mc.klass ? mc.klass.className : '') + '</td>' +
-                                '<td>' + (mc.term ? mc.term.termName : '') + '</td>' +
-                                '<td>' + (mc.teacherName || 'Not Assigned') + '</td>' +
-                                '<td>' + (mc.status || '') + '</td>';
-                            tbody.appendChild(row);
-                        });
+                if (!mountedCoursesDiv || !tbody) return;
+
+                // Hide the section first
+                mountedCoursesDiv.style.display = 'none';
+
+                if (data.mountedCourses && data.mountedCourses.length > 0) {
+                    // Update current week badge if available
+                    if (data.currentWeek && currentWeekBadge) {
+                        currentWeekBadge.style.display = 'inline';
+                        if (currentWeekName) currentWeekName.textContent = data.currentWeek.weekName || '';
+                        if (currentWeekDates) currentWeekDates.textContent = (data.currentWeek.startDate || '') + ' - ' + (data.currentWeek.endDate || '');
+                    } else if (currentWeekBadge) {
+                        currentWeekBadge.style.display = 'none';
                     }
+
+                    // Populate table
+                    tbody.innerHTML = '';
+                    data.mountedCourses.forEach(function(mc) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = '<td>' + (mc.subject ? mc.subject.subjectName : '') + '</td>' +
+                            '<td>' + (mc.course ? mc.course.courseName : '') + '</td>' +
+                            '<td>' + (mc.klass ? mc.klass.className : '') + '</td>' +
+                            '<td>' + (mc.term ? mc.term.termName : '') + '</td>' +
+                            '<td>' + (mc.teacherName || 'Not Assigned') + '</td>' +
+                            '<td>' + (mc.status || '') + '</td>';
+                        tbody.appendChild(row);
+                    });
+
+                    mountedCoursesDiv.style.display = 'block';
                 } else {
-                    mountedCoursesDiv.style.display = 'none';
+                    // Show "no courses" message
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No courses scheduled for this week</td></tr>';
+                    if (currentWeekBadge) currentWeekBadge.style.display = 'none';
+                    mountedCoursesDiv.style.display = 'block';
                 }
             } catch (error) {
                 console.error('Error fetching mounted courses:', error);
+                const mountedCoursesDiv = document.getElementById('mountedCourses');
+                const tbody = document.getElementById('mountedCoursesTableBody');
+                if (mountedCoursesDiv && tbody) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Failed to load courses. Please try again.</td></tr>';
+                    mountedCoursesDiv.style.display = 'block';
+                }
             }
+        }
+
+        // Hide weekly reminder banner
+        function hideWeeklyReminder() {
+            const banner = document.getElementById('weeklyReminderBanner');
+            if (banner) {
+                banner.style.display = 'none';
+            }
+        }
+
+        // Load weekly activities count for sidebar badge and reminder banner
+        async function loadWeeklyActivitiesCount() {
+            try {
+                const response = await fetch('/api/artenary/current');
+                const data = await response.json();
+
+                const count = data ? data.length : 0;
+                const badge = document.getElementById('weeklyActivitiesBadge');
+                const banner = document.getElementById('weeklyReminderBanner');
+                const countSpan = document.getElementById('weeklyActivityCount');
+
+                // Update sidebar badge
+                if (badge) {
+                    if (count > 0) {
+                        badge.textContent = count;
+                        badge.style.display = 'inline';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+
+                // Show reminder banner if there are current week activities
+                if (banner && countSpan && count > 0) {
+                    const hasCurrentWeek = data.some(activity => activity.isCurrentWeek);
+                    if (hasCurrentWeek) {
+                        countSpan.textContent = count;
+                        banner.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading weekly activities count:', error);
+            }
+        }
+
+        // Show weekly activities section
+        async function showWeeklyActivities() {
+            const weeklyActivitiesDiv = document.getElementById('weeklyActivities');
+            const mountedCoursesDiv = document.getElementById('mountedCourses');
+            const assessmentDiv = document.getElementById('StudentAssessment');
+            const studentDetailsDiv = document.getElementById('assessment');
+            const billsDiv = document.getElementById('bills');
+            const analyticsDiv = document.getElementById('analytics');
+
+            // Hide other sections
+            if (mountedCoursesDiv) mountedCoursesDiv.style.display = 'none';
+            if (assessmentDiv) assessmentDiv.style.display = 'none';
+            if (studentDetailsDiv) studentDetailsDiv.style.display = 'none';
+            if (billsDiv) billsDiv.style.display = 'none';
+            if (analyticsDiv) analyticsDiv.style.display = 'none';
+
+            // Show weekly activities
+            weeklyActivitiesDiv.style.display = 'block';
+
+            // Load weekly activities data
+            await loadWeeklyActivities();
+        }
+
+        // Load weekly activities data
+        async function loadWeeklyActivities() {
+            const contentDiv = document.getElementById('weeklyActivitiesContent');
+            const currentWeekBadge = document.getElementById('currentWeekBadge');
+            const currentWeekName = document.getElementById('currentWeekName');
+            const currentWeekDates = document.getElementById('currentWeekDates');
+
+            try {
+                const response = await fetch('/api/artenary/current');
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    // Show current week badge
+                    if (currentWeekBadge && data[0].weekName) {
+                        currentWeekBadge.style.display = 'inline';
+                        if (currentWeekName) currentWeekName.textContent = data[0].weekName || '';
+                        if (currentWeekDates) currentWeekDates.textContent = (data[0].startDate || '') + ' - ' + (data[0].endDate || '');
+                    }
+
+                    // Build activities list
+                    let html = '<div class="list-group">';
+                    data.forEach(function(activity) {
+                        const isCurrentWeek = activity.isCurrentWeek;
+                        const badgeClass = isCurrentWeek ? 'bg-warning text-dark' : 'bg-secondary';
+                        const weekLabel = isCurrentWeek ? ' (This Week)' : '';
+
+                        html += `
+                            <div class="list-group-item list-group-item-action ${isCurrentWeek ? 'border-warning' : ''}">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h6 class="mb-1">
+                                        <span class="badge ${badgeClass} me-2">${activity.weekName}${weekLabel}</span>
+                                        ${activity.activity}
+                                    </h6>
+                                    <small class="text-muted">${activity.startDate} - ${activity.endDate}</small>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    contentDiv.innerHTML = html;
+                } else {
+                    contentDiv.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>No weekly activities scheduled at this time.
+                        </div>
+                    `;
+                    if (currentWeekBadge) currentWeekBadge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error fetching weekly activities:', error);
+                contentDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Failed to load weekly activities. Please try again.
+                    </div>
+                `;
+            }
+        }
+
+        // Load weekly activities count on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadWeeklyActivitiesCount();
+        });
+
+        // Show analytics section
+        async function showAnalytics() {
+            const analyticsDiv = document.getElementById('analytics');
+            const mountedCoursesDiv = document.getElementById('mountedCourses');
+            const assessmentDiv = document.getElementById('StudentAssessment');
+            const studentDetailsDiv = document.getElementById('assessment');
+            const billsDiv = document.getElementById('bills');
+
+            // Hide other sections
+            if (mountedCoursesDiv) mountedCoursesDiv.style.display = 'none';
+            if (assessmentDiv) assessmentDiv.style.display = 'none';
+            if (studentDetailsDiv) studentDetailsDiv.style.display = 'none';
+            if (billsDiv) billsDiv.style.display = 'none';
+
+            // Show analytics
+            analyticsDiv.style.display = 'block';
+
+            // Load analytics data
+            await loadAnalytics();
+        }
+
+        // Load analytics data
+        async function loadAnalytics() {
+            const studentId = document.querySelector('input[name="user"]')?.value ||
+                             document.querySelector('meta[name="user"]')?.content ||
+                             '{{user}}';
+
+            const termId = document.getElementById('termSelect')?.value;
+            let url = '/api/students/' + encodeURIComponent(studentId) + '/analytics';
+            if (termId) {
+                url = '/api/students/' + encodeURIComponent(studentId) + '/analytics/term/' + termId;
+            }
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                renderAnalytics(data);
+            } catch (error) {
+                console.error('Error fetching analytics:', error);
+                document.getElementById('subjectPerformanceTable').innerHTML =
+                    '<tr><td colspan="4" class="text-center text-danger">Failed to load analytics. Please try again.</td></tr>';
+            }
+        }
+
+        // Render analytics data
+        function renderAnalytics(data) {
+            if (!data || !data.termPerformance || data.termPerformance.length === 0) {
+                document.getElementById('subjectPerformanceTable').innerHTML =
+                    '<tr><td colspan="4" class="text-center">No assessment data available</td></tr>';
+                document.getElementById('summaryCards').style.display = 'none';
+                document.getElementById('suggestionsSection').style.display = 'none';
+                return;
+            }
+
+            // Populate term selector
+            const termSelect = document.getElementById('termSelect');
+            if (termSelect && termSelect.options.length <= 1) {
+                data.termPerformance.forEach((term, index) => {
+                    const option = document.createElement('option');
+                    option.value = index + 1; // Using index as term identifier for display
+                    option.textContent = term.termName + ' (' + term.academicYear + ')';
+                    termSelect.appendChild(option);
+                });
+            }
+
+            // Get current term data (first term or selected term)
+            const currentTerm = data.termPerformance[0];
+            const subjects = currentTerm.subjects;
+
+            // Calculate summary statistics
+            let totalScore = 0;
+            let bestScore = 0;
+            let bestSubject = '';
+            let lowScoreCount = 0;
+            let lowScoreSubject = '';
+
+            subjects.forEach(subject => {
+                totalScore += subject.totalScore;
+                if (subject.totalScore > bestScore) {
+                    bestScore = subject.totalScore;
+                    bestSubject = subject.subjectName;
+                }
+                if (subject.totalScore < 60) {
+                    lowScoreCount++;
+                    lowScoreSubject = subject.subjectName;
+                }
+            });
+
+            const averageScore = subjects.length > 0 ? (totalScore / subjects.length) : 0;
+
+            // Update summary cards
+            document.getElementById('overallAverage').textContent = averageScore.toFixed(1) + '%';
+            document.getElementById('bestSubject').textContent = bestSubject || 'N/A';
+            document.getElementById('needsImprovement').textContent = lowScoreCount > 0 ? lowScoreCount + ' subject(s)' : 'None';
+
+            // Update subject performance table
+            const tbody = document.getElementById('subjectPerformanceTable');
+            tbody.innerHTML = '';
+            subjects.forEach(subject => {
+                const row = document.createElement('tr');
+                let performanceClass = 'success';
+                let performanceText = 'Excellent';
+
+                if (subject.totalScore < 50) {
+                    performanceClass = 'danger';
+                    performanceText = 'Poor';
+                } else if (subject.totalScore < 60) {
+                    performanceClass = 'warning';
+                    performanceText = 'Needs Improvement';
+                } else if (subject.totalScore < 70) {
+                    performanceClass = 'info';
+                    performanceText = 'Good';
+                }
+
+                row.innerHTML = '<td>' + subject.subjectName + '</td>' +
+                    '<td><strong>' + subject.totalScore.toFixed(1) + '</strong></td>' +
+                    '<td><span class="badge bg-secondary">' + subject.grade + '</span></td>' +
+                    '<td><span class="badge bg-' + performanceClass + '">' + performanceText + '</span></td>';
+                tbody.appendChild(row);
+            });
+
+            // Update chart
+            updatePerformanceChart(subjects);
+
+            // Update suggestions
+            renderSuggestions(data.suggestions);
+        }
+
+        // Update performance chart
+        let performanceChart = null;
+        function updatePerformanceChart(subjects) {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+
+            if (performanceChart) {
+                performanceChart.destroy();
+            }
+
+            const labels = subjects.map(s => s.subjectName);
+            const scores = subjects.map(s => s.totalScore);
+
+            performanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Score (%)',
+                        data: scores,
+                        backgroundColor: scores.map(score => {
+                            if (score >= 80) return 'rgba(40, 167, 69, 0.8)';
+                            if (score >= 70) return 'rgba(23, 162, 184, 0.8)';
+                            if (score >= 60) return 'rgba(255, 193, 7, 0.8)';
+                            if (score >= 50) return 'rgba(255, 153, 0, 0.8)';
+                            return 'rgba(220, 53, 69, 0.8)';
+                        }),
+                        borderColor: scores.map(score => {
+                            if (score >= 80) return 'rgb(40, 167, 69)';
+                            if (score >= 70) return 'rgb(23, 162, 184)';
+                            if (score >= 60) return 'rgb(255, 193, 7)';
+                            if (score >= 50) return 'rgb(255, 153, 0)';
+                            return 'rgb(220, 53, 69)';
+                        }),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render suggestions
+        function renderSuggestions(suggestions) {
+            const suggestionsSection = document.getElementById('suggestionsSection');
+            const suggestionsList = document.getElementById('suggestionsList');
+
+            if (!suggestions || suggestions.length === 0) {
+                suggestionsSection.style.display = 'none';
+                return;
+            }
+
+            suggestionsSection.style.display = 'block';
+            suggestionsList.innerHTML = '';
+
+            suggestions.forEach(suggestion => {
+                const alertClass = suggestion.severity === 'high' ? 'alert-danger' :
+                                   suggestion.severity === 'medium' ? 'alert-warning' : 'alert-info';
+                const div = document.createElement('div');
+                div.className = 'alert ' + alertClass;
+                div.innerHTML = '<strong>' + suggestion.subjectName + ':</strong> ' + suggestion.suggestion;
+                suggestionsList.appendChild(div);
+            });
         }
     </script>
 

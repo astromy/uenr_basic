@@ -8,6 +8,7 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.Notification.NotificationService
 import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFeesRepository;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentRepository;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermService;
@@ -39,6 +40,8 @@ public class DailyBillingService {
 
     @Autowired
     private StudentService studentService;
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Autowired
     private BillService billService;
@@ -103,11 +106,11 @@ public class DailyBillingService {
         }
 
         log.debug("Found {} fee(s) for class: {}", classFees.size(), k.getClassName());
-
+     klass  tempKlass=klassService.FindKlass(k.getClassName());
         // Get all active students in this class
-        List<Student> students = k.getStudents().stream()
-                .filter(student -> "in School".equals(student.getStudentStatus()))
-                .toList();
+        List<Student> students =  studentRepository.findByStudentStatusAndStudentklassClassName("in School", k.getClassName());
+        log.info(students.stream().map(Student::getStudentResponse).toString());
+
 
         if (students.isEmpty()) {
             log.debug("No active students found in class: {}", k.getClassName());
@@ -148,7 +151,7 @@ public class DailyBillingService {
                 }
 
                 // Check if a StudentBill already exists for this student, bill, and term
-                if (studentBillRepository.existsByStudentAndBillAndTerm(student, bill, currentTerm)) {
+                if (studentBillRepository.existsByStudentAndFeesAndTerm(student, fee, currentTerm)) {
                     log.debug("StudentBill already exists for student: {}, bill: {}, term: {}",
                             student.getStudentId(), bill.getId(), currentTerm.getId());
                     continue;
@@ -157,7 +160,7 @@ public class DailyBillingService {
                 // Create the StudentBill
                 StudentBill studentBill = StudentBill.builder()
                         .student(student)
-                        .bill(bill)
+                        .fees(fee)
                         .term(currentTerm)
                         .build();
 

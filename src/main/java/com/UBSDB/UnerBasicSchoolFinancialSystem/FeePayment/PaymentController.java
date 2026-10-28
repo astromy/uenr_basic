@@ -7,6 +7,7 @@ package com.UBSDB.UnerBasicSchoolFinancialSystem.FeePayment;
 
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.BillService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.Bill;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBill;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Receipt.Receipt;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Receipt.ReceiptService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
@@ -123,15 +124,20 @@ public class PaymentController {
             stud.getStudentklass().getClassName());
     model.addAttribute("picturepath",
             stud.getProductPicturePath());
-    
+    var balance =0.0;
+    if (stud.getStudentBills()==null){
+
+      }else{
+       balance=(stud.getStudentBills()
+               .stream().map(StudentBill::getFees)
+               .map(SchoolFees::getAmount)
+               .reduce(0.0,Double::sum))-
+                ( stud.getPayments().stream()
+                        .map(Payment::getAmount)
+                        .reduce(0.0, Double::sum));
+      }
     model.addAttribute("balance",
-          -  stud.getPayments().
-                    stream().map(Payment::getAmount)
-                    .reduce(0.0,(k,h)->k+h)+(stud.getStudentBills().stream()
-            .flatMap(bill -> bill.getBill().getFee().stream())
-            .map(SchoolFees::getAmount)
-            .reduce(0.0,(a,d)->a+d))-stud.getPayments().stream().map(Payment::getDiscount)
-                    .reduce(0.f,(k,h)->k+h));
+            balance);
    // model.addAttribute("OutStabalance",PS.OutStandingbalance(id));.stream()
    
     return "FinancePortal";
@@ -158,12 +164,16 @@ public class PaymentController {
   
   @GetMapping("/GetStudentPayments/{id}")
   public String GetStudentPayments(Model model ,@PathVariable("id")String id){
+      Student stud =SS.findStudent(id);
+              //stud.getStudentBills().stream().map(StudentBill::getFees).map(SchoolFees::getAmount)
+              //                    .reduce(0.0,Double::sum);
      model.addAttribute("studentPayments",PS.payments(id));
-     model.addAttribute("StudentBills",SS.findStudent(id).getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0,(a, f)->a+f));
-     model.addAttribute("stud",SS.findStudent(id));
-    model.addAttribute("class",SS.findStudent(id).getStudentklass().getClassName());
-   model.addAttribute("balance",BS.totalBillAmount(SS.findStudent(id)));
-   model.addAttribute("paymentt",PS.getTotalPaymentForStudent(SS.findStudent(id)));
+     model.addAttribute("StudentBills",stud.getStudentBills().stream().map(StudentBill::getFees).map(SchoolFees::getAmount)
+     );
+     model.addAttribute("stud",stud);
+    model.addAttribute("class",stud.getStudentklass().getClassName());
+   model.addAttribute("balance",BS.totalBillAmount(stud));
+   model.addAttribute("paymentt",PS.getTotalPaymentForStudent(stud));
    
      return "FinancePortal";
    }
@@ -197,8 +207,11 @@ public class PaymentController {
    List<Student>students = new ArrayList<>();
    
    KS.FindKlass(classId).getStudents().stream().forEach(c->{
-  double outcome =c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (b,o)->b+o)-
-  c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g)->s+g);
+  double outcome =
+          ( c.getStudentBills().stream().map(StudentBill::getFees)
+                  .map(SchoolFees::getAmount).reduce(0.0,Double::sum))-
+          (c.getPayments().stream().map(Payment::getAmount)
+          .reduce(0.0, (b,o)->b+o));
   if(outcome<0){
   students.add(c);
   }
@@ -206,13 +219,13 @@ public class PaymentController {
    List<Payment>payments =new ArrayList<>();
    students.stream().forEach(c->{
        Payment p = new Payment();
-  p.setStudent(c);p.setAmount(SS.FindstudentById(c)
+  p.setStudent(c);
+  p.setAmount(SS.FindstudentById(c)
           .get().getPayments().stream().map(Payment::getAmount).reduce(0.0,(v,g)->v+g));
   
-  p.setRemaining(p.getAmount()-
-          SS.FindstudentById(c).get().getStudentBills().stream()
-                  .flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t)->r+t));
-   p.setPaymentType("fees");
+  p.setRemaining(c.getStudentBills().stream().map(StudentBill::getFees).map(SchoolFees::getAmount).reduce(0.0,Double::sum )-
+                  p.getAmount());
+            p.setPaymentType("fees");
    payments.add(p);
    }); 
        model.addAttribute("defaulters", payments
@@ -227,8 +240,8 @@ public class PaymentController {
    List<Student>students = new ArrayList<>();
    
    SS.AALLStudents().stream().forEach(c->{
-  double outcome =c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (b,o)->b+o)-
-  c.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (s, g)->s+g);
+  double outcome =c.getPayments().stream().map(Payment::getAmount).reduce(0.0, (b,o)->b+o);
+
   if(outcome<0){
   students.add(c);
   }
@@ -236,13 +249,11 @@ public class PaymentController {
    List<Payment>payments =new ArrayList<>();
    students.stream().forEach(c->{
        Payment p = new Payment();
-  p.setStudent(c);p.setAmount(SS.FindstudentById(c)
-          .get().getPayments().stream().map(Payment::getAmount).reduce(0.0,(v,g)->v+g));
-  
-  p.setRemaining(p.getAmount()-
-          SS.FindstudentById(c).get().getStudentBills().stream()
-                  .flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (r, t)->r+t));
-   p.setPaymentType("fees");
+       Student stud =SS.FindstudentById(c).get();
+  p.setStudent(c);p.setAmount(stud.getPayments().stream().map(Payment::getAmount).reduce(0.0,(v,g)->v+g));
+
+       p.setRemaining(c.getStudentBills().stream().map(StudentBill::getFees).map(SchoolFees::getAmount).reduce(0.0,Double::sum )-
+               p.getAmount());   p.setPaymentType("fees");
    payments.add(p);
    }); 
        model.addAttribute("defaulters", payments );

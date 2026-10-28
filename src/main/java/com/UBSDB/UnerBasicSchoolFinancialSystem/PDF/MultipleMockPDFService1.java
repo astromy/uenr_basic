@@ -137,7 +137,7 @@ private @Autowired TeachrKlassSubjectService TKS;
         PdfPCell cell=new PdfPCell(); PdfPCell cell2=new PdfPCell();
          Font font=FontFactory.getFont("Gil Sans MT", 11, Color.BLACK);
          cell.setPadding(-1);cell.setBorderWidthTop(10);
-         cell.setBorderColor(Color.WHITE);Path imagepath=Paths.get("stud-pics");
+         cell.setBorderColor(Color.WHITE);Path imagepath=Paths.get("/css/page");
            
          AssessmentPosition AP=new AssessmentPosition();
            DecimalFormat decimalF= new DecimalFormat("##.#");

@@ -52,6 +52,11 @@ public class MountedCourseServiceImpl implements MountedCourseService {
     }
 
     @Override
+    public List<MountedCourse> getActiveMountedCoursesByClassAndTermAndWeek(klass klass, Term term, com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek termWeek) {
+        return mountedCourseRepository.findActiveMountedCoursesByClassAndTermAndWeek(klass, term, termWeek);
+    }
+
+    @Override
     public List<MountedCourse> getMountedCoursesByClassAndTermPaged(klass klass, Term term, Pageable pageable) {
         return mountedCourseRepository.findByKlassAndTerm(klass, term, pageable).getContent();
     }

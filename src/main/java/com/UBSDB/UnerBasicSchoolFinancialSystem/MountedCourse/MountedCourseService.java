@@ -23,6 +23,8 @@ public interface MountedCourseService {
 
     List<MountedCourse> getActiveMountedCoursesByClassAndTerm(klass klass, Term term);
 
+    List<MountedCourse> getActiveMountedCoursesByClassAndTermAndWeek(klass klass, Term term, com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek termWeek);
+
     List<MountedCourse> getMountedCoursesByClassAndTermPaged(klass klass, Term term, Pageable pageable);
 
     List<MountedCourse> getMountedCoursesBySubject(Subject subject, klass klass, Term term);

@@ -67,10 +67,14 @@ public class PaymentObjectBillingResponse {
     }
 
     public PaymentObjectBillingResponse(Student stud, Term t) {
-        List<Bill> bills = stud.getStudentBills().stream().map(StudentBill::getBill).toList();
-        List<Bill> Previousbills = stud.getStudentBills().stream().filter((c) -> {
+       if (stud.getStudentBills()==null){
+           return;
+
+       }else {
+        List<SchoolFees> bills = stud.getStudentBills().stream().map(StudentBill::getFees).toList();
+        List<SchoolFees> Previousbills = stud.getStudentBills().stream().filter((c) -> {
             return !Objects.equals(c.getTerm().getId(), t.getId());
-        }).map(StudentBill::getBill).toList();
+        }).map(StudentBill::getFees).toList();
         List<Payment> PreviousPayments = stud.getPayments().stream().filter((c) -> {
             return c.getTerm().getId() != t.getId();
         }).toList();
@@ -78,17 +82,18 @@ public class PaymentObjectBillingResponse {
         this.termlyPayment = ((Double)stud.getPayments().stream().filter((c) -> {
             return c.getTerm().getId() == t.getId();
         }).map(Payment::getAmount).reduce(0.0, Double::sum)).toString();
-        this.outstanding = Previousbills.stream().flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, Double::sum) - PreviousPayments.stream().map(Payment::getAmount).reduce(0.0, (a, b) -> {
+        this.outstanding = Previousbills.stream().map(SchoolFees::getAmount).reduce(0.0, Double::sum)- PreviousPayments.stream().map(Payment::getAmount).reduce(0.0, (a, b) -> {
             return a + b;
         }) + "";
-        this.Total = stud.getStudentBills().stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, Double::sum) - stud.getPayments().stream().map(Payment::getAmount).reduce(0.0, (a, b) -> {
+        this.Total = stud.getStudentBills().stream().map(StudentBill::getFees).map(SchoolFees::getAmount).reduce(0.0, Double::sum) - stud.getPayments().stream().map(Payment::getAmount).reduce(0.0, (a, b) -> {
             return a + b;
         }) + "";
         this.currentBill = ((Double)bills.stream().filter((c) -> {
             return c.getTerm().getId() == t.getId();
-        }).flatMap(bill -> bill.getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (a, b) -> {
+        }).map(SchoolFees::getAmount).reduce(0.0, (a, b) -> {
             return a + b;
         })).toString();
+       }
     }
 
     public String toString() {

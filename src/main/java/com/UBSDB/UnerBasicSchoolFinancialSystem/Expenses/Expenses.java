@@ -5,67 +5,67 @@
  */
 package com.UBSDB.UnerBasicSchoolFinancialSystem.Expenses;
 
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Academic.Academic;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.security.users;
 import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
  * @author enock
  */
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class Expenses {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long Id;
-    private String expensesType;
-    private double Amount;
     
-    private LocalDate ExpenseDate;
-    @OneToOne
+
+    private String expensesType;
+    
+
+    private String category;
+    
+
+    private String description;
+
+    private double Amount;
+
+    private LocalDate expenseDate;
+    
+
+    private String paymentMethod;
+    
+
+    private String referenceNumber;
+    
+
+    private String status = "PENDING";
+    
+    @ManyToOne
+    private Term term;
+    
+    @ManyToOne
+    private Academic academicYear;
+    
+    @ManyToOne
     private users User;
 
-    public Long getId() {
-        return Id;
-    }
-
-    public void setId(Long Id) {
-        this.Id = Id;
-    }
-
-    public String getExpensesType() {
-        return expensesType;
-    }
-
-    public void setExpensesType(String expensesType) {
-        this.expensesType = expensesType;
-    }
-
-    public double getAmount() {
-        return Amount;
-    }
-
-    public void setAmount(double Amount) {
-        this.Amount = Amount;
-    }
-
-    public LocalDate getExpenseDate() {
-        return ExpenseDate;
-    }
-
-    public void setExpenseDate(LocalDate ExpenseDate) {
-        this.ExpenseDate = ExpenseDate;
-    }
-
-    public users getUser() {
-        return User;
-    }
-
-    public void setUser(users User) {
-        this.User = User;
-    }
+   public  ExpenseResponse getResponse(){
+       return ExpenseResponse.from(this);
+   }
 }

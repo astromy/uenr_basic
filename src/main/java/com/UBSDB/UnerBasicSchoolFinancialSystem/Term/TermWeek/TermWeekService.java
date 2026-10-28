@@ -131,6 +131,19 @@ public class TermWeekService {
     public TermWeek getWeekById(UUID weekId) {
         return termWeekRepository.findById(weekId).orElse(null);
     }
+
+    public TermWeek getCurrentWeek(Term term) {
+        LocalDate today = LocalDate.now();
+        List<TermWeek> weeks = termWeekRepository.findByTermId(term.getId());
+        for (TermWeek week : weeks) {
+            LocalDate weekStart = LocalDate.parse(week.getStartDate());
+            LocalDate weekEnd = LocalDate.parse(week.getEndDate());
+            if (!today.isBefore(weekStart) && !today.isAfter(weekEnd)) {
+                return week;
+            }
+        }
+        return null;
+    }
     
     public String deleteWeek(UUID weekId) {
         termWeekRepository.deleteById(weekId);

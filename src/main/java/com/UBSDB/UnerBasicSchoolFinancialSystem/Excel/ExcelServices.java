@@ -211,8 +211,8 @@ public class ExcelServices {
             stud.setParentCategory("");
             stud.setResidentialAddress("");
             stud.setSurname("");
-            stud.setProductPicturePath("/stud-pics/2022/205/default.jpg");
-            stud.setProductPicturePathPDF("/stud-pics/2022/205/default.jpg");
+            stud.setProductPicturePath("/css/stud-pics/2022/205/default.jpg");
+            stud.setProductPicturePathPDF("/css/stud-pics/2022/205/default.jpg");
             stud.setStudentPicture("default.jpg");
             //    System.out.println(kS.FindKlass(sheet.getSheetName()).getClassName());
             students.add(stud);

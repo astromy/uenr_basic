@@ -28,9 +28,9 @@ public class BillService {
     
     @Autowired private StudentService studentService;
     @Autowired
-    private EditBillService EBS;
+    private EditBillService editBillService;
     @Autowired
-    private TermService TS;
+    private TermService termService;
 
     public BillService() {
     }
@@ -75,12 +75,9 @@ public class BillService {
                 .map(Student::getStudentBills)
                 .stream()
                 .flatMap(List::stream)
-                .map(StudentBill::getBill)
+                .map(StudentBill::getFees)
                 .filter(Objects::nonNull)
-                .map(Bill::getFee)
-                .filter(Objects::nonNull)
-                .flatMap(List::stream)
-                .map(SchoolFees::getAmount)
+                 .map(SchoolFees::getAmount)
                 .filter(Objects::nonNull)
                 .reduce(0.0, (b, f) -> b + f);
     }
@@ -103,12 +100,9 @@ public class BillService {
         }
         return stud.getStudentBills().stream()
                 .filter(c -> c.getTerm() != null && c.getTerm().getId() != null && c.getTerm().getId().equals(term.getId()))
-                .map(StudentBill::getBill)
+                .map(StudentBill::getFees)
                 .filter(Objects::nonNull)
-                .map(Bill::getFee)
-                .filter(Objects::nonNull)
-                .flatMap(List::stream)
-                .map(SchoolFees::getAmount)
+                 .map(SchoolFees::getAmount)
                 .filter(Objects::nonNull)
                 .reduce(0.0, (k, f) -> k + f);
     }
@@ -120,7 +114,7 @@ public class BillService {
     public List<BillResponse> Responses(Student stud) {
         List<BillResponse> billResponses = new ArrayList<>();
         stud.getStudentBills().forEach((c) -> {
-          //  billResponses.add(new StudentBill(c));
+            billResponses.add(new BillResponse(c));
         });
         return billResponses;
     }
@@ -129,7 +123,7 @@ public class BillService {
         return this.BR.findById(id)
                 .map(b -> {
                     System.out.println(b.getTerm().getId() + " " + b.getFee() + " from get a student particular bill");
-                    return new BillResponse(b);
+                    return new BillResponse();
                 })
                 .orElse(new BillResponse());
     }

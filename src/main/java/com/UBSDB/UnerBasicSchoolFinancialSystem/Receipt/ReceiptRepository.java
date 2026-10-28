@@ -17,6 +17,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ReceiptRepository extends JpaRepository<Receipt,Long>{
-    @Query("SELECT u FROM Receipt u WHERE u.payment.id = :paymentId")
-    public Optional<Receipt> getReceiptBypayment(@Param("paymentId") Long paymentId);
+  @Query("SELECT u FROM Receipt u WHERE u.payment = :payment")
+ public Optional<Receipt> getReceiptBypayment(@Param("payment") Long payment);      
 }

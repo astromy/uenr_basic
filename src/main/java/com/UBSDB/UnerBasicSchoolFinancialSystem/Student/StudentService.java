@@ -22,14 +22,10 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.security.role;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.security.users;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -57,7 +53,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class StudentService {
    @Autowired
-     private StudentRepository SR;
+     private StudentRepository studentRepository;
      @Autowired
      private BillService billService; 
      @Autowired
@@ -171,26 +167,26 @@ public class StudentService {
         Student stud=findStudent(studId);
    
          stud.setStudentStatus("Stopped");
-         SR.save(stud);
+         studentRepository.save(stud);
     return "Flagged Successfully";
        
         }
     public Optional<Student>findOptionalStudent(String id){
-    return SR.findById(id);
+    return studentRepository.findById(id);
     
     }
     public Optional<Student>findOptionalStudentByReference(String reference){
-    return SR.getStudentByStudentReference(reference);
+    return studentRepository.getStudentByStudentReference(reference);
     
     }
     public List<Student>AALLStudents(){
-    return SR.findAll();
+    return studentRepository.findAll();
     }
 
    public String deleteStudent(String studId){
    
    Student stud=findStudent(studId);
-    SR.delete(stud);
+    studentRepository.delete(stud);
   return " Removed";
    }
     public String UpdateStudentRecords(Student stud){
@@ -206,7 +202,6 @@ public class StudentService {
         student.setParentCategory(stud.getParentCategory());
         student.setStudentklass(stud.getStudentklass());
         student.setParentNumber(stud.getParentNumber());
-        //student.se
          student.setStudentPicture(student.getStudentPicture());
         student.setProductPicturePath(student.getProductPicturePath());
         student.setOccupation(stud.getOccupation());
@@ -236,7 +231,7 @@ public class StudentService {
         //stud.setStudentStatus(student.getStudentStatus());
          //stud.setProductPicturePathPDF(student.getProductPicturePathPDF());
 
-   SR.save(stud);
+   studentRepository.save(stud);
     return "updated Successfully";
        }catch(Exception ez){
        return "error"+ez.toString();
@@ -262,6 +257,8 @@ public class StudentService {
         //student.getNHISCardumber(stud.);
         student.setGhanaCardNumber(stud.getGhanaCardNumber());
         student.setParentNumber(stud.getParentNumber());
+        student.setParentCategory(student.getParentCategory());
+
         users u =US.FindUserById(stud.getStudentId());
         if (u==null){
 
@@ -276,8 +273,8 @@ public class StudentService {
         
         student.setStudentPicture(fileName);
       //   stud.setStudentStatus("");
-   student.setProductPicturePath("/stud-pics/"+LocalDate.now().getYear()+"/"+stud.getStudentId()+"/"+student.getStudentPicture());
-   student.setProductPicturePathPDF(LocalDate.now().getYear()+"/"+stud.getStudentId()+"/"+student.getStudentPicture());
+            stud.setProductPicturePath("/var/data/stud-pics/"+LocalDate.now().getYear()+"/"+stud.getStudentId()+"/"+stud.getStudentPicture());
+            student.setProductPicturePathPDF(LocalDate.now().getYear()+"/"+stud.getStudentId()+"/"+student.getStudentPicture());
              try {
                 uploadPicture(file,ChangeToUpper(stud),fileName);
             } catch (IOException ex) {
@@ -285,7 +282,7 @@ public class StudentService {
             }
 
     //student.setStudentStatus(stud.getStudentStatus());
-          System.out.println(SR.save(student).getFirstName()+" update");
+          System.out.println(studentRepository.save(student).getFirstName()+" update");
    // SR.save(student);
    
 
@@ -298,55 +295,92 @@ public class StudentService {
     public List<Student> SearchStudent (String search ) throws Exception{
      try {
      Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
-     Page<Student> page = SR.findByStudentIdOrFirstNameOrLastNameOrsurname(search, pageable);
+     Page<Student> page = studentRepository.findByStudentIdOrFirstNameOrLastNameOrsurname(search, pageable);
      return page.getContent();
      }catch (Exception ex){
      return new ArrayList<>();
      }
 }
+    public Page<Student> getStudentsByClassPaged(
+            klass k,
+            String search,
+            Pageable pageable) {
 
+        return studentRepository
+                .findStudentsByClassAndSearch(
+                        k,
+                        search,
+                        pageable
+                );
+    }
     public long countAllStudents(){
-     return SR.count();
+     return studentRepository.count();
     }
 
     public long countJuniorStaffStudents(){
-     return SR.countJuniorStaffStudents();
+     return studentRepository.countJuniorStaffStudents();
     }
 
     public long countNonStaffStudents(){
-     return SR.countNonStaffStudents();
+     return studentRepository.countNonStaffStudents();
     }
 
     public long countSeniorMemberStudents(){
-     return SR.countSeniorMemberStudents();
+     return studentRepository.countSeniorMemberStudents();
     }
 
     public long countStudentsByClassLevel(String level){
-     return SR.countStudentsByClassLevel(level);
+     return studentRepository.countStudentsByClassLevel(level);
     }
-    
-    public String UpdateStudent(Student stud,MultipartFile file){
-        
-        stud=ChangeToUpper(stud);
-        
-        try{
-       Student student=findStudent(stud.getStudentId());
-        student.setFirstName(stud.getFirstName());
-        student.setLastName(stud.getLastName());
-        student.setSurname(stud.getSurname());
-        student.setDateOfBirth(stud.getDateOfBirth());
-        student.setStudentklass(stud.getStudentklass());
-        student.setNHISCardumber(stud.getNHISCardumber());
-        student.setGhanaCardNumber(stud.getGhanaCardNumber());
-       // student.setStudentklass(studentklass);
-      SR.save(student);
-    
-     return "updated Successfully";
-       }catch(Exception ez){
-       return "error"+ez.toString();
-       }
+    public String UpdateStudent(Student stud, MultipartFile file) {
+
+        stud = ChangeToUpper(stud);
+
+        try {
+            Student student = findStudent(stud.getStudentId());
+
+            student.setFirstName(stud.getFirstName());
+            student.setLastName(stud.getLastName());
+            student.setSurname(stud.getSurname());
+            student.setDateOfBirth(stud.getDateOfBirth());
+            student.setStudentklass(stud.getStudentklass());
+            student.setNHISCardumber(stud.getNHISCardumber());
+            student.setGhanaCardNumber(stud.getGhanaCardNumber());
+
+            if (file != null && !file.isEmpty()) {
+
+                String fileName = "profile.jpg";
+
+                String result = uploadPicture(file, student, fileName);
+
+                // If upload failed, don't update the student
+                if (!result.startsWith("successfully")) {
+                    return result;
+                }
+
+                // If your Student entity stores the image path,
+                // update it here.
+                String imagePath =
+                        "/css/page/stud-pics/"
+                                + LocalDate.now().getYear()
+                                + "/"
+                                + student.getStudentId()
+                                + "/"
+                                + fileName;
+
+                student.setStudentPicture(imagePath);
+            }
+
+            studentRepository.save(student);
+
+            return "updated Successfully";
+
+        } catch (Exception ez) {
+            return "error: " + ez.getMessage();
+        }
     }
-    
+
+
     public Student ChangeToUpper(Student stud){
     stud.setFirstName(stud.getFirstName().toUpperCase());
         stud.setLastName(stud.getLastName().toUpperCase());
@@ -374,24 +408,26 @@ public class StudentService {
        stud.setStudentStatus("in School");
        stud.setNewComer(true);
        try{
-              if(SR.findById(stud.getStudentId()).isPresent()){
+              if(studentRepository.findById(stud.getStudentId()).isPresent()){
               return "please User Id alreasy assigned";
               }
               if(file.isEmpty()){
              
               }
-           String fileName=org.springframework.util.StringUtils.cleanPath(file.getOriginalFilename());
-          stud.setStudentPicture(fileName);
-   stud.setProductPicturePath("/stud-pics/"+LocalDate.now().getYear()+"/"+stud.getStudentId()+"/"+stud.getStudentPicture());
+     String fileName=org.springframework.util.StringUtils.cleanPath(file.getOriginalFilename());
+     stud.setStudentPicture(fileName);
+   stud.setProductPicturePath("/var/data/stud-pics/"+LocalDate.now().getYear()+"/"+stud.getStudentId()+"/"+stud.getStudentPicture());
    stud.setProductPicturePathPDF(LocalDate.now().getYear()+"/"+stud.getStudentId()+"/"+stud.getStudentPicture());
     
         
-  stud  =SR.save(stud);
+   stud  = studentRepository.save(stud);
   
-  CreateStudentAccount(stud);
-    uploadPicture(file,stud,fileName);
-    
-   checkIds.Savechecker(new IDChecker(Integer.parseInt(size), academicYear.get()));
+   CreateStudentAccount(stud);
+   uploadPicture(file,stud,fileName);
+
+
+    checkIds.Savechecker(new IDChecker(Integer.parseInt(size), academicYear.get()));
+
     return "Student "+stud.getFirstName()+" "+stud.getSurname()
             +" have been added successfully with user name "+ stud.getStudentId() + "and password "+stud.getStudentId()+"1234";
     }catch (Exception ex){
@@ -404,32 +440,96 @@ public class StudentService {
     }
    
     
-    public String uploadPicture(MultipartFile multiPartFile,Student stud,String fileName) throws IOException{
-        BufferedImage im=ImageIO.read(multiPartFile.getInputStream());
-       ByteArrayOutputStream OS=new ByteArrayOutputStream();
-    ImageIO.write(resizeImage(im,300,300),StringUtils.getFilenameExtension(multiPartFile.getOriginalFilename()) ,OS);
-    byte[] b=OS.toByteArray();
-    
-        try{
-     String uploadDir="stud-pics/"+LocalDate.now().getYear()+"/"+stud.getStudentId();
-        Path
-                uploadPath=Paths.get(uploadDir);
-        if(!Files.exists(uploadPath)){
-        Files.createDirectories(uploadPath);
+//    public String uploadPicture(MultipartFile multiPartFile,Student stud,String fileName) throws IOException{
+//        BufferedImage im=ImageIO.read(multiPartFile.getInputStream());
+//       ByteArrayOutputStream OS=new ByteArrayOutputStream();
+//    ImageIO.write(resizeImage(im,300,300),StringUtils.getFilenameExtension(multiPartFile.getOriginalFilename()) ,OS);
+//    byte[] b=OS.toByteArray();
+//
+//        try{
+//     String uploadDir="stud-pics/"+LocalDate.now().getYear()+"/"+stud.getStudentId();
+//        Path
+//                uploadPath=Paths.get(uploadDir);
+//        if(!Files.exists(uploadPath)){
+//        Files.createDirectories(uploadPath);
+//        }
+//        InputStream inputStream=new ByteArrayInputStream(b);
+//
+//        Path filePath=uploadPath.resolve(fileName);
+//        Files.copy( inputStream, filePath,StandardCopyOption.REPLACE_EXISTING);
+//        return "successfully uploaded";
+//    }catch(IOException ex){
+//    return "error"+ex.toString();
+//    }
+//
+//    }
+//
+//
+
+    public String uploadPicture(
+            MultipartFile multiPartFile,
+            Student stud,
+            String fileName) throws IOException {
+
+        BufferedImage im =
+                ImageIO.read(multiPartFile.getInputStream());
+
+        if (im == null) {
+            return "error: uploaded file is not a valid image";
         }
-        InputStream inputStream=new ByteArrayInputStream(b);
-        
-        Path filePath=uploadPath.resolve(fileName);
-        Files.copy( inputStream, filePath,StandardCopyOption.REPLACE_EXISTING);
-        return "successfully uploaded";
-    }catch(IOException ex){
-    return "error"+ex.toString();
+
+        String extension =
+                StringUtils.getFilenameExtension(
+                        multiPartFile.getOriginalFilename()
+                );
+
+        if (extension == null || extension.isBlank()) {
+            extension = "jpg";
+        }
+
+        ByteArrayOutputStream outputStream =
+                new ByteArrayOutputStream();
+
+        ImageIO.write(
+                resizeImage(im, 300, 300),
+                extension,
+                outputStream
+        );
+
+        byte[] bytes = outputStream.toByteArray();
+
+        try {
+
+            String uploadDir =
+                    "/var/data/stud-pics/"
+                            + LocalDate.now().getYear()
+                            + "/"
+                            + stud.getStudentId();
+
+            Path uploadPath =
+                    Paths.get(uploadDir);
+
+            Files.createDirectories(uploadPath);
+
+            Path filePath =
+                    uploadPath.resolve(fileName);
+
+            Files.write(
+                    filePath,
+                    bytes,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+            );
+
+            return "successfully uploaded";
+
+        } catch (IOException ex) {
+
+            return "error: " + ex.getMessage();
+        }
     }
-    
-    }
-    
-    
-    
+
+
     public users CreateStudentAccount(Student student){
         users user=new users();
              BCryptPasswordEncoder encode=new BCryptPasswordEncoder();
@@ -483,7 +583,7 @@ public class StudentService {
     }
     }
     public String saveStudent(Student stud){
-       List<Student>studs=SR.findAll();
+       List<Student>studs= studentRepository.findAll();
         studs.removeIf(c->c.getIdSpecia()==null);
          if(studs.isEmpty()){
           stud.setIdSpecia(1L);
@@ -498,7 +598,7 @@ public class StudentService {
        stud.setStudentStatus("in School");
     try{
         
-    SR.save(stud);
+    studentRepository.save(stud);
    // stud.setBill(BS.getBillBasedOn_Fee(fee));
     CreateStudentAccount(stud);
     
@@ -511,7 +611,7 @@ public class StudentService {
     }
    public Student saveStudentCategory(Student stud){
       try{
-   stud=  SR.save(stud);
+   stud=  studentRepository.save(stud);
    // stud.setBill(BS.getBillBasedOn_Fee(fee));
      
     return stud;
@@ -522,19 +622,19 @@ public class StudentService {
     
     }
     public Student findStudent(String id){
-    return SR.findById(id).get();
+    return studentRepository.findById(id).get();
     }
     @Autowired TermService ts;
     public double GetStudentTotalFees(Student student){
     double getTotalStudentBills=0;
-    for(StudentBill bill :student.getStudentBills() ){
-        for(SchoolFees fee: bill.getBill().getFee()){
+
+        for(SchoolFees fee: student.getStudentBills().stream().map(StudentBill::getFees).toList()){
     if(Objects.equals(fee.getTerm().getId(), ts.getCurrentTerm().getId())){
                 getTotalStudentBills += fee.getAmount();
             }
         }
     
-    }    return  getTotalStudentBills;
+        return  getTotalStudentBills;
     }
     
     
@@ -551,7 +651,7 @@ public class StudentService {
     
     public List<Student>students(){
     
-    return SR.findAll().stream().filter(c->c.getStudentStatus().equals("in School")).collect(Collectors.toList());
+    return studentRepository.findAll().stream().filter(c->c.getStudentStatus().equals("in School")).collect(Collectors.toList());
     }
     
     public List<Student>GetStudents_In_A_Particular_Class(klass klass){
@@ -591,7 +691,7 @@ public class StudentService {
      }
    public Optional<Student>FindstudentById(Student stud){
    
-  return SR.findById(stud.getStudentId());
+  return studentRepository.findById(stud.getStudentId());
    }
 public String promoteStudent_withoutsaving(Student student){
     klass klas=null;
@@ -714,7 +814,7 @@ public void changeStudentId(){
     c.setStudentReference(id);
    students.add(c);
    });
- System.out.println( SR.saveAll(students));
+ System.out.println( studentRepository.saveAll(students));
 }
 public void changeStudentId_(){
      List <Student>students = new ArrayList<>();
@@ -731,7 +831,7 @@ public void changeStudentId_(){
     c.setStudentReference(c.getStudentId());
     
    students.add(c);
-SR.save(c);
+studentRepository.save(c);
 
 
 }
@@ -741,7 +841,7 @@ SR.save(c);
 }
   public Optional<Student>getStudentByReference(String reference){
   
-  return SR.getStudentByStudentReference(reference);
+  return studentRepository.getStudentByStudentReference(reference);
   } 
   
   public String converDetailsToString (Student student){
@@ -749,19 +849,19 @@ SR.save(c);
    }
 
    public Page<Student> getAllStudentsPaged(Pageable pageable) {
-       return SR.findAll(pageable);
+       return studentRepository.findAll(pageable);
    }
 
    public Page<Student> getStudentsByClassPaged(klass k, Pageable pageable) {
-       return SR.findByStudentStatusAndStudentklassClassName("In School",k.getClassName(), pageable);
+       return studentRepository.findByStudentStatusAndStudentklassClassName("in School",k.getClassName(), pageable);
    }
 
    public Page<Student> getStoppedStudentsByClassPaged(klass k, Pageable pageable) {
-       return SR.findByStudentStatusAndStudentklassClassName("Stopped", k.getClassName(), pageable);
+       return studentRepository.findByStudentStatusAndStudentklassClassName("Stopped", k.getClassName(), pageable);
    }
 
    public Page<Student> searchStudentsPaged(String search, Pageable pageable) {
-       return SR.findByStudentIdOrFirstNameOrLastNameOrsurname(search, pageable);
+       return studentRepository.findByStudentIdOrFirstNameOrLastNameOrsurname(search, pageable);
    }
   
 }

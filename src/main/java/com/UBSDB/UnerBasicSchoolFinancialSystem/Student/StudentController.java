@@ -1,7 +1,4 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
+
 package com.UBSDB.UnerBasicSchoolFinancialSystem.Student;
 
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Academic.AcademicService;
@@ -34,6 +31,7 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.TKS.TeachrKlassSubjectService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Teacher.Teacher;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.Term;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermService;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeekService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klass;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klassReponse;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klassService;
@@ -122,6 +120,8 @@ public class StudentController {
     private AssessmentService AsS;
     @Autowired
     private MountedCourseService mountedCourseService;
+    @Autowired
+    private TermWeekService termWeekService;
     @Autowired private StudentBillService studentBillService;
     public StudentController() {
     }
@@ -209,7 +209,7 @@ public class StudentController {
                     Bill bill = bss.get().getBill();
                     StudentBill studBill = StudentBill
                             .builder()
-                            .bill(bill)
+                            .fees(bss.get())
                             .student(student)
 
                             .build();
@@ -229,36 +229,73 @@ public class StudentController {
     }
 
     @GetMapping({"/Studentlist/{classId}"})
-    public String getStudetnListBasedOnClass(Principal principal,
-            Model model , @PathVariable("classId") String classId,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size)
-    {
+    public String getStudetnListBasedOnClass(
+            Principal principal,
+            Model model,
+            @PathVariable("classId") String classId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String search) {
+
         klass k = new klass(classId, "");
+
         if (!this.AS.getAcademicyear_Date(LocalDate.now()).isPresent()) {
             return "redirect:/showAcademicForm";
-        } else {
-              Pageable pageable = PageRequest.of(page, size);
-
-                Page<Student> studentPage = this.SS.getStudentsByClassPaged(k, pageable);
-                model.addAttribute("StudentList", studentPage.getContent().stream().map(Student::getStudentResponse).collect(Collectors.toList()));
-                model.addAttribute("studentPage", studentPage);
-         
-            model.addAttribute("classId", classId);
-            users user = this.US.FindUserById(principal.getName());
-            Iterator var8 = user.roles.iterator();
-
-            role r;
-            do {
-                if (!var8.hasNext()) {
-                    return "index";
-                }
-
-                r = (role) var8.next();
-            } while (!r.getName().equals("HeadTeacher"));
-
-            return "HeadTeacherPortal";
         }
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Student> studentPage;
+
+        if (search == null || search.trim().isEmpty()) {
+
+            // No search - load all students in the class
+            studentPage = this.SS.getStudentsByClassPaged(k, pageable);
+
+        } else {
+
+            // Search students in the class
+            studentPage = this.SS.getStudentsByClassPaged(
+                    k,
+                    search.trim(),
+                    pageable
+            );
+        }
+
+        var output = studentPage
+                .getContent()
+                .stream()
+                .map(Student::getStudentResponse)
+                .toList();
+
+        log.info("Student search: {}", search);
+        log.info("Students found: {}", output.size());
+
+        model.addAttribute("StudentList", output);
+        model.addAttribute("studentPage", studentPage);
+
+        // Keep search value in the page
+        model.addAttribute("search", search);
+
+        model.addAttribute("classId", classId);
+
+        users user = this.US.FindUserById(principal.getName());
+
+        Iterator var8 = user.roles.iterator();
+
+        role r;
+
+        do {
+
+            if (!var8.hasNext()) {
+                return "index";
+            }
+
+            r = (role) var8.next();
+
+        } while (!r.getName().equals("HeadTeacher"));
+
+        return "HeadTeacherPortal";
     }
 
     @GetMapping({"/StoppedStudentlist/{classId}"})
@@ -312,7 +349,8 @@ public class StudentController {
     public String UpdateStudentDetails(Principal principal, Model model, @PathVariable("id") String id) throws Exception {
         Student stud = this.SS.findStudent(id);
         model.addAttribute("UpdateStudent", stud.getStudentResponse());
-        model.addAttribute("StudentClass", stud.getStudentResponse().getStudentklass());
+        model.addAttribute("StudentClass", stud.getStudentklass()
+               .getClassName());
         users user = this.US.FindUserById(principal.getName());
         Iterator var6 = user.roles.iterator();
 
@@ -333,7 +371,7 @@ public class StudentController {
         try {
             Student stud = this.SS.findStudent(id);
             model.addAttribute("UpdateStudentPicture", stud.getStudentResponse());
-            model.addAttribute("StudentClass", stud.getStudentResponse().getStudentklass());
+            model.addAttribute("StudentClass", stud.getStudentklass().getClassName());
             users user = this.US.FindUserById(principal.getName());
             Iterator var6 = user.roles.iterator();
 
@@ -367,8 +405,12 @@ public class StudentController {
     }
 
     @PostMapping({"/updateWithPicture"})
-    public String UpdateStudentWithPicture(Principal principal, Model model, Student student, @RequestParam("file-image") MultipartFile file) throws Exception {
-        model.addAttribute("msg", this.SS.UpdateStudentRecords(student, file));
+    public String UpdateStudentWithPicture(Principal principal, Model model, Student student, @RequestParam("file-image") MultipartFile file,
+                                           @RequestParam("studentKlass") String studentKlass
+                                           ) throws Exception {
+        student.setStudentklass(new klass(studentKlass));
+
+        model.addAttribute("msg", this.SS.UpdateStudent(student, file));
         users user = this.US.FindUserById(principal.getName());
         Iterator var6 = user.roles.iterator();
 
@@ -385,7 +427,9 @@ public class StudentController {
     }
 
     @PostMapping({"/update"})
-    public String UpdateStudent(Principal principal, Model model, @RequestParam("NewStudent") String NewStudent, Student student) throws Exception {
+    public String UpdateStudent(Principal principal, Model model, @RequestParam("NewStudent") String NewStudent,
+                                @RequestParam("studentKlass") String studentKlass,
+                                Student student) throws Exception {
         try {
             Optional<Term> term = this.TS.findTermById(this.TS.getCurrentTerm().getId());
             if (NewStudent.equalsIgnoreCase("Yes") && term.isPresent()) {
@@ -404,15 +448,16 @@ public class StudentController {
                     Bill bill = bss.get().getBill();
                     StudentBill studBill = StudentBill
                             .builder()
-                            .bill(bill)
+                            .fees(bss.get())
                             .student(student)
 
                             .build();
                     studentBillService.saveStudentBill(studBill);
                 }
             }
-
-            this.SS.UpdateStudentRecords(student);
+            klass _klass=new klass(studentKlass);
+            student.setStudentklass(_klass);
+            this.SS.UpdateStudent(student,null);
             users user = this.US.FindUserById(principal.getName());
             Iterator var12 = user.roles.iterator();
 
@@ -434,7 +479,7 @@ public class StudentController {
     public String StudentBill(Principal principal, Model model, @PathVariable("id") String id) throws Exception {
         Student student = this.SS.findOptionalStudent(id).orElse(null);
         if (student != null) {
-            Optional<Bill> currentBill = this.BS.BillsBasedOnTerm(this.TS.getCurrentTerm(), student).map(StudentBill::getBill);
+            Optional<SchoolFees> currentBill = this.BS.BillsBasedOnTerm(this.TS.getCurrentTerm(), student).map(StudentBill::getFees);
             if (currentBill.isPresent() && currentBill.get() != null) {
                 model.addAttribute("Studentbills", currentBill.get());
             } else {
@@ -702,7 +747,7 @@ public class StudentController {
     @GetMapping({"StudentPortal/Detail/"})
     public String StudentDetail(Model model, Principal principal) throws Exception {
         String StudentId = principal.getName();
-        model.addAttribute("StudentDetails", this.SS.findStudent(StudentId));
+        model.addAttribute("studentDetails", this.SS.findStudent(StudentId));
         return "StudentPortal";
     }
 
@@ -723,13 +768,111 @@ public class StudentController {
         Student stud = this.SS.findStudent(StudentId);
         Term t = this.TS.getCurrentTerm();
         klass k = stud.getStudentklass();
-        List<MountedCourse> mountedCourses = this.mountedCourseService.getActiveMountedCoursesByClassAndTerm(k, t);
+        com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek currentWeek = this.termWeekService.getCurrentWeek(t);
+        List<MountedCourse> mountedCourses;
+        if (currentWeek != null) {
+            mountedCourses = this.mountedCourseService.getActiveMountedCoursesByClassAndTermAndWeek(k, t, currentWeek);
+        } else {
+            mountedCourses = this.mountedCourseService.getActiveMountedCoursesByClassAndTerm(k, t);
+        }
         model.addAttribute("mountedCourses", mountedCourses.stream()
                 .map(MountedCourse::getMountedCourseResponse)
                 .collect(Collectors.toList()));
+        model.addAttribute("currentWeek", currentWeek);
         model.addAttribute("user", principal.getName());
         model.addAttribute("StudentDetails", stud);
         return "StudentPortal";
+    }
+
+    @GetMapping({"StudentPortal/MountedCoursesJSON"})
+    @ResponseBody
+    public ResponseEntity<?> getMountedCoursesJSON(Principal principal) throws Exception {
+        String StudentId = principal.getName();
+        Student stud = this.SS.findStudent(StudentId);
+        Term t = this.TS.getCurrentTerm();
+        klass k = stud.getStudentklass();
+        com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek currentWeek = this.termWeekService.getCurrentWeek(t);
+        List<MountedCourse> mountedCourses;
+        if (currentWeek != null) {
+            mountedCourses = this.mountedCourseService.getActiveMountedCoursesByClassAndTermAndWeek(k, t, currentWeek);
+        } else {
+            mountedCourses = this.mountedCourseService.getActiveMountedCoursesByClassAndTerm(k, t);
+        }
+
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("mountedCourses", mountedCourses.stream()
+                .map(MountedCourse::getMountedCourseResponse)
+                .collect(Collectors.toList()));
+
+        if (currentWeek != null) {
+            java.util.Map<String, String> weekInfo = new java.util.HashMap<>();
+            weekInfo.put("weekName", currentWeek.getWeekName());
+            weekInfo.put("startDate", currentWeek.getStartDate() != null ? currentWeek.getStartDate().toString() : "");
+            weekInfo.put("endDate", currentWeek.getEndDate() != null ? currentWeek.getEndDate().toString() : "");
+            response.put("currentWeek", weekInfo);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping({"StudentPortal/DownloadWeeklyCoursesPDF"})
+    public void downloadWeeklyCoursesPDF(HttpServletResponse response, Principal principal) throws Exception {
+        String StudentId = principal.getName();
+        Student stud = this.SS.findStudent(StudentId);
+        Term t = this.TS.getCurrentTerm();
+        klass k = stud.getStudentklass();
+        com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek currentWeek = this.termWeekService.getCurrentWeek(t);
+        List<MountedCourse> mountedCourses;
+        if (currentWeek != null) {
+            mountedCourses = this.mountedCourseService.getActiveMountedCoursesByClassAndTermAndWeek(k, t, currentWeek);
+        } else {
+            mountedCourses = this.mountedCourseService.getActiveMountedCoursesByClassAndTerm(k, t);
+        }
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=\"weekly_courses_" + StudentId + ".pdf\"");
+
+        com.lowagie.text.Document document = new com.lowagie.text.Document();
+        com.lowagie.text.pdf.PdfWriter.getInstance(document, response.getOutputStream());
+        document.open();
+
+        com.lowagie.text.Font titleFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 18, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("Weekly Courses", titleFont);
+        title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        document.add(title);
+        document.add(new com.lowagie.text.Paragraph(" "));
+
+        com.lowagie.text.Font infoFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 12);
+        document.add(new com.lowagie.text.Paragraph("Student: " + stud.getFirstName() + " " + stud.getLastName(), infoFont));
+        document.add(new com.lowagie.text.Paragraph("Class: " + k.getClassName(), infoFont));
+        document.add(new com.lowagie.text.Paragraph("Term: " + t.getTermName(), infoFont));
+        if (currentWeek != null) {
+            document.add(new com.lowagie.text.Paragraph("Week: " + currentWeek.getWeekName() + " (" + currentWeek.getStartDate() + " - " + currentWeek.getEndDate() + ")", infoFont));
+        }
+        document.add(new com.lowagie.text.Paragraph(" "));
+
+        com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(5);
+        table.setWidthPercentage(100);
+        table.setWidths(new float[]{2, 3, 2, 2, 2});
+
+        com.lowagie.text.Font headerFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 12, com.lowagie.text.Font.BOLD);
+        table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase("Subject", headerFont)));
+        table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase("Course", headerFont)));
+        table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase("Class", headerFont)));
+        table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase("Teacher", headerFont)));
+        table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase("Status", headerFont)));
+
+        com.lowagie.text.Font dataFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 10);
+        for (MountedCourse mc : mountedCourses) {
+            table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(mc.getSubject() != null ? mc.getSubject().getSubjectName() : "", dataFont)));
+            table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(mc.getCourse() != null ? mc.getCourse().getCourseName() : "", dataFont)));
+            table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(mc.getKlass() != null ? mc.getKlass().getClassName() : "", dataFont)));
+            table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(mc.getTeacher() != null ? mc.getTeacher().getFirstName() + " " + mc.getTeacher().getLastName() : "Not Assigned", dataFont)));
+            table.addCell(new com.lowagie.text.pdf.PdfPCell(new com.lowagie.text.Phrase(mc.getStatus(), dataFont)));
+        }
+
+        document.add(table);
+        document.close();
     }
 
     @GetMapping({"/StudentPortal/getBills"})
@@ -737,7 +880,8 @@ public class StudentController {
         try {
             String id = principal.getName();
             Student stud = this.SS.findStudent(id);
-            PaymentObjectBillingResponse PayBillObject = new PaymentObjectBillingResponse(stud, this.TS.getCurrentTerm());
+            PaymentObjectBillingResponse PayBillObject =
+                    new PaymentObjectBillingResponse(stud, this.TS.getCurrentTerm());
             System.out.println(PayBillObject);
             model.addAttribute("StudentBill", PayBillObject);
             return ResponseEntity.ok(PayBillObject);
@@ -836,6 +980,30 @@ public class StudentController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping({"/api/students/{studentId}/analytics"})
+    @ResponseBody
+    public ResponseEntity<com.UBSDB.UnerBasicSchoolFinancialSystem.Assessment.StudentAnalyticsResponse> getStudentAnalytics(
+            @PathVariable("studentId") String studentId) {
+        Optional<Student> studOpt = this.SS.findOptionalStudent(studentId);
+        if (studOpt.isEmpty()) {
+            return ResponseEntity.ok(new com.UBSDB.UnerBasicSchoolFinancialSystem.Assessment.StudentAnalyticsResponse());
+        }
+        Student stud = studOpt.get();
+        return ResponseEntity.ok(this.As.getStudentAnalytics(stud));
+    }
+
+    @GetMapping({"/api/students/{studentId}/analytics/term/{termId}"})
+    @ResponseBody
+    public ResponseEntity<com.UBSDB.UnerBasicSchoolFinancialSystem.Assessment.StudentAnalyticsResponse> getStudentAnalyticsByTerm(
+            @PathVariable("studentId") String studentId, @PathVariable("termId") Long termId) {
+        Optional<Student> studOpt = this.SS.findOptionalStudent(studentId);
+        if (studOpt.isEmpty()) {
+            return ResponseEntity.ok(new com.UBSDB.UnerBasicSchoolFinancialSystem.Assessment.StudentAnalyticsResponse());
+        }
+        Student stud = studOpt.get();
+        return ResponseEntity.ok(this.As.getStudentAnalyticsByTerm(stud, termId));
+    }
+
     @GetMapping({"/api/klasses"})
     @ResponseBody
     public List<klassReponse> getAllKlasses() {
@@ -848,12 +1016,8 @@ public class StudentController {
     @ResponseBody
     public String Promotion() throws Exception {
         Runnable r1 = () -> {
-
-            Term t = TS.getCurrentTerm();
-
-            try {
-                List<Student> students = this.SS.students();
-
+        Term t = TS.getCurrentTerm();
+        try {  List<Student> students = this.SS.students();
                 students.removeIf((c) -> {
                     return c.getStudentStatus().equalsIgnoreCase("Stopped");
                 });
@@ -867,10 +1031,10 @@ public class StudentController {
                         float text = (TotalSubject * 100) / 2;
                         Logger.getGlobal().log(Level.INFO, "Starting the process " + text);
                         System.out.println(s.getStudentId() + ".....promotions " + s.getPromotions().size());
-                        if (s.getStudentklass() != null && !s.getPromotions().stream().filter((c) -> {
+                        if (s.getStudentklass() != null && !s.getPromotions().stream().anyMatch((c) -> {
                             return c.getAcademicyear().getId() 
                             == this.TS.getCurrentTerm().getAcademicyear().getId();
-                        }).findFirst().isPresent() && s.getAssessment().stream()
+                        }) && s.getAssessment().stream()
                                 .filter(c -> c.getTerm().getId() == TS.getCurrentTerm().getId())
                                 .map(Assessment::getTotalScore).reduce(0.0, (a, b) -> a + b) >= text) {
                             promote p = new promote(s.getStudentklass().getClassName()
@@ -910,9 +1074,11 @@ public class StudentController {
                                 p = this.prs.savePromotion(p);
                             } catch (Exception var4) {
                                 Exception ex = var4;
-                                Logger.getLogger(StudentController.class.getName()).log(Level.SEVERE, (String) null, ex);
+                                Logger
+                                         .getLogger(StudentController.class.getName()).log(Level.SEVERE, (String) null, ex);
                             }
-                            Logger.getGlobal().log(Level.INFO, p.getStudent().getFullName() + "..Exemption... Previous class -> " + p + " Approved " + p.getNextClass());
+                            Logger.getGlobal()
+                                    .log(Level.INFO, p.getStudent().getFullName() + "..Exemption... Previous class -> " + p + " Approved " + p.getNextClass());
                        
                         
                         }else 

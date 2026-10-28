@@ -1,0 +1,158 @@
+<div th:fragment="financialSummary">
+
+    <div class="bg-success text-white h5" style="margin-top:30px;">
+        <label>Financial Summary - Revenue vs Expenses</label>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-lg" style="margin-top:20px;">
+
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h6 class="text-primary mb-0">Financial Overview</h6>
+                </div>
+                <div class="col text-end">
+                    <span class="badge bg-primary" th:text="${currentTerm != null ? currentTerm.TermName : 'N/A'}">Term</span>
+                    <span class="badge bg-secondary ms-2" th:text="${currentAcademic != null ? currentAcademic.AcademicYear.getYear() : 'N/A'}">Academic Year</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm bg-success text-white">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">Total Revenue</h6>
+                            <h3 class="card-text" th:text="${totalRevenue != null ? totalRevenue : 0.0} + ' GHC'">0.00 GHC</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm bg-danger text-white">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">Total Expenses</h6>
+                            <h3 class="card-text" th:text="${totalExpenses != null ? totalExpenses : 0.0} + ' GHC'">0.00 GHC</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm" th:class="${netProfit >= 0 ? 'bg-info text-white' : 'bg-warning text-dark'}">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">Net Profit/Loss</h6>
+                            <h3 class="card-text" th:text="${netProfit != null ? netProfit : 0.0} + ' GHC'">0.00 GHC</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue vs Expense Chart -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="text-primary mb-0">Revenue vs Expenses</h6>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="revenueExpenseChart" width="400" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Breakdown -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="text-primary mb-0">Revenue Sources</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">Revenue data will be integrated with the payment system.</p>
+                            <ul class="list-unstyled">
+                                <li><i class="bi bi-check-circle text-success"></i> School Fees</li>
+                                <li><i class="bi bi-check-circle text-success"></i> PTA Dues</li>
+                                <li><i class="bi bi-check-circle text-success"></i> Other Payments</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="text-primary mb-0">Expense Categories</h6>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${expensesByCategoryTerm != null and !expensesByCategoryTerm.isEmpty()}">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Amount (GHC)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="entry : ${expensesByCategoryTerm}">
+                                            <td th:text="${entry.key}"></td>
+                                            <td th:text="${entry.value}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-muted" th:if="${expensesByCategoryTerm == null or expensesByCategoryTerm.isEmpty()}">
+                                No expenses recorded for this term.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <a th:href="@{/FinancePortal/expenses/list}" class="btn btn-primary me-2">Manage Expenses</a>
+                <a th:href="@{/FinancePortal/expenses/report}" class="btn btn-info">View Expense Report</a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('revenueExpenseChart').getContext('2d');
+            var revenue = [[${totalRevenue != null ? totalRevenue : 0.0}]];
+            var expenses = [[${totalExpenses != null ? totalExpenses : 0.0}]];
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Financial Summary'],
+                    datasets: [{
+                        label: 'Revenue (GHC)',
+                        data: revenue,
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Expenses (GHC)',
+                        data: expenses,
+                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</div>

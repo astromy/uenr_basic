@@ -145,10 +145,9 @@ public class AssessmentPDFService {
                 PdfPCell cell=new PdfPCell(); PdfPCell cell2=new PdfPCell();
                 Font font=FontFactory.getFont("Gil Sans MT", 11, Color.BLACK);
                 cell.setPadding(-1);cell.setBorderWidthTop(10);
-                cell.setBorderColor(Color.WHITE);Path imagepath=Paths.get("stud-pics");
-
+                cell.setBorderColor(Color.WHITE);Path imagepath=Paths.get("/css/page");
                 AssessmentPosition AP=new AssessmentPosition();
-                DecimalFormat decimalF= new DecimalFormat("##.#");
+                 DecimalFormat decimalF= new DecimalFormat("##.#");
                 if(student.getStudentklass().getClassLevel().equalsIgnoreCase("Kindagarten")){
                     AP.setPosition("");
                 }else{
@@ -299,14 +298,14 @@ public class AssessmentPDFService {
           //              .stream().filter(c->c.getTerm().getId()
             //                    ==TS.findNextTermBasedOnTerm(t).get().getId()).findFirst();
         
-           double areas =(stud.getStudentBills().stream().filter(c-> LocalDate.parse(c.getTerm().getEndDate())
-                   .isBefore(LocalDate.parse(t.getEndDate())))
-                   .flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount)
-                   .reduce(0.0, (b,f)-> b+f)-stud.getPayments().stream().map(Payment::getDiscount).reduce(0.f, (f,s)->f+s))-(stud.getPayments().stream()
-                           .filter(c-> c.getDate()
-                   .isBefore(LocalDate.parse(t
-                           .getEndDate()))).map(Payment::getAmount).reduce(0.0, (b,f)-> b+f));
-    //    Table.addCell(areas+"",cell);
+//           double areas ="";(stud.getStudentBills().stream().filter(c-> LocalDate.parse(c.getTerm().getEndDate())
+//                   .isBefore(LocalDate.parse(t.getEndDate())))
+//                   .flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount)
+//                   .reduce(0.0, (b,f)-> b+f)-stud.getPayments().stream().map(Payment::getDiscount).reduce(0.f, (f,s)->f+s))-(stud.getPayments().stream()
+//                           .filter(c-> c.getDate()
+//                   .isBefore(LocalDate.parse(t
+//                           .getEndDate()))).map(Payment::getAmount).reduce(0.0, (b,f)-> b+f));
+//    //    Table.addCell(areas+"",cell);
      //-(BS.BillsBasedOnTerm(TS.getCurrentTerm(), student).getFee().getAmount())+"");
    //  if(Current_stud_bill.isPresent()){ 
     // Table.addCell(Current_stud_bill.get().getFee().getAmount()+"");

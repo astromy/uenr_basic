@@ -4,6 +4,7 @@
  */
 package com.UBSDB.UnerBasicSchoolFinancialSystem.Bill;
 
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBill;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees.SchoolFees;
 import java.util.List;
 import java.util.Objects;
@@ -68,22 +69,17 @@ public class BillResponse {
     public BillResponse() {
     }
 
-    public BillResponse(Bill b) {
-        if (b == null) {
+    public BillResponse(StudentBill bill) {
+        if (bill == null) {
             return;
         }
-        if (b.getTerm() != null) {
-            this.TermName = b.getTerm().getTermName();
-            if (b.getTerm().getAcademicyear() != null) {
-                this.AcademicYear = b.getTerm().getAcademicyear().getAcademicName();
+        if (bill.getTerm() != null) {
+            this.TermName = bill.getTerm().getTermName();
+            if (bill.getTerm().getAcademicyear() != null) {
+                this.AcademicYear = bill.getTerm().getAcademicyear().getAcademicName();
             }
         }
-        this.BillId = b.getId();
-        List<SchoolFees> fees = b.getFee();
-        if (fees != null && !fees.isEmpty()) {
-            SchoolFees fee = fees.get(0);
-            this.Amount = Objects.toString(fee.getAmount());
-            this.Description = fee.getFeeType();
-        }
+        this.Amount = Objects.toString(bill.getFees().getAmount());
+        this.Description = bill.getFees().getFeeType();
     }
 }

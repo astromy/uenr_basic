@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<div th:fragment="AdminArtenary">
+    <div class="card border-0 shadow-sm rounded-lg" th:if="${adminArtenary}">
+        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0">Weekly Activities Management</h5>
+                <small class="text-muted">Manage activities and reminders for each week</small>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="showAddArtenaryForm()">
+                <i class="bi bi-plus-circle me-1"></i>Add Activity
+            </button>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-success" th:if="${msg}" th:text="${msg}"></div>
+            <div class="alert alert-danger" th:if="${err}" th:text="${err}"></div>
+
+            <!-- Add/Edit Form -->
+            <div id="artenaryForm" style="display: none;" class="mb-4">
+                <div class="card border-0 shadow-sm rounded-lg bg-light">
+                    <div class="card-body p-4">
+                        <h6 class="mb-3" th:text="${editArtenary != null && editArtenary ? 'Edit Weekly Activity' : 'Add New Weekly Activity'}"></h6>
+                        <form th:action="@{/saveArtenary}" th:object="${artenaryForm}" method="post" id="artenaryFormElement">
+                            <input type="hidden" th:field="*{Id}" id="artenaryId">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label>Term Week</label>
+                                        <select th:field="*{weekId}" class="form-select" required id="weekSelect">
+                                            <option value="">Select Week</option>
+                                            <option th:each="week: ${allWeeks}"
+                                                    th:value="${week.termWeekId}"
+                                                    th:text="${week.term.termName + ' - ' + week.weekName + ' (' + week.startDate + ' to ' + week.endDate + ')'}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label>Activity / Reminder</label>
+                                        <input type="text" th:field="*{activity}" class="form-control" placeholder="e.g., Parent Meeting, Sports Day, etc." required id="activityInput">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary" id="upload_btn" th:onclick="spinOnload()">
+                                    <span th:text="${editArtenary != null && editArtenary ? 'Update' : 'Save'}"></span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="hideArtenaryForm()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activities Table -->
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered" id="artenaryTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Week</th>
+                            <th>Term</th>
+                            <th>Date Range</th>
+                            <th>Activity / Reminder</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="activity: ${artenaryList}">
+                            <td th:text="${activity.weekName}"></td>
+                            <td th:text="${activity.week != null ? activity.week.term.termName : 'N/A'}"></td>
+                            <td th:text="${activity.startDate + ' - ' + activity.endDate}"></td>
+                            <td th:text="${activity.activity}"></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary me-1" onclick="editArtenary('${activity.Id}', '${activity.weekId}', '${activity.activity}')">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteArtenary('${activity.Id}')">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                        <tr th:if="${artenaryList == null || artenaryList.isEmpty()}">
+                            <td colspan="5" class="text-center text-muted py-4">
+                                <i class="bi bi-calendar-x me-2"></i>No weekly activities added yet. Click "Add Activity" to create one.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showAddArtenaryForm() {
+        document.getElementById('artenaryForm').style.display = 'block';
+        document.getElementById('artenaryId').value = '';
+        document.getElementById('weekSelect').value = '';
+        document.getElementById('activityInput').value = '';
+        document.querySelector('#artenaryFormElement h6').textContent = 'Add New Weekly Activity';
+        document.querySelector('#artenaryFormElement button[type="submit"] span').textContent = 'Save';
+        document.getElementById('artenaryFormElement').action = '/saveArtenary';
+    }
+
+    function hideArtenaryForm() {
+        document.getElementById('artenaryForm').style.display = 'none';
+    }
+
+    function editArtenary(id, weekId, activity) {
+        document.getElementById('artenaryForm').style.display = 'block';
+        document.getElementById('artenaryId').value = id;
+        document.getElementById('weekSelect').value = weekId;
+        document.getElementById('activityInput').value = activity;
+        document.querySelector('#artenaryFormElement h6').textContent = 'Edit Weekly Activity';
+        document.querySelector('#artenaryFormElement button[type="submit"] span').textContent = 'Update';
+        document.getElementById('artenaryFormElement').action = '/editArtenary';
+    }
+
+    function deleteArtenary(id) {
+        if (confirm('Are you sure you want to delete this weekly activity?')) {
+            fetch('/deleteArtenary/' + id, { method: 'DELETE' })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting activity');
+                });
+        }
+    }
+</script>

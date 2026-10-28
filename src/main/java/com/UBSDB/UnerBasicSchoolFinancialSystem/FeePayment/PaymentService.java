@@ -20,15 +20,12 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermService;
 
 import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klass;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.security.UserService;
-import com.UBSDB.UnerBasicSchoolFinancialSystem.SMS.SmsService;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,8 +36,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PaymentService {
-    private static final Logger LOG = Logger.getLogger(PaymentService.class.getName());
-
     @Autowired private PayementRepository PR;
    @Autowired
   private UserService US;
@@ -48,7 +43,6 @@ public class PaymentService {
     private StudentService SS;   @Autowired
     private ReceiptService RS;
  private   @Autowired TermService TS;private @Autowired BillService BS;
- private @Autowired SmsService sms;
  
    public double getTotalFeessPaymentForStudent(Payment payment){
    double totalSchoolFeesPayment=0;
@@ -185,7 +179,7 @@ public class PaymentService {
        double TotalBills=0;
      for(StudentBill bil :SS.findStudent(id).getStudentBills()){
         
-      TotalBills=TotalBills+bil.getBill().getFee().stream().map(SchoolFees::getAmount).reduce(0.0, (a, b) -> a + b);
+      TotalBills=TotalBills+bil.getFees().getAmount();
     }
      for(Payment p:payment){
      TotalBills=TotalBills-p.getAmount();
@@ -225,7 +219,6 @@ public class PaymentService {
        
       //payment.setUser( US.FindUserByUserName(p));
       // payment.set
-
         payment.setDate(LocalDate.now());
        payment.setRemaining(GetBalanceBasedOnTerm
         (payment.getTerm(),new Student(payment.getStudent().getStudentId()),payment.getAmount(),payment.getDiscount()));
@@ -241,80 +234,6 @@ public class PaymentService {
     
     return PR.findAll();
     }
-
-   /**
-    * Records a successful Paystack transaction as a school-fees Payment.
-    *
-    * This is called from both the Paystack webhook and the browser callback, and
-    * either one might arrive first (or the webhook might retry after a slow
-    * response) — so it must be idempotent. The Paystack transaction reference is
-    * stored in Payment.transactionSpecialId and used as the dedupe key: if a
-    * payment already exists for this reference, the existing Receipt is returned
-    * instead of crediting the student twice.
-    *
-    * @param studentId   the student the payment is for (from Paystack metadata)
-    * @param amount      the amount actually charged, in the base currency unit (GHS), not pesewas
-    * @param reference   the Paystack transaction reference
-    * @param paymentType e.g. "SchoolFees"
-    * @param payerEmail  the email Paystack charged, used only for the payment description
-    * @return the Receipt for this transaction (existing or newly created), or null on failure
-    */
-   public synchronized Receipt SavePaystackPayment(String studentId, double amount, String reference, String paymentType, String payerEmail){
-       try{
-           if(PR.existsByTransactionSpecialId(reference)){
-               LOG.info("Paystack reference "+reference+" already recorded, skipping duplicate credit");
-               Optional<Payment> existing = PR.findByTransactionSpecialId(reference);
-               if(existing.isPresent()){
-                   Receipt lookup = new Receipt();
-                   lookup.setPayment(existing.get());
-                   return RS.findReceiptByPayment(lookup).orElse(null);
-               }
-               return null;
-           }
-
-           Student stud = SS.findStudent(studentId);
-           if(stud == null){
-               LOG.severe("Paystack payment "+reference+" references unknown studentId "+studentId);
-               return null;
-           }
-
-           Payment payment = new Payment(
-                   "Paystack",
-                   "Paystack online payment ("+(payerEmail==null?"n/a":payerEmail)+")",
-                   LocalDate.now().toString(),
-                   (paymentType==null||paymentType.isBlank())?"SchoolFees":paymentType,
-                   TS.getCurrentTerm(),
-                   amount,
-                   LocalDate.now(),
-                   0,
-                   stud);
-           payment.setTransactionSpecialId(reference);
-           payment.setStatus(true);
-
-           payment = SaveSchoolFeesPaymentFromBank(payment);
-           if(payment == null){
-               return null;
-           }
-
-           Receipt receipt = RS.saveReceipt(new Receipt(payment, stud, LocalDate.now().toString()));
-
-           try{
-               sms.sendPaymentMessage(receipt);
-           }catch(Exception smsEx){
-               // Never let an SMS failure roll back or fail a confirmed payment.
-               LOG.log(Level.WARNING, "Paystack payment "+reference+" saved but SMS notification failed", smsEx);
-           }
-
-           return receipt;
-       }catch(Exception ex){
-           LOG.log(Level.SEVERE, "Failed to save Paystack payment for reference "+reference, ex);
-           return null;
-       }
-   }
-
-   public boolean paystackReferenceAlreadyProcessed(String reference){
-       return PR.existsByTransactionSpecialId(reference);
-   }
    
    public double GetBalanceBasedOnTerm(Term term,Student stud,double amount,double discont){
    double balance=0;
@@ -323,7 +242,7 @@ public class PaymentService {
    stud=SS.FindstudentById(stud).get();
    
   bills= stud.getStudentBills().stream()
-           .flatMap(bill -> bill.getBill().getFee().stream())
+          .map(StudentBill::getFees)
            .map(SchoolFees::getAmount)
           .reduce(0.0,(a,b)->a+b);
   payments=stud.getPayments().stream().map(Payment::getAmount).reduce(0.0,(a,b)->a+b);

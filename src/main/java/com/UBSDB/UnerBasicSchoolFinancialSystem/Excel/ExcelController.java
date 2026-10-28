@@ -269,40 +269,40 @@ return "index";
    return "TeacherPortal";
    }
   
-   @GetMapping("/TeacherPortal/SaveAssessment")
-   public String saveAssessment(Model model,Principal p){
-    try{
-        Runnable r1=()->{
-       Teacher t =tS.findbyStaffId(p.getName());
-       t=tS.findTeacher(t.getTeacherId());
-       Long teacherId=t.getTeacherId();
-         
-    //   Map<String,List< Assessment>> assess=(Map<String,List< Assessment>>)session.getAttribute("AssessmentExcelData"+teacherId);
-     
-    t.getCachedAssessments().stream().forEach(c->{
-     var assessment =new Assessment();
-     log.info(c.getStudentClass().getClassName());
-        log.info(c.getTerm().getTermName());
-     assessment= assessment.getAsessment(c);
-      AS.saveAssessment(assessment);
-     });
-    // CAS.deleteAllCachedAssessment(t);
-    model.addAttribute("msg",
-            "Successfully saved assessment for"
-                    + " "+t.getStaffId());
-        };
-        r1.run();
-    }catch (Exception ex){
-        System.out.println("Error ----> "+ex.toString());
-      model.addAttribute("msg",
-            "Contact Admin Unsuccessful Operation ");
-    
+    @GetMapping("/TeacherPortal/SaveAssessment")
+    public String saveAssessment(Model model,Principal p){
+     try{
+         Runnable r1=()->{
+        Teacher t =tS.findbyStaffId(p.getName());
+        t=tS.findTeacher(t.getTeacherId());
+        Long teacherId=t.getTeacherId();
+        String username = p.getName();
+
+     //   Map<String,List< Assessment>> assess=(Map<String,List< Assessment>>)session.getAttribute("AssessmentExcelData"+teacherId);
+
+     t.getCachedAssessments().stream().forEach(c->{
+      var assessment =new Assessment();
+      log.info(c.getStudentClass().getClassName());
+         log.info(c.getTerm().getTermName());
+      assessment= assessment.getAsessment(c);
+       AS.saveAssessment(assessment, username);
+      });
+     // CAS.deleteAllCachedAssessment(t);
+     model.addAttribute("msg",
+             "Successfully saved assessment for"
+                     + " "+t.getStaffId());
+         };
+         r1.run();
+     }catch (Exception ex){
+         System.out.println("Error ----> "+ex.toString());
+       model.addAttribute("msg",
+             "Contact Admin Unsuccessful Operation ");
+
+     }
+
+
+        return "TeacherPortal";
     }
-     
- 
-       
-   return "TeacherPortal";
-   }
    @GetMapping("/TeacherPortal/SaveMock/{id}")
    public String SaveMock(Model model,HttpSession session,Principal p,@PathVariable("id")Long id){
        

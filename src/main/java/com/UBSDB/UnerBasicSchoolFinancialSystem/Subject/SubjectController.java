@@ -5,13 +5,14 @@
  */
 package com.UBSDB.UnerBasicSchoolFinancialSystem.Subject;
 
-import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klass;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class SubjectController {
-    private @Autowired SubjectSeeder SS;
+    private @Autowired SubjectSeeder subjectSeeder;
      private @Autowired SubjectService SubS;
      
   		
@@ -32,7 +33,7 @@ public class SubjectController {
      @GetMapping("/subjectRemove")
     public @ResponseBody String removeAllSubjects(){
     
-    return  SS.removeSubject();
+    return  subjectSeeder.removeSubject();
     }
       @GetMapping("/EditSubject")
     public String EditSubject(Model model , Subject subject){
@@ -87,4 +88,23 @@ public class SubjectController {
             
             return "index";
               }
+      @GetMapping ("/seedSubjects")
+    public ResponseEntity<String> seedSubjects () {
+         try{
+
+       return  ResponseEntity.ok( subjectSeeder.SeedAllData());
+         }catch(Exception ex){
+
+             ex.printStackTrace();
+      return ResponseEntity.ok("Error adding subjects");
+         }
+
+
+
+    }
+
+    {
+
+
+    }
 }

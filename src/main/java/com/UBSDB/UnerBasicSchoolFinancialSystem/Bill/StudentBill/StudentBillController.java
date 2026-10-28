@@ -51,7 +51,7 @@ public class StudentBillController {
             
             StudentBill studentBill = new StudentBill();
             studentBill.setStudent(student);
-            studentBill.setBill(bill);
+
             
             StudentBill saved = studentBillService.saveStudentBill(studentBill);
             if (saved != null) {

@@ -5,6 +5,7 @@
  */
 package com.UBSDB.UnerBasicSchoolFinancialSystem.Teacher;
 
+import com.UBSDB.UnerBasicSchoolFinancialSystem.SMS.SmsService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.TKS.TeachrKlassSubjectService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.TKS.TeachrKlassSubject;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Subject.Subject;
@@ -44,6 +45,7 @@ public class TeacherService1 {
     private UserRepository UR;
    @Autowired
    private klassService KS;
+   @Autowired private SmsService smsService;
      public String CreateTeacherAccount(Teacher t){
         users user=new users();
              BCryptPasswordEncoder encode=new BCryptPasswordEncoder();
@@ -55,6 +57,7 @@ public class TeacherService1 {
             Set<role>roles=new HashSet<>();
             roles.add(getTeacherRoleId());
            user.setRoles(roles);
+
            if(US.checkIfUserNameIsAssigned(user).equals("false")){
           
          
@@ -78,7 +81,10 @@ public class TeacherService1 {
     public String addTeacher(Teacher teacher) {
         try {
             teacher.setClassTeacher("NotClassTeacher");
-            return TR.save(teacher).getFirstName() + " have been saved Successfully"+CreateTeacherAccount(teacher);
+
+           teacher= TR.save(teacher);
+            smsService.sendTeacher(teacher);
+             return      teacher.getFirstName()+ " have been saved Successfully"+CreateTeacherAccount(teacher);
             
         } catch (Exception ex) {
             return " Error contact admin" + ex.toString();
@@ -146,9 +152,9 @@ public class TeacherService1 {
     return TKS.getTeacherClassSubject(TeacherId, KlassId);
     }
     public String AssignTeacherToClass(Long teacherId, String klasId, Long subjectId) {
-        TeachrKlassSubject TkS=new TeachrKlassSubject(findTeacher(teacherId),KS.FindKlass( klasId), SS.findAParticularSubject(subjectId));
-        
-        return TKS.saveTeacherClassSubject(TkS) ;
+        TeachrKlassSubject tacherklasSub=new TeachrKlassSubject(findTeacher(teacherId),KS.FindKlass( klasId), SS.findAParticularSubject(subjectId));
+
+        return TKS.saveTeacherClassSubject(tacherklasSub) ;
     }
      
     public String checkIfSubjectIsAssignedToAteacher(Subject subject, klass klas) {

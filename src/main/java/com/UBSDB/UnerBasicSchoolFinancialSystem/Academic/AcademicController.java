@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AcademicController {
     @Autowired
-    private AcademicService AS;
+    private AcademicService academicService;
     @Autowired
     TermService Ts;
 
@@ -37,7 +37,7 @@ public class AcademicController {
             aca_year.setEndDate(LocalDate.parse(endDate));
             aca_year.setStartDate(LocalDate.parse(startDate));
             aca_year.setId(Id);
-            model.addAttribute("msg", this.AS.SaveAcademicYear(aca_year).getAcademicName() + " has been updated successfully");
+            model.addAttribute("msg", this.academicService.SaveAcademicYear(aca_year).getAcademicName() + " has been updated successfully");
             return "index";
         } catch (Exception var7) {
             Exception ex = var7;
@@ -52,7 +52,7 @@ public class AcademicController {
         try {
             aca_year.setEndDate(LocalDate.parse(endDate));
             aca_year.setStartDate(LocalDate.parse(startDate));
-            model.addAttribute("msg", this.AS.SaveAcademicYear(aca_year).getAcademicName() + " has been saved successfully");
+            model.addAttribute("msg", this.academicService.SaveAcademicYear(aca_year).getAcademicName() + " has been saved successfully");
             return "index";
         } catch (Exception var6) {
             Exception ex = var6;
@@ -72,7 +72,7 @@ public class AcademicController {
     public String AllAcademicYears(Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        Page<Academic> academicPage = this.AS.AllAcademicPaginated(page, size);
+        Page<Academic> academicPage = this.academicService.AllAcademicPaginated(page, size);
         model.addAttribute("allAcademicYears", academicPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", academicPage.getTotalPages());
@@ -84,14 +84,14 @@ public class AcademicController {
     @GetMapping({"/EditAcademicYear/{id}"})
     public String EditAcademicYearForm(Model model, @PathVariable("id") Long id) {
         model.addAttribute("EditAcademicyear", this.
-                AS.FindAcademic(new Academic(id)).getAcademicResponse());
+                academicService.FindAcademic(new Academic(id)).getAcademicResponse());
         return "index";
     }
 
     @GetMapping({"/DeleteAcademicYear/{id}"})
     public String DeleteAcademicYear(@PathVariable("id") Long id) {
         try {
-            this.AS.DeleteAcademic(id);
+            this.academicService.DeleteAcademic(id);
         } catch (Exception ex) {
             System.out.println("Error deleting academic year: " + ex);
         }

@@ -1,0 +1,150 @@
+<div th:fragment="expenseReport">
+
+    <div class="bg-info text-white h5" style="margin-top:30px;">
+        <label>Expense Report</label>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-lg" style="margin-top:20px;">
+
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h6 class="text-primary mb-0">Financial Overview</h6>
+                </div>
+                <div class="col text-end">
+                    <span class="badge bg-primary" th:text="${currentTerm != null ? currentTerm.TermName : 'N/A'}">Term</span>
+                    <span class="badge bg-secondary ms-2" th:text="${currentAcademic != null ? currentAcademic.AcademicYear.getYear() : 'N/A'}">Academic Year</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm bg-danger text-white">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">Total Expenses (Term)</h6>
+                            <h3 class="card-text" th:text="${totalExpensesTerm != null ? totalExpensesTerm : 0.0} + ' GHC'">0.00 GHC</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm bg-warning text-dark">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">Total Expenses (Year)</h6>
+                            <h3 class="card-text" th:text="${totalExpensesYear != null ? totalExpensesYear : 0.0} + ' GHC'">0.00 GHC</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm bg-info text-white">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">Number of Expenses</h6>
+                            <h3 class="card-text" th:text="${termExpenses != null ? termExpenses.size() : 0}">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expenses by Category -->
+            <div class="row mb-4" th:if="${expensesByCategoryTerm != null and !expensesByCategoryTerm.isEmpty()}">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="text-primary mb-0">Expenses by Category (This Term)</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Amount (GHC)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="entry : ${expensesByCategoryTerm}">
+                                        <td th:text="${entry.key}"></td>
+                                        <td th:text="${entry.value}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" th:if="${expensesByCategoryYear != null and !expensesByCategoryYear.isEmpty()}">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="text-primary mb-0">Expenses by Category (This Year)</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Amount (GHC)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="entry : ${expensesByCategoryYear}">
+                                        <td th:text="${entry.key}"></td>
+                                        <td th:text="${entry.value}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Expenses Table -->
+            <div class="card border-0 shadow-sm" th:if="${termExpenses != null and !termExpenses.isEmpty()}">
+                <div class="card-header bg-white py-3">
+                    <h6 class="text-primary mb-0">Recent Expenses</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="expensesReportTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Amount (GHC)</th>
+                                    <th>Payment Method</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="expense:${termExpenses}">
+                                    <td th:text="${#dates.format(expense.ExpenseDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${expense.category}"></td>
+                                    <td th:text="${expense.description}"></td>
+                                    <td th:text="${expense.Amount}"></td>
+                                    <td th:text="${expense.paymentMethod}"></td>
+                                    <td>
+                                        <span th:class="'badge ' + (expense.status == 'PAID' ? 'bg-success' : 'bg-warning')"
+                                              th:text="${expense.status}">
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info text-center" th:if="${termExpenses == null or termExpenses.isEmpty()}">
+                No expenses recorded for this term.
+            </div>
+
+            <div class="text-center mt-3">
+                <a th:href="@{/FinancePortal/expenses/list}" class="btn btn-primary">Manage Expenses</a>
+                <a th:href="@{/FinancePortal/expenses/financial-summary}" class="btn btn-success ms-2">Financial Summary</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -22,6 +22,17 @@ public class TermResponse {
     private String EndDate;
     private String termDescription;
 
+    @Override
+    public String toString() {
+        return "TermResponse{" +
+                "id=" + id +
+                ", academicYear='" + academicYear + '\'' +
+                ", TermName='" + TermName + '\'' +
+                ", StartDate='" + StartDate + '\'' +
+                ", EndDate='" + EndDate + '\'' +
+                ", termDescription='" + termDescription + '\'' +
+                '}';
+    }
 //    public TermResponse(Long id, String TermName, String StartDate, String EndDate, String academicYear) {
 //        this.id = id;
 //        this.TermName = TermName;

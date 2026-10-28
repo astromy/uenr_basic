@@ -24,9 +24,9 @@ import org.springframework.stereotype.Service;
       @Service
 public class AcademicService {
     @Autowired
-    private AcademicRepository AR;
+    private AcademicRepository academicRepository;
     @Autowired
-    private StudentService SS;
+    private StudentService studentService;
 
     public AcademicService() {
     }
@@ -37,7 +37,7 @@ public class AcademicService {
         aca.setSuccessorAcademicYear(aca.getEndDate().getYear() + 1 + "");
 
         try {
-            return (Academic)this.AR.save(aca);
+            return (Academic)this.academicRepository.save(aca);
         } catch (Exception var3) {
             return aca;
         }
@@ -66,23 +66,23 @@ public class AcademicService {
     }
 
     public List<Academic> AllAcademic() {
-        return this.AR.findAll();
+        return this.academicRepository.findAll();
     }
 
     public Page<Academic> AllAcademicPaginated(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return this.AR.findAll(pageable);
+        return this.academicRepository.findAll(pageable);
     }
 
     public Academic EditAcademic(Academic AcademicYear) {
-        return (Academic)this.AR.save(AcademicYear);
+        return (Academic)this.academicRepository.save(AcademicYear);
     }
 
     public Academic FindAcademic(Academic AcademicYear) {
-        return (Academic)this.AR.findById(AcademicYear.getId()).get();
+        return (Academic)this.academicRepository.findById(AcademicYear.getId()).get();
     }
 
     public void DeleteAcademic(Long id) {
-        this.AR.deleteById(id);
+        this.academicRepository.deleteById(id);
     }
 }

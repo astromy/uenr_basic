@@ -195,9 +195,7 @@ public class FinanceController {
                                         || term.trim().isEmpty()
                                         || feeTerm.equalsIgnoreCase(term.trim());
 
-                        /*
-                         * ACADEMIC YEAR FILTER
-                         */
+
                         boolean matchesYear =
                                 academicYear == null
                                         || academicYear.trim().isEmpty()
@@ -205,17 +203,13 @@ public class FinanceController {
                                         academicYear.trim().toLowerCase()
                                 );
 
-                        /*
-                         * LEVEL FILTER
-                         */
+
                         boolean matchesLevel =
                                 level == null
                                         || level.trim().isEmpty()
                                         || levels.contains(level.trim().toLowerCase());
 
-                        /*
-                         * MONTH FILTER
-                         */
+
                         boolean matchesMonth =
                                 month == null
                                         || month.trim().isEmpty()
@@ -236,22 +230,13 @@ public class FinanceController {
                             LinkedHashMap::new
                     ));
 
-            /*
-             * TOTAL RECORDS
-             */
-            int totalItems = filteredFees.size();
+             int totalItems = filteredFees.size();
 
-            /*
-             * TOTAL PAGES
-             */
-            int totalPages = (int) Math.ceil(
+               int totalPages = (int) Math.ceil(
                     (double) totalItems / size
             );
 
-            /*
-             * MAKE SURE PAGE IS VALID
-             */
-            if (page < 0) {
+             if (page < 0) {
                 page = 0;
             }
 
@@ -345,8 +330,8 @@ public class FinanceController {
             double amoutPay = 0.0;
             if (curreBill.isPresent()) {
                 var currentBill = curreBill.get();
-                if (currentBill.getBill() != null && !currentBill.getBill().getFee().isEmpty()) {
-                    amoutBill = currentBill.getBill().getFee().get(0).getAmount();
+                if (currentBill.getFees() != null ) {
+                    amoutBill = currentBill.getFees().getAmount();
                 }
             }
 
@@ -369,7 +354,7 @@ public class FinanceController {
             model.addAttribute("YEAR", LocalDate.now());
             model.addAttribute("Bal_carry_forward", -(Double)paymets.stream().map(Payment::getAmount).reduce(0.0, (a, p) -> {
                 return a + p;
-            }) + ((Double)bills.stream().flatMap(bill -> bill.getBill().getFee().stream()).map(SchoolFees::getAmount).reduce(0.0, (z, x) -> {
+            }) + ((Double)bills.stream().map(StudentBill::getFees).map(SchoolFees::getAmount).reduce(0.0, (z, x) -> {
                 return x + z;
             }) - (double)(Float)paymets.stream().map(Payment::getDiscount).reduce(0.0F, (a, p) -> {
                 return a + p;

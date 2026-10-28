@@ -79,7 +79,9 @@
                         { title: "Lower Primary", value: data.totalStudentsLowerPrimary, icon: "fa-layer-group", color: "success", animated: false },
                         { title: "Upper Primary", value: data.totalStudentsUpperPrimary, icon: "fa-building", color: "info", animated: true },
                         { title: "Junior High", value: data.totalStudentsJuniorHigh, icon: "fa-school", color: "primary", animated: false },
-                        { title: "Daily Payments (GHC)", value: "GHC " + data.totalAmountPaid, icon: "fa-coins", color: "primary", highlight: true, animated: true }
+                        { title: "Daily Payments (GHC)", value: "GHC " + data.totalAmountPaid, icon: "fa-coins", color: "primary", highlight: true, animated: true },
+                        { title: "Total Expenses (GHC)", value: "GHC " + (data.totalExpenses || 0), icon: "fa-receipt", color: "danger", animated: false },
+                        { title: "Net Profit (GHC)", value: "GHC " + (data.netProfit || 0), icon: "fa-chart-line", color: "success", animated: true }
                     ];
 
                     let html = "";

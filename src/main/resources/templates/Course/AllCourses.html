@@ -235,7 +235,7 @@ and open the template in the editor.
                             <label for="courseClass" class="col-form-label">Class</label>
                             <select id="courseClass" name="classId" class="form-select form-control">
                                 <option value="">Select Class (Optional)</option>
-                                <option th:each="klass:${Courseklasses}"
+                                <option th:each="klass:${coursesKlasses}"
                                         th:value="${klass.className}"
                                         th:text="${klass.className}">
                                 </option>
@@ -280,7 +280,7 @@ and open the template in the editor.
                         <div class="form-group">
                             <label for="mountClass" class="col-form-label">Select Classes (Hold Ctrl/Cmd to select multiple)</label>
                             <select id="mountClass" name="classIds" class="form-select" multiple="multiple" size="10" required>
-                                <option th:each="klass:${Courseklasses}"
+                                <option th:each="klass:${coursesKlasses}"
                                         th:value="${klass.className}"
                                         th:text="${klass.className}">
                                 </option>

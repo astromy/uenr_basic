@@ -42,5 +42,8 @@ public interface MountedCourseRepository extends JpaRepository<MountedCourse, Lo
     @Query("SELECT mc FROM MountedCourse mc LEFT JOIN FETCH mc.course LEFT JOIN FETCH mc.subject LEFT JOIN FETCH mc.klass LEFT JOIN FETCH mc.term WHERE mc.klass.className = :className AND mc.term.id = :termId AND mc.status = 'Active'")
     List<MountedCourse> findActiveMountedCoursesByClassAndTerm(@Param("className") String className, @Param("termId") Long termId);
 
+    @Query("SELECT mc FROM MountedCourse mc LEFT JOIN FETCH mc.course LEFT JOIN FETCH mc.subject LEFT JOIN FETCH mc.klass LEFT JOIN FETCH mc.term LEFT JOIN FETCH mc.termWeek WHERE mc.klass = :klass AND mc.term = :term AND mc.termWeek = :termWeek AND mc.status = 'Active'")
+    List<MountedCourse> findActiveMountedCoursesByClassAndTermAndWeek(@Param("klass") klass klass, @Param("term") Term term, @Param("termWeek") com.UBSDB.UnerBasicSchoolFinancialSystem.Term.TermWeek.TermWeek termWeek);
+
     boolean existsByCourseAndKlassAndTerm(Course course, klass klass, Term term);
 }

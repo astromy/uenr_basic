@@ -9,12 +9,11 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.Subject.Subject;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Teacher.Teacher;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Teacher.TeacherService1;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.klass.klass;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Service;
  *
  * @author enock
  */
+@Slf4j
 @Service
 public class TeachrKlassSubjectService {
     @Autowired
@@ -31,6 +31,10 @@ public class TeachrKlassSubjectService {
     
     public String saveTeacherClassSubject(TeachrKlassSubject TKS){
     try{
+
+
+    TKS.setTeacherKlassSubjectId(UUID.nameUUIDFromBytes(TKS.toString().getBytes()));
+     log.info("Id:.........."+ TKS.getTeacherKlassSubjectId());
     TKSR.save(TKS);
     return "Subject has been added successfully";
     }catch(Exception ex){
@@ -47,6 +51,7 @@ public class TeachrKlassSubjectService {
  
     }
     public String Check_If_Subject_Exist_For_A_Class(long Subject, String klass){
+
     for(TeachrKlassSubject TKS:TKSR.findAll()){
     if((TKS.getKlas().getClassName().equals(klass))&&(TKS.getSubjects().getId()==Subject)){
     
@@ -57,7 +62,7 @@ public class TeachrKlassSubjectService {
     }
      public Optional<TeachrKlassSubject>  findTKS(TeachrKlassSubject k){
      
-     return TKSR.findById(k.getId());
+     return TKSR.findById(k.getTeacherKlassSubjectId());
      }  
         public List<TeachrKlassSubject>  findAllTKS(){
      

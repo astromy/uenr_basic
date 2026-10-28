@@ -5,6 +5,7 @@ import com.UBSDB.UnerBasicSchoolFinancialSystem.security.users;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -78,6 +79,31 @@ public class ActivityLogController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/login-stats")
+    public ResponseEntity<Map<String, Object>> getLoginStats(
+            @RequestParam(defaultValue = "2024") int year,
+            @RequestParam(defaultValue = "1") int month) {
+        Map<Integer, Long> stats = activityLogService.getLoginStatsPerDay(year, month);
+        String monthName = java.time.Month.of(month).name();
+        monthName = monthName.charAt(0) + monthName.substring(1).toLowerCase();
+
+        Map<String, Object> response = new java.util.HashMap<>();
+        response.put("month", monthName);
+        response.put("year", year);
+        response.put("stats", stats);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/top-klass")
+    public ResponseEntity<Map<String, String>> getTopKlassByLogins() {
+
+        String topKlass = activityLogService.getTopKlassByLogins();
+        Map<String, String> response = new java.util.HashMap<>();
+        response.put("topKlass", topKlass);
+        return ResponseEntity.ok(response);
+
+    }
+
     private ActivityLogResponse convertToResponse(ActivityLog log) {
         String fullName = "Unknown";
         if (log.getUser() != null) {
@@ -98,6 +124,8 @@ public class ActivityLogController {
                 .ipAddress(log.getIpAddress())
                 .userAgent(log.getUserAgent())
                 .isActive(log.isActive())
+                .activityType(log.getActivityType())
+                .description(log.getDescription())
                 .build();
     }
 }
