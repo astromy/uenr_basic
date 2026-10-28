@@ -40,6 +40,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/FinancePortal/")
 public class PaymentController {
+
+    @GetMapping("/payments/report")
+    public String showPaymentReport(Model model, Principal principal) {
+        if (principal != null) {
+            model.addAttribute("user", principal.getName());
+        }
+        model.addAttribute("paymentReport", true);
+        try {
+            model.addAttribute("payments", PS.AllPayments());
+        } catch (Exception e) {
+            model.addAttribute("msg", "Error loading payment report: " + e.getMessage());
+        }
+        return "FinancePortal";
+    }
     @Autowired
     private StudentService SS;
     @Autowired

@@ -94,50 +94,34 @@ public class SmsService {
 
     public String sendAdmissionMessage(Student stud) {
         OkHttpClient client = (new OkHttpClient()).newBuilder().build();
-        stud = this.SS.findStudent(stud.getStudentId());
+       // stud = this.SS.findStudent(stud.getStudentId());
         String outCOME = "";
-        String AdmissionMessage = "Dear Parent, Your ward " + stud.getFirstName() + " " + stud.getLastName() + " " + stud.getSurname() + " with admission number " + stud.getStudentId() + " has been offered admission into UBS. " + stud.getStudentId()
+        String AdmissionMessage = "Dear Parent, Your ward " + stud.getFirstName() + " " + stud.getLastName() + " " + stud.getSurname() + " with admission number " + stud.getStudentId() + " has been offered admission into Joyheart. " + stud.getStudentId()
                 + " password: " + stud.getStudentId() + "1234. Admission tuition fee is "
                 + stud.getStudentBills().stream().map(StudentBill::getFees)
                        .map(SchoolFees::getAmount).reduce(0.0, (a, b) -> {
             return a + b;
         });
+
         Request request = (new Request.Builder()).get().url("https://sms.arkesel.com/sms/api?action=send-sms&api_key=Oll3MmpoZVp5RkZyWTc3eDQ=&to=" + stud.getParentNumber() + "&from=joyheart&sms=" + AdmissionMessage).build();
 
         try {
             Response response = client.newCall(request).execute();
+            log.info(response.message());
+                if (!response.isSuccessful()) {log.info(response.toString());
 
-            String var7;
-            try {
-                if (!response.isSuccessful()) {
                     throw new IOException("Unexpected code " + response);
                 }
 
                 System.out.println(response.body().string() + " ................sms ");
                 outCOME = response.body().string();
-                var7 = outCOME;
-            } catch (Throwable var10) {
-                if (response != null) {
-                    try {
-                        response.close();
-                    } catch (Throwable var9) {
-                        var10.addSuppressed(var9);
-                    }
-                }
 
-                throw var10;
-            }
-
-            if (response != null) {
-                response.close();
-            }
-
-            return var7;
         } catch (IOException var11) {
             IOException ex = var11;
             Logger.getLogger(SmsService.class.getName()).log(Level.SEVERE, (String)null, ex);
             return "error";
         }
+        return "";
     }
 
     public String sendAdmissionMessages() {

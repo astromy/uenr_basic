@@ -1,0 +1,211 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Oct 15, 2026, 4:36:44 PM
+    Author     : Enock
+*/
+
+
+/* Modal container */
+.expense-modal .modal-dialog {
+    max-width: 760px;
+    margin: 1.25rem auto;
+}
+
+.expense-modal-content {
+    border: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 16px 48px rgba(16, 24, 40, 0.16);
+}
+
+/* Header */
+.expense-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 24px 28px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.expense-modal-header .modal-title {
+    margin: 0;
+    color: #101828;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.expense-modal-subtitle {
+    margin-top: 6px;
+    color: #667085;
+    font-size: 13px;
+}
+
+.expense-close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    margin: -4px -6px 0 12px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #667085;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.expense-close-btn:hover {
+    background: #f2f4f7;
+    color: #101828;
+}
+
+/* Body */
+.expense-modal-body {
+    padding: 24px 28px 28px;
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+.expense-section-title {
+    margin-bottom: 18px;
+    color: #344054;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.expense-modal .form-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.required-mark {
+    color: #d92d20;
+}
+
+.expense-input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #101828;
+    font-size: 14px;
+    box-shadow: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.expense-input::placeholder {
+    color: #98a2b3;
+}
+
+.expense-input:focus {
+    border-color: #c62828;
+    box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12);
+    outline: none;
+}
+
+.expense-textarea {
+    min-height: 96px;
+    resize: vertical;
+}
+
+/* Footer and action buttons */
+.expense-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 28px 22px;
+    border-top: 1px solid #eaecf0;
+    background: #fff;
+}
+
+.expense-modal-footer .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.expense-cancel-btn {
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: #344054;
+}
+
+.expense-cancel-btn:hover {
+    border-color: #98a2b3;
+    background: #f9fafb;
+    color: #101828;
+}
+
+.expense-save-btn {
+    gap: 8px;
+    min-width: 145px;
+    border: 1px solid #c62828;
+    background: #c62828;
+    color: #fff;
+}
+
+.expense-save-btn:hover:not(:disabled) {
+    border-color: #a91f1f;
+    background: #a91f1f;
+    color: #fff;
+}
+
+.expense-save-btn:focus-visible,
+.expense-cancel-btn:focus-visible,
+.expense-close-btn:focus-visible {
+    outline: 3px solid rgba(198, 40, 40, 0.2);
+    outline-offset: 2px;
+}
+
+.expense-save-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+/* Mobile layout */
+@media (max-width: 575.98px) {
+    .expense-modal .modal-dialog {
+        margin: 10px;
+    }
+
+    .expense-modal-content {
+        border-radius: 12px;
+    }
+
+    .expense-modal-header {
+        padding: 20px;
+    }
+
+    .expense-modal-body {
+        padding: 20px;
+        max-height: 60vh;
+    }
+
+    .expense-modal-footer {
+        padding: 14px 20px 20px;
+    }
+
+    .expense-modal-footer .btn {
+        flex: 1;
+    }
+}

@@ -27,8 +27,8 @@ public interface MockDetailsService {
     public Optional<mockDetails>findMockDetails(Long id);
      public mockDetails EditmockDetails(mockDetails mockDetails); 
      public List<mockDetails>findAllMocksByDate(LocalDate date);
-     public java.util.List<Subject> MockExpectedSubjects(mockDetails mD);
-     public java.util.Set<Subject>MockSubmittedSubjects(mockDetails mD);
-      public java.util.List<Subject>MockSubmittedSubjectsStudents(mockDetails mD);
+     public List<Subject> MockExpectedSubjects(mockDetails mD);
+     public Set<Subject>MockSubmittedSubjects(mockDetails mD);
+      public List<Subject>MockSubmittedSubjectsStudents(mockDetails mD);
       public  Set<klass> AllKlasses(mockDetails md);
 }

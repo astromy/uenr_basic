@@ -78,7 +78,7 @@ public class ExpensesController {
         model.addAttribute("statuses", ExpenseStatus.values());
 
         try {
-            model.addAttribute("terms", TS.terms());
+            model.addAttribute("terms", TS.getCurrentTerm().getAcademicyear().getTerm());
             model.addAttribute("academicYears", AS.AllAcademic());
         } catch (Exception e) {
             log.warn("Unable to load terms / academic years: {}", e.getMessage());
@@ -160,8 +160,12 @@ public class ExpensesController {
 
     @PostMapping({"api/save"})
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> apiSave(@RequestBody ExpensePayload payload,
+    public ResponseEntity<Map<String, Object>> apiSave(@RequestBody
+                                                           ExpensePayload payload,
                                                        Principal principal) {
+
+        log.info(payload.toString());
+
         return saveOrUpdate(payload, principal, false);
     }
 

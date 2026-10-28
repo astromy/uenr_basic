@@ -1,150 +1,902 @@
+
 <div th:fragment="expenseReport">
 
-    <div class="bg-info text-white h5" style="margin-top:30px;">
-        <label>Expense Report</label>
-    </div>
+    <div class="container-fluid py-3" id="expenseReportPage">
 
-    <div class="card border-0 shadow-sm rounded-lg" style="margin-top:20px;">
+        <!-- ================= PAGE HEADER ================= -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h4 class="fw-bold mb-1">Expense Report</h4>
+                <p class="text-muted mb-0">Manage expenses and review financial performance.</p>
+            </div>
 
-        <div class="card-header bg-white py-3">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h6 class="text-primary mb-0">Financial Overview</h6>
-                </div>
-                <div class="col text-end">
-                    <span class="badge bg-primary" th:text="${currentTerm != null ? currentTerm.TermName : 'N/A'}">Term</span>
-                    <span class="badge bg-secondary ms-2" th:text="${currentAcademic != null ? currentAcademic.AcademicYear.getYear() : 'N/A'}">Academic Year</span>
-                </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <span class="badge bg-primary-subtle text-primary p-2"
+                      th:text="${currentTerm != null ? currentTerm.TermName : 'No Active Term'}">
+                    Term
+                </span>
+
+                <span class="badge bg-secondary-subtle text-secondary p-2"
+                      th:text="${currentAcademic != null ? currentAcademic.AcademicYear.getYear() : 'N/A'}">
+                    Academic Year
+                </span>
+
+                <a th:href="@{/FinancePortal/expenses/list}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i> Manage Expenses
+                </a>
             </div>
         </div>
 
-        <div class="card-body">
+        <!-- ================= SUMMARY CARDS ================= -->
+        <div class="row g-3 mb-4">
 
-            <!-- Summary Cards -->
-            <div class="row mb-4">
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm bg-danger text-white">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Total Expenses (Term)</h6>
-                            <h3 class="card-text" th:text="${totalExpensesTerm != null ? totalExpensesTerm : 0.0} + ' GHC'">0.00 GHC</h3>
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">Total Expenses (Term)</p>
+                            <h4 class="fw-bold text-danger mb-0"
+                                th:text="${#numbers.formatDecimal(totalExpensesTerm != null ? totalExpensesTerm : 0, 1, 'COMMA', 2, 'POINT')} + ' GHC'">
+                                0.00 GHC
+                            </h4>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm bg-warning text-dark">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Total Expenses (Year)</h6>
-                            <h3 class="card-text" th:text="${totalExpensesYear != null ? totalExpensesYear : 0.0} + ' GHC'">0.00 GHC</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm bg-info text-white">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Number of Expenses</h6>
-                            <h3 class="card-text" th:text="${termExpenses != null ? termExpenses.size() : 0}">0</h3>
+                        <div class="summary-icon bg-danger-subtle text-danger">
+                            <i class="bi bi-wallet2 fs-3"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Expenses by Category -->
-            <div class="row mb-4" th:if="${expensesByCategoryTerm != null and !expensesByCategoryTerm.isEmpty()}">
-                <div class="col-md-6">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-white py-3">
-                            <h6 class="text-primary mb-0">Expenses by Category (This Term)</h6>
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">Total Expenses (Year)</p>
+                            <h4 class="fw-bold text-warning mb-0"
+                                th:text="${#numbers.formatDecimal(totalExpensesYear != null ? totalExpensesYear : 0, 1, 'COMMA', 2, 'POINT')} + ' GHC'">
+                                0.00 GHC
+                            </h4>
                         </div>
-                        <div class="card-body">
-                            <table class="table table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Amount (GHC)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="entry : ${expensesByCategoryTerm}">
-                                        <td th:text="${entry.key}"></td>
-                                        <td th:text="${entry.value}"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6" th:if="${expensesByCategoryYear != null and !expensesByCategoryYear.isEmpty()}">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-white py-3">
-                            <h6 class="text-primary mb-0">Expenses by Category (This Year)</h6>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Amount (GHC)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="entry : ${expensesByCategoryYear}">
-                                        <td th:text="${entry.key}"></td>
-                                        <td th:text="${entry.value}"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="summary-icon bg-warning-subtle text-warning">
+                            <i class="bi bi-calendar3 fs-3"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Recent Expenses Table -->
-            <div class="card border-0 shadow-sm" th:if="${termExpenses != null and !termExpenses.isEmpty()}">
-                <div class="card-header bg-white py-3">
-                    <h6 class="text-primary mb-0">Recent Expenses</h6>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0" id="expensesReportTable">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Category</th>
-                                    <th>Description</th>
-                                    <th>Amount (GHC)</th>
-                                    <th>Payment Method</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="expense:${termExpenses}">
-                                    <td th:text="${#dates.format(expense.ExpenseDate, 'dd/MM/yyyy')}"></td>
-                                    <td th:text="${expense.category}"></td>
-                                    <td th:text="${expense.description}"></td>
-                                    <td th:text="${expense.Amount}"></td>
-                                    <td th:text="${expense.paymentMethod}"></td>
-                                    <td>
-                                        <span th:class="'badge ' + (expense.status == 'PAID' ? 'bg-success' : 'bg-warning')"
-                                              th:text="${expense.status}">
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">Expense Records (Term)</p>
+                            <h4 class="fw-bold text-primary mb-0"
+                                th:text="${termExpenses != null ? termExpenses.size() : 0}">
+                                0
+                            </h4>
+                        </div>
+                        <div class="summary-icon bg-primary-subtle text-primary">
+                            <i class="bi bi-receipt fs-3"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="alert alert-info text-center" th:if="${termExpenses == null or termExpenses.isEmpty()}">
-                No expenses recorded for this term.
-            </div>
-
-            <div class="text-center mt-3">
-                <a th:href="@{/FinancePortal/expenses/list}" class="btn btn-primary">Manage Expenses</a>
-                <a th:href="@{/FinancePortal/expenses/financial-summary}" class="btn btn-success ms-2">Financial Summary</a>
             </div>
 
         </div>
+
+        <!-- ================= EXPENSE TABLE ================= -->
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-header bg-white py-3">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <div>
+                        <h5 class="fw-bold mb-1">Expense Records</h5>
+                        <small class="text-muted">
+                            Search, filter, sort and export expenses.
+                        </small>
+                    </div>
+
+                    <button type="button" id="exportExpenses" class="btn btn-success">
+                        <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                    </button>
+                </div>
+            </div>
+
+            <!-- TABLE SEARCH AND FILTERS -->
+            <div class="card-body border-bottom bg-light-subtle">
+                <div class="row g-3">
+
+                    <div class="col-12 col-lg-4">
+                        <label for="expenseSearch" class="form-label fw-semibold">
+                            Search Expenses
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="search" id="expenseSearch" class="form-control"
+                                   placeholder="Description, category, reference...">
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <label for="filterCategory" class="form-label fw-semibold">Category</label>
+                        <select id="filterCategory" class="form-select">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <label for="filterPayment" class="form-label fw-semibold">Payment Method</label>
+                        <select id="filterPayment" class="form-select">
+                            <option value="">All Methods</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <label for="filterStatus" class="form-label fw-semibold">Status</label>
+                        <select id="filterStatus" class="form-select">
+                            <option value="">All Statuses</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <label for="filterPageSize" class="form-label fw-semibold">Rows Per Page</label>
+                        <select id="filterPageSize" class="form-select">
+                            <option value="10">10 rows</option>
+                            <option value="25" selected>25 rows</option>
+                            <option value="50">50 rows</option>
+                            <option value="100">100 rows</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <label for="filterDateFrom" class="form-label fw-semibold">Date From</label>
+                        <input type="date" id="filterDateFrom" class="form-control">
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <label for="filterDateTo" class="form-label fw-semibold">Date To</label>
+                        <input type="date" id="filterDateTo" class="form-control">
+                    </div>
+
+                    <div class="col-12 col-lg-6 d-flex align-items-end justify-content-lg-end gap-2">
+                        <button type="button" id="resetExpenseFilters"
+                                class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                        </button>
+
+                        <button type="button" id="exportExpensesCsv"
+                                class="btn btn-outline-success">
+                            <i class="bi bi-download me-1"></i> Export CSV
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="expensesReportTable">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="px-3">
+                            <button type="button" class="expense-sort" data-sort="date">
+                                Date <span class="sort-indicator"></span>
+                            </button>
+                        </th>
+                        <th>
+                            <button type="button" class="expense-sort" data-sort="category">
+                                Category <span class="sort-indicator"></span>
+                            </button>
+                        </th>
+                        <th>
+                            <button type="button" class="expense-sort" data-sort="description">
+                                Description <span class="sort-indicator"></span>
+                            </button>
+                        </th>
+                        <th class="text-end">
+                            <button type="button" class="expense-sort" data-sort="amount">
+                                Amount (GHC) <span class="sort-indicator"></span>
+                            </button>
+                        </th>
+                        <th>Payment Method</th>
+                        <th>Status</th>
+                        <th>Reference</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="expenseTableBody">
+                    <tr th:each="expense : ${termExpenses}"
+                        class="expense-row"
+                        th:attr="data-date=${expense.expenseDate != null ? #temporals.format(expense.expenseDate, 'yyyy-MM-dd') : ''},
+                                 data-category=${expense.category},
+                                 data-description=${expense.description},
+                                 data-amount=${expense.amount != null ? expense.amount : 0},
+                                 data-payment=${expense.paymentMethod},
+                                 data-status=${expense.status},
+                                 data-reference=${expense.referenceNumber}">
+
+                        <td class="px-3 text-nowrap"
+                            th:text="${expense.expenseDate != null ? #temporals.format(expense.expenseDate, 'dd/MM/yyyy') : 'N/A'}">
+                            01/01/2026
+                        </td>
+
+                        <td th:text="${expense.category != null ? expense.category : 'N/A'}">
+                            Category
+                        </td>
+
+                        <td class="expense-description"
+                            th:text="${expense.description != null ? expense.description : 'N/A'}">
+                            Description
+                        </td>
+
+                        <td class="text-end text-nowrap fw-semibold"
+                            th:text="${#numbers.formatDecimal(expense.amount != null ? expense.amount : 0, 1, 'COMMA', 2, 'POINT')}">
+                            0.00
+                        </td>
+
+                        <td th:text="${expense.paymentMethod != null ? expense.paymentMethod : 'N/A'}">
+                            Cash
+                        </td>
+
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${expense.status != null and #strings.toUpperCase(expense.status) == 'PAID' ? ' bg-success' : (expense.status != null and #strings.toUpperCase(expense.status) == 'PENDING' ? ' bg-warning text-dark' : (expense.status != null and #strings.toUpperCase(expense.status) == 'CANCELLED' ? ' bg-danger' : ' bg-secondary'))}"
+                                  th:text="${expense.status != null ? expense.status : 'N/A'}">
+                                PAID
+                            </span>
+                        </td>
+
+                        <td class="text-nowrap"
+                            th:text="${expense.referenceNumber != null ? expense.referenceNumber : 'N/A'}">
+                            REF-001
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="expenseNoResults" class="text-center py-5 d-none">
+                <i class="bi bi-search fs-1 text-muted"></i>
+                <h6 class="mt-3 fw-semibold">No expenses found</h6>
+                <p class="text-muted mb-0">Change the search or filter criteria and try again.</p>
+            </div>
+
+            <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-3 py-3">
+                <small class="text-muted" id="expenseResultCount">Loading records...</small>
+
+                <nav aria-label="Expense pagination">
+                    <ul class="pagination pagination-sm mb-0" id="expensePagination"></ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- ================= ANALYTICS BELOW TABLE ================= -->
+        <div class="d-flex align-items-center gap-2 mb-3 mt-5">
+            <i class="bi bi-bar-chart-line fs-4 text-primary"></i>
+            <div>
+                <h5 class="fw-bold mb-0">Expense Analytics</h5>
+                <small class="text-muted">Review spending patterns and category distribution.</small>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-12 col-xl-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white py-3">
+                        <h6 class="fw-bold mb-0">Expenses by Category (Term)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="expenseCategoryChart"></canvas>
+                        </div>
+                        <p id="termCategoryEmpty" class="text-muted text-center d-none">
+                            No term category data available.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white py-3">
+                        <h6 class="fw-bold mb-0">Expenses by Category (Year)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="expenseCategoryYearChart"></canvas>
+                        </div>
+                        <p id="yearCategoryEmpty" class="text-muted text-center d-none">
+                            No annual category data available.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h6 class="fw-bold mb-0">Monthly Expense Trend (Term)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container chart-container-large">
+                            <canvas id="expenseTrendChart"></canvas>
+                        </div>
+                        <p id="expenseTrendEmpty" class="text-muted text-center d-none">
+                            No dated expenses available for the trend chart.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+            <a th:href="@{/FinancePortal/expenses/list}" class="btn btn-primary">
+                <i class="bi bi-pencil-square me-1"></i> Manage Expenses
+            </a>
+            <a th:href="@{/FinancePortal/expenses/financial-summary}" class="btn btn-outline-primary">
+                <i class="bi bi-graph-up me-1"></i> Financial Summary
+            </a>
+        </div>
+
     </div>
+
+    <!-- Excel and Chart Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+        #expenseReportPage .card {
+            border-radius: 12px;
+        }
+
+        #expenseReportPage .card-header {
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        #expenseReportPage .summary-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 58px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        #expenseReportPage .form-control,
+        #expenseReportPage .form-select,
+        #expenseReportPage .input-group-text {
+            min-height: 42px;
+            border-color: #dee2e6;
+        }
+
+        #expenseReportPage .form-control:focus,
+        #expenseReportPage .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .12);
+        }
+
+        #expenseReportPage thead th {
+            white-space: nowrap;
+            font-size: .82rem;
+            font-weight: 600;
+        }
+
+        #expenseReportPage tbody td {
+            font-size: .875rem;
+        }
+
+        #expenseReportPage .expense-sort {
+            border: 0;
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        #expenseReportPage .expense-sort:hover {
+            color: var(--bs-primary);
+        }
+
+        #expenseReportPage .sort-indicator {
+            color: var(--bs-primary);
+        }
+
+        #expenseReportPage .expense-description {
+            min-width: 180px;
+            max-width: 320px;
+            overflow-wrap: anywhere;
+        }
+
+        #expenseReportPage .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        #expenseReportPage .chart-container-large {
+            height: 340px;
+        }
+
+        #expenseReportPage .pagination .page-link {
+            cursor: pointer;
+        }
+
+        #expenseReportPage .pagination .page-item.disabled .page-link {
+            cursor: not-allowed;
+        }
+    </style>
+
+    <script th:inline="javascript">
+        (function () {
+            function initializeExpenseReport() {
+                const root = document.getElementById('expenseReportPage');
+
+                if (!root || root.dataset.initialized === 'true') return;
+                root.dataset.initialized = 'true';
+
+                const $ = id => document.getElementById(id);
+                const tbody = $('expenseTableBody');
+                const allRows = Array.from(tbody.querySelectorAll('.expense-row'));
+
+                const searchInput = $('expenseSearch');
+                const categoryFilter = $('filterCategory');
+                const paymentFilter = $('filterPayment');
+                const statusFilter = $('filterStatus');
+                const dateFrom = $('filterDateFrom');
+                const dateTo = $('filterDateTo');
+                const pageSizeSelect = $('filterPageSize');
+
+                let currentPage = 1;
+                let sortKey = 'date';
+                let sortDirection = 'desc';
+                let filteredRows = allRows.slice();
+
+                const normalize = value =>
+                    String(value == null ? '' : value).trim().toLowerCase();
+
+                const valueOf = (row, key) => row.dataset[key] || '';
+
+                function populateFilter(select, key, label) {
+                    const values = [...new Set(
+                        allRows.map(row => valueOf(row, key).trim())
+                            .filter(value => value && value.toLowerCase() !== 'null')
+                    )].sort((a, b) => a.localeCompare(b));
+
+                    select.replaceChildren(new Option(label, ''));
+
+                    values.forEach(value => select.add(new Option(value, value)));
+                }
+
+                populateFilter(categoryFilter, 'category', 'All Categories');
+                populateFilter(paymentFilter, 'payment', 'All Methods');
+                populateFilter(statusFilter, 'status', 'All Statuses');
+
+                function matchesFilters(row) {
+                    const query = normalize(searchInput.value);
+
+                    const searchable = [
+                        valueOf(row, 'date'),
+                        row.cells[0]?.textContent,
+                        valueOf(row, 'category'),
+                        valueOf(row, 'description'),
+                        valueOf(row, 'amount'),
+                        row.cells[3]?.textContent,
+                        valueOf(row, 'payment'),
+                        valueOf(row, 'status'),
+                        valueOf(row, 'reference')
+                    ].join(' ');
+
+                    if (query && !normalize(searchable).includes(query)) return false;
+
+                    if (categoryFilter.value &&
+                        normalize(valueOf(row, 'category')) !== normalize(categoryFilter.value)) {
+                        return false;
+                    }
+
+                    if (paymentFilter.value &&
+                        normalize(valueOf(row, 'payment')) !== normalize(paymentFilter.value)) {
+                        return false;
+                    }
+
+                    if (statusFilter.value &&
+                        normalize(valueOf(row, 'status')) !== normalize(statusFilter.value)) {
+                        return false;
+                    }
+
+                    const date = valueOf(row, 'date');
+
+                    if (dateFrom.value && (!date || date < dateFrom.value)) return false;
+                    if (dateTo.value && (!date || date > dateTo.value)) return false;
+
+                    return true;
+                }
+
+                function compareRows(a, b) {
+                    let result;
+
+                    if (sortKey === 'amount') {
+                        result = (Number(valueOf(a, 'amount')) || 0) -
+                                 (Number(valueOf(b, 'amount')) || 0);
+                    } else {
+                        result = valueOf(a, sortKey).localeCompare(
+                            valueOf(b, sortKey),
+                            undefined,
+                            { numeric: true, sensitivity: 'base' }
+                        );
+                    }
+
+                    return result * (sortDirection === 'asc' ? 1 : -1);
+                }
+
+                function updateSortIndicators() {
+                    root.querySelectorAll('.expense-sort').forEach(button => {
+                        const indicator = button.querySelector('.sort-indicator');
+                        indicator.textContent = button.dataset.sort === sortKey
+                            ? (sortDirection === 'asc' ? ' ↑' : ' ↓')
+                            : '';
+                    });
+                }
+
+                function renderPagination(totalPages) {
+                    const pagination = $('expensePagination');
+                    pagination.replaceChildren();
+
+                    function addPage(label, page, disabled, active) {
+                        const li = document.createElement('li');
+                        li.className = 'page-item' +
+                            (disabled ? ' disabled' : '') +
+                            (active ? ' active' : '');
+
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'page-link';
+                        button.textContent = label;
+                        button.disabled = disabled;
+
+                        button.addEventListener('click', () => {
+                            currentPage = page;
+                            renderTable();
+                        });
+
+                        li.appendChild(button);
+                        pagination.appendChild(li);
+                    }
+
+                    addPage('Previous', currentPage - 1, currentPage <= 1, false);
+
+                    const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+                    const end = Math.min(totalPages, start + 4);
+
+                    for (let page = start; page <= end; page++) {
+                        addPage(String(page), page, false, page === currentPage);
+                    }
+
+                    addPage('Next', currentPage + 1,
+                        currentPage >= totalPages || totalPages === 0, false);
+                }
+
+                function renderTable() {
+                    const pageSize = Number(pageSizeSelect.value) || 25;
+
+                    filteredRows = allRows.filter(matchesFilters).sort(compareRows);
+
+                    const total = filteredRows.length;
+                    const totalPages = Math.ceil(total / pageSize);
+
+                    currentPage = totalPages
+                        ? Math.min(Math.max(currentPage, 1), totalPages)
+                        : 1;
+
+                    const start = (currentPage - 1) * pageSize;
+                    const visibleRows = filteredRows.slice(start, start + pageSize);
+
+                    allRows.forEach(row => {
+                        row.hidden = true;
+                    });
+
+                    visibleRows.forEach(row => {
+                        row.hidden = false;
+                        tbody.appendChild(row);
+                    });
+
+                    $('expenseNoResults').classList.toggle('d-none', total !== 0);
+
+                    $('expenseResultCount').textContent =
+                        total + ' matching record' + (total === 1 ? '' : 's');
+
+                    $('expensePageInfo')?.remove();
+
+                    renderPagination(totalPages);
+                    updateSortIndicators();
+                }
+
+                root.querySelectorAll('.expense-sort').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const nextKey = button.dataset.sort;
+
+                        if (sortKey === nextKey) {
+                            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                        } else {
+                            sortKey = nextKey;
+                            sortDirection = nextKey === 'date' || nextKey === 'amount'
+                                ? 'desc' : 'asc';
+                        }
+
+                        currentPage = 1;
+                        renderTable();
+                    });
+                });
+
+                [
+                    searchInput, categoryFilter, paymentFilter,
+                    statusFilter, dateFrom, dateTo, pageSizeSelect
+                ].forEach(element => {
+                    element.addEventListener('input', () => {
+                        currentPage = 1;
+                        renderTable();
+                    });
+                    element.addEventListener('change', () => {
+                        currentPage = 1;
+                        renderTable();
+                    });
+                });
+
+                $('resetExpenseFilters').addEventListener('click', () => {
+                    searchInput.value = '';
+                    categoryFilter.value = '';
+                    paymentFilter.value = '';
+                    statusFilter.value = '';
+                    dateFrom.value = '';
+                    dateTo.value = '';
+                    pageSizeSelect.value = '25';
+                    sortKey = 'date';
+                    sortDirection = 'desc';
+                    currentPage = 1;
+                    renderTable();
+                });
+
+                // Export only the rows matching the current filters.
+                function exportCsv() {
+                    const headers = [
+                        'Date', 'Category', 'Description', 'Amount (GHC)',
+                        'Payment Method', 'Status', 'Reference'
+                    ];
+
+                    function escapeCsv(value) {
+                        let text = String(value ?? '');
+
+                        if (/^[\s]*[=+\-@]/.test(text)) text = "'" + text;
+
+                        return '"' + text.replace(/"/g, '""') + '"';
+                    }
+
+                    const rows = filteredRows.map(row => [
+                        valueOf(row, 'date'),
+                        valueOf(row, 'category'),
+                        valueOf(row, 'description'),
+                        valueOf(row, 'amount'),
+                        valueOf(row, 'payment'),
+                        valueOf(row, 'status'),
+                        valueOf(row, 'reference')
+                    ]);
+
+                    const csv = '\uFEFF' + [headers, ...rows]
+                        .map(row => row.map(escapeCsv).join(','))
+                        .join('\r\n');
+
+                    const url = URL.createObjectURL(new Blob([csv], {
+                        type: 'text/csv;charset=utf-8;'
+                    }));
+
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'Expenses_Report.csv';
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    URL.revokeObjectURL(url);
+                }
+
+                function exportExcel() {
+                    if (typeof XLSX === 'undefined') {
+                        exportCsv();
+                        return;
+                    }
+
+                    const data = filteredRows.map(row => ({
+                        Date: valueOf(row, 'date') || 'N/A',
+                        Category: valueOf(row, 'category') || 'N/A',
+                        Description: valueOf(row, 'description') || 'N/A',
+                        'Amount (GHC)': Number(valueOf(row, 'amount')) || 0,
+                        'Payment Method': valueOf(row, 'payment') || 'N/A',
+                        Status: valueOf(row, 'status') || 'N/A',
+                        Reference: valueOf(row, 'reference') || 'N/A'
+                    }));
+
+                    const sheet = XLSX.utils.json_to_sheet(data);
+                    sheet['!cols'] = [
+                        { wch: 14 }, { wch: 20 }, { wch: 35 },
+                        { wch: 18 }, { wch: 20 }, { wch: 15 }, { wch: 22 }
+                    ];
+
+                    const workbook = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(workbook, sheet, 'Expenses');
+                    XLSX.writeFile(workbook, 'Expenses_Report.xlsx');
+                }
+
+                $('exportExpenses').addEventListener('click', exportExcel);
+                $('exportExpensesCsv').addEventListener('click', exportCsv);
+
+                // ================= ANALYTICS =================
+                const termData = /*[[${expensesByCategoryTerm}]]*/ {};
+                const yearData = /*[[${expensesByCategoryYear}]]*/ {};
+
+                function entriesOf(data) {
+                    if (!data || typeof data !== 'object') return [];
+
+                    return Object.entries(data)
+                        .map(([label, amount]) => [label, Number(amount)])
+                        .filter(([label, amount]) =>
+                            label && Number.isFinite(amount)
+                        );
+                }
+
+                function formatMoney(value) {
+                    return 'GHC ' + Number(value).toLocaleString('en-GH', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                }
+
+                function buildCategoryChart(canvasId, emptyId, data, type) {
+                    const entries = entriesOf(data);
+                    $(emptyId).classList.toggle('d-none', entries.length > 0);
+
+                    if (!entries.length || typeof Chart === 'undefined') return;
+
+                    new Chart($(canvasId), {
+                        type: type,
+                        data: {
+                            labels: entries.map(entry => entry[0]),
+                            datasets: [{
+                                label: 'Expenses (GHC)',
+                                data: entries.map(entry => entry[1]),
+                                borderWidth: 1,
+                                borderRadius: type === 'bar' ? 5 : 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: type !== 'bar',
+                                    position: 'bottom'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: context => {
+                                            const value = context.parsed.y !== undefined
+                                                ? context.parsed.y
+                                                : context.raw;
+                                            return context.label + ': ' + formatMoney(value);
+                                        }
+                                    }
+                                }
+                            },
+                            scales: type === 'bar' ? {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: value => formatMoney(value)
+                                    }
+                                }
+                            } : {}
+                        }
+                    });
+                }
+
+                buildCategoryChart(
+                    'expenseCategoryChart',
+                    'termCategoryEmpty',
+                    termData,
+                    'doughnut'
+                );
+
+                buildCategoryChart(
+                    'expenseCategoryYearChart',
+                    'yearCategoryEmpty',
+                    yearData,
+                    'bar'
+                );
+
+                // Monthly trend derived from the full termExpenses table data.
+                function buildMonthlyTrend(rows) {
+                    const totals = new Map();
+
+                    rows.forEach(row => {
+                        const date = valueOf(row, 'date');
+
+                        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+
+                        const month = date.slice(0, 7);
+                        const amount = Number(valueOf(row, 'amount')) || 0;
+
+                        totals.set(month, (totals.get(month) || 0) + amount);
+                    });
+
+                    const months = [...totals.keys()].sort();
+
+                    return {
+                        labels: months.map(month => {
+                            const [year, number] = month.split('-');
+                            return new Date(Number(year), Number(number) - 1, 1)
+                                .toLocaleDateString('en', {
+                                    month: 'short',
+                                    year: 'numeric'
+                                });
+                        }),
+                        values: months.map(month => totals.get(month))
+                    };
+                }
+
+                const trend = buildMonthlyTrend(allRows);
+
+                $('expenseTrendEmpty').classList.toggle(
+                    'd-none', trend.labels.length > 0
+                );
+
+                if (trend.labels.length && typeof Chart !== 'undefined') {
+                    new Chart($('expenseTrendChart'), {
+                        type: 'line',
+                        data: {
+                            labels: trend.labels,
+                            datasets: [{
+                                label: 'Monthly Expenses (GHC)',
+                                data: trend.values,
+                                tension: 0.3,
+                                fill: true,
+                                pointRadius: 4,
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: value => formatMoney(value)
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: { position: 'bottom' },
+                                tooltip: {
+                                    callbacks: {
+                                        label: context => formatMoney(context.raw)
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                renderTable();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeExpenseReport);
+            } else {
+                initializeExpenseReport();
+            }
+        })();
+    </script>
 
 </div>
