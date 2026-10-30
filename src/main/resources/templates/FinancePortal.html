@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -12,8 +12,8 @@
 
     <!-- Bootstrap core CSS -->
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
-   <link th:href="@{/css/expenses.css}" rel="stylesheet" type="text/css"/>
- 
+    <link th:href="@{/css/expenses.css}" rel="stylesheet" type="text/css"/>
+
     <link th:href="@{/css/portal.css}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link th:href="@{/css/datatables.css}" rel="stylesheet" type="text/css"/>
@@ -21,713 +21,809 @@
 
 
 
-    <body >
+<body >
 
-  <script th:src="@{/script/jquery.min.js}"></script>
-        <script th:src="@{/script/datatables.js}" type="text/javascript"></script>
-        <script th:src="@{/script/bootstrap.min.js}" type="text/javascript"></script>
-  <script th:src="@{/script/bootstrap.bundle.js}" type="text/javascript"></script>
-  <script th:src="@{/script/expenses.js}" type="text/javascript"></script>
+<script th:src="@{/script/jquery.min.js}"></script>
+<script th:src="@{/script/datatables.js}" type="text/javascript"></script>
+<script th:src="@{/script/bootstrap.min.js}" type="text/javascript"></script>
+<script th:src="@{/script/bootstrap.bundle.js}" type="text/javascript"></script>
+<script th:src="@{/script/expenses.js}" type="text/javascript"></script>
 
 
 
-  <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top border-bottom">
-            <div class="container-fluid px-4">
-                <a class="navbar-brand d-flex align-items-center" th:href="@{/FinancePortal/}">
-                    <img th:src="@{/css/pro-pics/UENR.PNG}" height="42" class="me-2">
-                    <div>
-                        <div class="brand-title">School Management System</div>
-                        <small class="brand-subtitle">Finance Portal</small>
-                    </div>
-                </a>
-                <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
-                </form>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top border-bottom">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/FinancePortal/}">
+            <img th:src="@{/css/pro-pics/UENR.PNG}" height="42" class="me-2">
+            <div>
+                <div class="brand-title">School Management System</div>
+                <small class="brand-subtitle">Finance Portal</small>
             </div>
-        </nav>
+        </a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+        </form>
+    </div>
+</nav>
 
 
 
 
 
-        <!-- Page Content -->
+<!-- Page Content -->
 
-        <div class="container-fluid px-4">
-
-
-
-            <div class="row" style="margin-top: 96px;">
+<div class="container-fluid px-4">
 
 
 
-                <div class="col-lg-3 mb-4 ">
+    <div class="row" style="margin-top: 96px;">
 
 
 
-                    <div class="sidenav">
-
-                        <hr class="sidebar-divider">
-
-                        <br/>
-
-                        <hr class="sidebar-divider">
-
-                        <a th:href="@{/FinancePortal/ShowSchoolFeesForm}" 
-
-                           class="nav-link">Add Fees(Term)</a>
-
-                        <div th:if="${ExcelTermsFinance}">
-
-                        <hr class="sidebar-divider">
-
-                        <button  class="btn btn-link nav-link" onclick="UploadPayment();">Upload Payments</button>
-
-                        <script>
-
-                            function UploadPayment(){
-
-                                alert("trial");
-
-                                $("#UploadPayment").modal("show");
-
-                            }
-
-                        </script></div>
-
-                        <hr class="sidebar-divider">
-
-                        <a th:href="@{/FinancePortal/classes/}"  class="nav-link">Classes</a>
-
-                        <hr class="sidebar-divider">
-
-                        <a th:href="@{/SearchForm/}"  class="nav-link">Search Payment</a>
-
-                        <hr class="sidebar-divider">
+        <div class="col-lg-3 mb-4 ">
 
 
 
-                        <a  class="nav-link" th:href="@{/FinancePortal/AllFees/}">All Fees</a>
+            <div class="sidenav">
+
+                <hr class="sidebar-divider">
+
+                <br/>
+
+                <hr class="sidebar-divider">
+
+                <a th:href="@{/FinancePortal/ShowSchoolFeesForm}"
+
+                   class="nav-link">Add Fees(Term)</a>
+
+                <div th:if="${ExcelTermsFinance}">
+
+                    <hr class="sidebar-divider">
+
+                    <button  class="btn btn-link nav-link" onclick="UploadPayment();">Upload Payments</button>
+
+                    <script>
+
+                        function UploadPayment(){
+
+                            alert("trial");
+
+                            $("#UploadPayment").modal("show");
+
+                        }
+
+                    </script></div>
+
+                <hr class="sidebar-divider">
+
+                <a th:href="@{/FinancePortal/classes/}"  class="nav-link">Classes</a>
+
+                <hr class="sidebar-divider">
+
+                <a th:href="@{/SearchForm/}"  class="nav-link">Search Payment</a>
+
+                <hr class="sidebar-divider">
 
 
 
-                        <hr class="sidebar-divider">
+                <a  class="nav-link" th:href="@{/FinancePortal/AllFees/}">All Fees</a>
 
-                        <a  class="nav-link" th:href="@{/updateUser}">Update User</a>
 
-                        <hr class="sidebar-divider">
+                <hr class="sidebar-divider">
 
-                        <a th:href="@{/FinancePortal/expenses/list}" class="nav-link">Manage Expenses</a>
+                <button type="button"
+                        class="btn btn-link nav-link"
+                        data-toggle="modal"
+                        data-target="#billingConfirmationModal"
+                        aria-controls="billingConfirmationModal">
+                    <i class="bi bi-receipt mr-1"></i> Run Billing Process
+                </button>
 
-                        <hr class="sidebar-divider">
+                <a  class="nav-link" th:href="@{/updateUser}">Update User</a>
 
-                        <a th:href="@{/FinancePortal/expenses/report}" class="nav-link">Expense Report</a>
+                <hr class="sidebar-divider">
 
-                        <hr class="sidebar-divider">
+                <a th:href="@{/FinancePortal/expenses/list}" class="nav-link">Manage Expenses</a>
 
-                        <form th:action="@{/logout}" method="post">
+                <hr class="sidebar-divider">
 
-                            <input type="submit" value="Logout" class="btn btn-info " />
+                <a th:href="@{/FinancePortal/expenses/report}" class="nav-link">Expense Report</a>
 
-                        </form>
+                <hr class="sidebar-divider">
 
-                    </div>
+                <form th:action="@{/logout}" method="post">
+
+                    <input type="submit" value="Logout" class="btn btn-info " />
+
+                </form>
+
+            </div>
+
+
+
+        </div>
+
+        <!-- /.col-lg-3 edit bill-->
+
+
+
+
+
+        <div class="col-lg-9" >
+            <div th:replace="StudentBill/ViewBills::StudentBills"> </div>
+
+            <div th:replace="StudentBill/EditBill::EditBill"> </div>
+            <div th:if="${updateUser}">
+
+                <div th:replace="users/AddUser::updateUser">
 
 
 
                 </div>
 
-                <!-- /.col-lg-3 edit bill-->
+
+
+            </div>
+
+            <div th:if="${dash_oard}">
+
+
+
+                <div th:replace="dash_oard::dash_oard">
+
+
+
+                </div>
+
+            </div>
+
+            <div th:if="${UpdateFees}">
+
+                <div th:replace="fees/fees::UpdateFees">
+
+
+
+                </div>
+
+            </div>
+
+            <div th:if="${fees}">
+
+                <div th:replace="fees/All_Fees::fees">
+
+
+
+                </div>
+
+
+
+            </div>
+
+            <div th:replace="payment/GeneralAction::GeneralAction">
+
+
+
+            </div>
 
 
 
 
 
-                <div class="col-lg-9" >
-                    <div th:replace="StudentBill/ViewBills::StudentBills"> </div>
+            <div class="alert alert-info text-info" th:if="${msg}" th:text="${msg}">
 
-                    <div th:replace="StudentBill/EditBill::EditBill"> </div>
-                    <div th:if="${updateUser}">
+            </div>
 
-                        <div th:replace="users/AddUser::updateUser">
+            <div th:replace="Student/AllStudent::SearchStudent"></div>
+
+            <!--List Of Klasses -->
+
+            <div th:if="${classes}" class='card border-0 shadow-sm rounded-lg'>
+
+                <table class="table table-hover mb-0" id="mydata1">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Classes:</th>
+
+                        <th></th>
+
+                        <th></th>
 
 
 
+                    </tr>
+
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="klass:${classes}">
+
+                        <td class="nav-link "><a th:href="@{/FinancePortal/StudentList/{classId} (classId=${klass.ClassName})}" th:text="${klass.ClassName}" ></a></td>
+
+                        <td><a th:href="@{/FinancePortal/StudentList/{classId} (classId=${klass.ClassName})}"  class="btn  btn-outline-primary">View Students</a></td>
+
+                        <td> <a th:href="@{/DownloadStudentExcelSheet/{ClassId} (ClassId=${klass.ClassName})}" class="btn btn-outline-primary">
+
+                            Download Excel File
+
+                        </a></td>
+
+
+
+                        <!--   <td><a th:href="@{/FinancePortal/StudentPaymentList/{classId} (classId=${klass.ClassName})}" class="btn btn-outline-secondary">Termly Payments</a></td>
+
+                        -->
+
+
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div th:if="${searchfss}">
+
+                <div th:replace="payment/payment::searchPss">
+
+
+
+                </div>
+
+            </div>
+
+
+
+            <div th:if="${Payments}">
+
+                <div th:replace="payment/payment::payments">
+
+
+
+                </div>
+
+            </div>
+
+            <div th:if="${ApproveFees}">
+
+
+
+                <div th:replace="fees/fees::ApproveFees">
+
+
+
+                </div> </div>
+
+            <div th:if="${expensesList}">
+
+                <div th:replace="expenses/expenses::expensesList">
+
+                </div>
+
+            </div>
+
+            <div th:if="${addExpense}">
+
+                <div th:replace="expenses/add_expense::addExpense">
+
+                </div>
+
+            </div>
+
+            <div th:if="${editExpense}">
+
+                <div th:replace="expenses/edit_expense::editExpense">
+
+                </div>
+
+            </div>
+
+            <div th:if="${expenseReport}">
+
+                <div th:replace="expenses/report::expenseReport">
+
+                </div>
+
+            </div>
+
+            <div th:if="${paymentReport}">
+
+                <div th:replace="payments/report::paymentReport">
+
+                </div>
+
+            </div>
+
+            <div th:if="${financialSummary}">
+
+                <div th:replace="expenses/financial_summary::financialSummary">
+
+                </div>
+
+            </div>
+
+            <div th:if="${StudentList}" class="card border-0 shadow-sm rounded-lg">
+
+                <a th:href="@{/DownloadStudentExcelSheet/{ClassId} (ClassId=${ClassId})}" class="btn btn-primary">
+
+                    Download Student File
+
+                </a> &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
+
+                <a th:href="@{/FinancePortal/StudentPaymentList/{ClassId} (ClassId=${ClassId})}" class="btn btn-secondary">
+
+                    Students Payment
+
+                </a><hr class="sidebar-divider">
+
+                <table class="table table-hover mb-0" id="mydata1">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Student Id</th>
+
+                        <th>Finance Portal</th>
+
+                        <th>First Name</th>
+
+                        <th>Other Name</th>
+
+                        <th>Sur Name</th>
+
+                        <th></th>
+
+                        <th></th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="student:${StudentList}">
+
+                        <td th:text="${student.StudentId}"></td>
+
+                        <td th:text="${student.StudentReference}"></td>
+
+                        <td th:text="${student.FirstName}"></td>
+
+                        <td th:text="${student.LastName}"></td>
+
+                        <td th:text="${student.surname}"></td>
+
+                        <td><a th:href="@{/FinancePortal/PaymentForm/{id}(id=${student.StudentId})}" class="btn btn-primary">Payment</a></td>
+
+                        <td><button th:onclick="GetStudentBills([[${student.StudentId}]])" class="btn btn-success">Bills</button></td>
+
+
+
+                    </tr>
+
+
+
+
+
+
+
+                    </tbody>
+
+                </table>
+
+
+
+            </div>
+
+            <!-- Billing Section: opens the confirmation modal -->
+<!--            <div th:if="${billingForm}" class="card border-0 shadow-sm rounded-lg">-->
+<!--                <div class="card-header bg-primary text-white">-->
+<!--                    <h5 class="mb-0"><i class="bi bi-receipt"></i> Run Billing Process</h5>-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    <p class="text-muted mb-3">-->
+<!--                        Assign bills to students using the school fees configured for their classes-->
+<!--                        and parent categories.-->
+<!--                    </p>-->
+<!--                    <button type="button"-->
+<!--                            class="btn btn-primary"-->
+<!--                            data-toggle="modal"-->
+<!--                            data-target="#billingConfirmationModal">-->
+<!--                        <i class="bi bi-play-fill"></i> Review Billing Process-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <!-- Billing Confirmation Modal -->
+            <div class="modal fade" id="billingConfirmationModal" tabindex="-1"
+                 role="dialog" aria-labelledby="billingConfirmationModalTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content border-0 rounded-lg shadow">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="billingConfirmationModalTitle">
+                                <i class="bi bi-exclamation-triangle mr-2"></i>
+                                Confirm Billing Process
+                            </h5>
+                            <button type="button" class="close text-white" data-dismiss="modal"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
 
-
-
-                    </div>
-
-                    <div th:if="${dash_oard}">
-
-
-
-                        <div th:replace="dash_oard::dash_oard">
-
-
-
-                        </div>
-
-                    </div>
-
-                    <div th:if="${UpdateFees}">
-
-                        <div th:replace="fees/fees::UpdateFees">
-
-
-
-                        </div>
-
-                    </div>
-
-                    <div th:if="${fees}">
-
-                        <div th:replace="fees/All_Fees::fees">
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-                      <div th:replace="payment/GeneralAction::GeneralAction">
-
-
-
-                        </div>
-
-                    
-
-                   
-
-                    <div class="alert alert-info text-info" th:if="${msg}" th:text="${msg}">
-
-                    </div>
-
-                    <div th:replace="Student/AllStudent::SearchStudent"></div>
-
-                        <!--List Of Klasses -->
-
-                        <div th:if="${classes}" class='card border-0 shadow-sm rounded-lg'>
-
-                            <table class="table table-hover mb-0" id="mydata1">
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>Classes:</th>
-
-                                        <th></th>
-
-                                        <th></th>
-
-
-
-                                    </tr>
-
-                                </thead>
-                                    <tbody>
-
-                                <tr th:each="klass:${classes}">
-
-                                    <td class="nav-link "><a th:href="@{/FinancePortal/StudentList/{classId} (classId=${klass.ClassName})}" th:text="${klass.ClassName}" ></a></td>
-
-                                    <td><a th:href="@{/FinancePortal/StudentList/{classId} (classId=${klass.ClassName})}"  class="btn  btn-outline-primary">View Students</a></td>
-
-                                    <td> <a th:href="@{/DownloadStudentExcelSheet/{ClassId} (ClassId=${klass.ClassName})}" class="btn btn-outline-primary">
-
-                                            Download Excel File
-
-                                        </a></td>
-
-
-
-                                    <!--   <td><a th:href="@{/FinancePortal/StudentPaymentList/{classId} (classId=${klass.ClassName})}" class="btn btn-outline-secondary">Termly Payments</a></td>
-
-                                    -->
-
-
-
-                                </tr>  
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                        <div th:if="${searchfss}">
-
-                            <div th:replace="payment/payment::searchPss">
-
-
-
+                        <div class="modal-body p-4">
+                            <p class="mb-3">
+                                You are about to run the billing process. This action assigns bills
+                                to students based on the school fees configured for their classes and
+                                parent categories.
+                            </p>
+                            <div class="alert alert-warning mb-3" role="alert">
+                                <i class="bi bi-info-circle mr-1"></i>
+                                Ensure the school fees and class configurations are correct before continuing.
                             </div>
 
-                        </div>
-
-
-
-                        <div th:if="${Payments}">
-
-                            <div th:replace="payment/payment::payments">
-
-
-
-                            </div>
-
-                        </div>
-
-                        <div th:if="${ApproveFees}">
-
-
-
-                            <div th:replace="fees/fees::ApproveFees"> 
-
-
-
-                            </div> </div>
-
-                        <div th:if="${expensesList}">
-
-                            <div th:replace="expenses/expenses::expensesList">
-
-                            </div>
-
-                        </div>
-
-                        <div th:if="${addExpense}">
-
-                            <div th:replace="expenses/add_expense::addExpense">
-
-                            </div>
-
-                        </div>
-
-                        <div th:if="${editExpense}">
-
-                            <div th:replace="expenses/edit_expense::editExpense">
-
-                            </div>
-
-                        </div>
-
-                        <div th:if="${expenseReport}">
-
-                            <div th:replace="expenses/report::expenseReport">
-
-                            </div>
-
-                        </div>
-
-                        <div th:if="${paymentReport}">
-
-                            <div th:replace="payments/report::paymentReport">
-
-                            </div>
-
-                        </div>
-
-                        <div th:if="${financialSummary}">
-
-                            <div th:replace="expenses/financial_summary::financialSummary">
-
-                            </div>
-
-                        </div>
-
-                        <div th:if="${StudentList}" class="card border-0 shadow-sm rounded-lg">
-
-                            <a th:href="@{/DownloadStudentExcelSheet/{ClassId} (ClassId=${ClassId})}" class="btn btn-primary">
-
-                                Download Student File
-
-                            </a> &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; 
-
-                            <a th:href="@{/FinancePortal/StudentPaymentList/{ClassId} (ClassId=${ClassId})}" class="btn btn-secondary">
-
-                                Students Payment
-
-                            </a><hr class="sidebar-divider">
-
-                            <table class="table table-hover mb-0" id="mydata1">
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>Student Id</th>
-
-                                        <th>Finance Portal</th>
-
-                                        <th>First Name</th>
-
-                                        <th>Other Name</th>
-
-                                        <th>Sur Name</th>
-
-                                        <th></th>
-
-                                        <th></th>
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                                    <tr th:each="student:${StudentList}">   
-
-                                        <td th:text="${student.StudentId}"></td>
-
-                                        <td th:text="${student.StudentReference}"></td>
-
-                                        <td th:text="${student.FirstName}"></td>
-
-                                        <td th:text="${student.LastName}"></td>
-
-                                        <td th:text="${student.surname}"></td>
-
-                                        <td><a th:href="@{/FinancePortal/PaymentForm/{id}(id=${student.StudentId})}" class="btn btn-primary">Payment</a></td> 
-
-                                        <td><button th:onclick="GetStudentBills([[${student.StudentId}]])" class="btn btn-success">Bills</button></td> 
-
-
-
-                                    </tr>
-
-
-
-
-
-
-
-                                </tbody>
-
-                            </table>
-
-
-
-                        </div>
-
-                        <!--School Fees Form -->
-
-
-
-                        <div th:if="${Fees}">
-
-
-
-                            <div class="row">
-
-                                <form th:method="post" id="form" th:action="@{/FinancePortal/savefees}" th:object="${Fees}" class="card border-0 shadow-sm rounded-lg">
-
-
-
-                                    <div class="form-group ">
-
-                                        <label for="text">Amount (GHC)</label>
-
-                                        <input type="text" class="form-control" th:field="*{Amount}">
-
-                                    </div>
-
-
-
-                                    <div class="form-group ">
-
-                                        <label for="text">Specification</label>
-
-                                        <select class="form-control" id="" th:field="*{FeeSpecification}">
-
-                                            <option th:value="Non-Staff">Non-Staff</option>
-
-                                            <option th:value="Senior-Member">Senior-Member</option>
-
-
-
-                                            <option th:value="Junior-Staff"> Junior-Staff</option>
-
-                                            <option th:value="Senior-Staff">Senior-Staff</option>
-
-
-
-                                        </select>
-
-                                    </div>
-
-                                    <div class="form-group ">
-
-                                        <label for="text">Type</label>
-
-                                        <select class="form-control" id="" th:field="*{FeeType}">
-
-                                            <option th:value="School_Fees">School_Fees</option>
-
-                                            <option value="New_Admission">new_admission</option>
-
-                                        </select>
-
-
-
-                                    </div>
-
-                                    <div class="form-group">
-
-                                        <label>SELECT MONTH </label>
-
-    
-
-                                        <div class="form-group">
-
-    
-
-                                            <select   th:field="*{Moth}" class="form-control">
-
-                                                <option 
-
-                                                    th:each="d:${dates}"
-
-                                                    th:value="${d}" th:text="${d}" ></option>
-
-    
-
-                                            </select>
-
-                                        </div>
-
-                                    </div>
-
-                                    
-
-                                    <div class="form-group">
-
-                                        <label for="text ">Select Class Levels*: </label>
-
-                                        <br />
-
-                                        <th:block th:each="level:${Classlevel}">
-
-                                            <input  type="checkbox" th:value="${level}" 
-
-                                                    th:id="levels" th:name="levels" checked="true" >  
-
-                                            <label th:text="${level}"></label> 
-
-                                        </th:block>
-
-
-
-                                        <hr class="sidebar-divider">
-
-                                    </div>   
-
-                                    <div class="form-group ">
-
-                                        <label for="text">Term</label>
-
-                                        <select class="form-control " id="" th:field="*{term}">
-
-                                            <option th:Each="t:${terms}" 
-
-                                                    th:value="${t.id}" 
-
-                                                    th:text="${t.termAcademicYear}">Staff</option>
-
-
-
-                                        </select>
-
-                                    </div>
-
-                                    <div class="form-group">
-
-                                        <label> Date </label>
-
-
-
-                                        <div class="form-group">
-
-
-
-                                            <input type="text" readonly="true" class="form-control"  th:field="*{Moth}"/>
-
-
-
-                                        </div>
-
-                                    </div>
-
-                                    <button type="submit" class="form-control btn btn-primary" id="upload_btn" th:onclick="spinOnload()" >Preview Fee</button>
-
-
-
-                                    <button  class="btn btn-primary d-none" id="loading_btn" type="button">
-
-                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-
-                                        Saving.................
-
-                                    </button>
-
-
-
-                                </form>
-
-
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- PTA form -->
-
-
-
-
-
-                        <div th:if="${pta}" class="card border-0 shadow-sm rounded-lg">
-
-                            <label class="h4">Add PTA Dues</label>
-
-                            <form th:method="post" id="form" th:action="@{/FinancePortal/SavePTA}" th:object="${pta}" class="card border-0 shadow-sm rounded-lg">
-
-
-
-                                <div class="form-group col-md-4">
-
-                                    <label for="text">Amount (GHC)</label>
-
-                                    <input type="text" class="form-control" th:field="*{Amount}">
-
+                            <div id="billingProgressSection" class="d-none" aria-live="polite">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong id="billingProgressTitle">Starting billing process...</strong>
+                                    <span id="billingProgressPercent" class="text-muted small">In progress</span>
                                 </div>
-
-
-
-
-
-                                <div class="form-group col-md-4">
-
-                                    <label for="text">Term</label>
-
-                                    <select class="form-control" id="" th:field="*{term}">
-
-                                        <option th:Each="t:${pTaTerm}" th:value="${t.id}" th:text="${t.TermName}">Staff</option>
-
-
-
-                                    </select>
-
+                                <div class="progress" style="height: 12px;" role="progressbar"
+                                     aria-label="Billing process progress" aria-valuemin="0"
+                                     aria-valuemax="100" aria-valuenow="0">
+                                    <div id="billingProgressBar"
+                                         class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                                         style="width: 100%"></div>
                                 </div>
+                                <small id="billingProgressMessage" class="form-text text-muted mt-2">
+                                    Please keep this window open while the server processes billing.
+                                </small>
+                            </div>
+
+                            <div id="billingResult" class="alert d-none mt-3 mb-0" role="status"></div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" id="billingCancelButton"
+                                    class="btn btn-outline-secondary" data-dismiss="modal">
+                                Cancel
+                            </button>
+
+<!--                            <button type="button" id="billingStartButton" class="btn btn-primary">-->
+<!--                                <i class="bi bi-play-fill mr-1"></i>-->
+<!--                                Confirm and Run in Background-->
+<!--                            </button>-->
+
+                            <a th:href="@{/FinancePortal/RunBillingProcessSync}"
+                               id="billingSyncButton"
+                               class="btn btn-primary"
+                               onclick="return confirm('Confirm that you want to run billing synchronously? This may take longer to complete.');">
+                                <i class="bi bi-arrow-repeat mr-1"></i>
+                                Run Synchronously
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--School Fees Form -->
 
 
 
-                                <button type="submit" class="form-control btn btn-primary" th:onclick="">Save PTA</button>
-
-                                <button  class="btn btn-primary d-none" id="loading_btn" type="button">
-
-                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-
-                                    adding pta.................
-
-                                </button>
+            <div th:if="${Fees}">
 
 
 
-                            </form>
+                <div class="row">
+
+                    <form th:method="post" id="form" th:action="@{/FinancePortal/savefees}" th:object="${Fees}" class="card border-0 shadow-sm rounded-lg">
 
 
 
+                        <div class="form-group ">
 
+                            <label for="text">Amount (GHC)</label>
+
+                            <input type="text" class="form-control" th:field="*{Amount}">
+
+                        </div>
+
+
+
+                        <div class="form-group ">
+
+                            <label for="text">Specification</label>
+
+                            <select class="form-control" id="" th:field="*{FeeSpecification}">
+
+                                <option th:value="Non-Staff">Non-Staff</option>
+
+                                <option th:value="Senior-Member">Senior-Member</option>
+
+
+
+                                <option th:value="Junior-Staff"> Junior-Staff</option>
+
+                                <option th:value="Senior-Staff">Senior-Staff</option>
+
+
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group ">
+
+                            <label for="text">Type</label>
+
+                            <select class="form-control" id="" th:field="*{FeeType}">
+
+                                <option th:value="School_Fees">School_Fees</option>
+
+                                <option value="New_Admission">new_admission</option>
+
+                            </select>
 
 
 
                         </div>
 
-                    
-             
+                        <div class="form-group">
 
-                <div class="offset-2">
-
-                    <!-- payment form page -->
-
-                    <div th:if="${StudentDeatils}">
-
-                        <div class="card border-0 shadow-sm rounded-lg">
-
-                            <div class="col-md-8 ">
-
-                                <table class="table card">
-
-                                    <tr>
-
-                                        <td>Student Name</td>
-
-                                        <td th:text="${StudentDeatils}"></td> 
+                            <label>SELECT MONTH </label>
 
 
 
-                                    </tr>
+                            <div class="form-group">
 
-                                    <tr>
 
-                                        <td>Student Class</td>
 
-                                        <td th:text="${class}"></td></tr>
+                                <select   th:field="*{Moth}" class="form-control">
 
-                                    <tr>
+                                    <option
 
-                                        <!--td>OutStanding Balance</td>
+                                            th:each="d:${dates}"
 
-                                        <td th:text="${balance}"></td-->
+                                            th:value="${d}" th:text="${d}" ></option>
 
-                                        <td>Balance</td><td th:text="${balance}"></td>
 
-                                    </tr>
 
-                                    <tr>
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="form-group">
+
+                            <label for="text ">Select Class Levels*: </label>
+
+                            <br />
+
+                            <th:block th:each="level:${Classlevel}">
+
+                                <input  type="checkbox" th:value="${level}"
+
+                                        th:id="levels" th:name="levels" checked="true" >
+
+                                <label th:text="${level}"></label>
+
+                            </th:block>
+
+
+
+                            <hr class="sidebar-divider">
+
+                        </div>
+
+                        <div class="form-group ">
+
+                            <label for="text">Term</label>
+
+                            <select class="form-control " id="" th:field="*{term}">
+
+                                <option th:Each="t:${terms}"
+
+                                        th:value="${t.id}"
+
+                                        th:text="${t.termAcademicYear}">Staff</option>
+
+
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label> Date </label>
+
+
+
+                            <div class="form-group">
+
+
+
+                                <input type="text" readonly="true" class="form-control"  th:field="*{Moth}"/>
+
+
+
+                            </div>
+
+                        </div>
+
+                        <button type="submit" class="form-control btn btn-primary" id="upload_btn" th:onclick="spinOnload()" >Preview Fee</button>
+
+
+
+                        <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+
+                            Saving.................
+
+                        </button>
+
+
+
+                    </form>
+
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PTA form -->
+
+
+
+
+
+            <div th:if="${pta}" class="card border-0 shadow-sm rounded-lg">
+
+                <label class="h4">Add PTA Dues</label>
+
+                <form th:method="post" id="form" th:action="@{/FinancePortal/SavePTA}" th:object="${pta}" class="card border-0 shadow-sm rounded-lg">
+
+
+
+                    <div class="form-group col-md-4">
+
+                        <label for="text">Amount (GHC)</label>
+
+                        <input type="text" class="form-control" th:field="*{Amount}">
+
+                    </div>
+
+
+
+
+
+                    <div class="form-group col-md-4">
+
+                        <label for="text">Term</label>
+
+                        <select class="form-control" id="" th:field="*{term}">
+
+                            <option th:Each="t:${pTaTerm}" th:value="${t.id}" th:text="${t.TermName}">Staff</option>
+
+
+
+                        </select>
+
+                    </div>
+
+
+
+                    <button type="submit" class="form-control btn btn-primary" th:onclick="">Save PTA</button>
+
+                    <button  class="btn btn-primary d-none" id="loading_btn" type="button">
+
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+
+                        adding pta.................
+
+                    </button>
+
+
+
+                </form>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+            <div class="offset-2">
+
+                <!-- payment form page -->
+
+                <div th:if="${StudentDeatils}">
+
+                    <div class="card border-0 shadow-sm rounded-lg">
+
+                        <div class="col-md-8 ">
+
+                            <table class="table card">
+
+                                <tr>
+
+                                    <td>Student Name</td>
+
+                                    <td th:text="${StudentDeatils}"></td>
+
+
+
+                                </tr>
+
+                                <tr>
+
+                                    <td>Student Class</td>
+
+                                    <td th:text="${class}"></td></tr>
+
+                                <tr>
+
+                                    <!--td>OutStanding Balance</td>
+
+                                    <td th:text="${balance}"></td-->
+
+                                    <td>Balance</td><td th:text="${balance}"></td>
+
+                                </tr>
+
+                                <tr>
 
                                     <a th:href="@{/FinancePortal/GetStudentPayments/{id}(id=${id})}">Payments</a>
 
 
 
-                                    </tr>
+                                </tr>
 
-                                </table>
-
-                                
-
-                            </div>
+                            </table>
 
 
 
-                            <div class="offset-1 col-md-3" style="margin-top:30px; ">
-
-                                <img th:src="@{${picturepath}}" class=" img-thumbnail img-fluid "/>
-
-                            </div>
+                        </div>
 
 
 
-                            <!--school fees payment-->
+                        <div class="offset-1 col-md-3" style="margin-top:30px; ">
 
-                            <div th:if="${payment}" style="font-size:12px; ">   
+                            <img th:src="@{${picturepath}}" class=" img-thumbnail img-fluid "/>
 
-
-
-                                <form  th:object="${payment}" th:method="post" th:action="@{/FinancePortal/SavePayment}">
+                        </div>
 
 
 
-                                    <table class="table table-info" >
+                        <!--school fees payment-->
 
-                                        <tr>
+                        <div th:if="${payment}" style="font-size:12px; ">
+
+
+
+                            <form  th:object="${payment}" th:method="post" th:action="@{/FinancePortal/SavePayment}">
+
+
+
+                                <table class="table table-info" >
+
+                                    <tr>
 
                                         <p th:text="${info}" class="text-info alert-info">
 
@@ -735,69 +831,69 @@
 
                                         </p>
 
-                                        </tr>
+                                    </tr>
 
-                                        <tr>
-
-
-
-                                            <td>  <input type="hidden" class="form-control" id="student" name="student" th:value="${id}">
-
-                                            </td>
-
-                                            <td><input type="hidden" readonly="true" th:field="*{user}" ></td>
+                                    <tr>
 
 
 
-                                            <td><label >Amount:</label>
+                                        <td>  <input type="hidden" class="form-control" id="student" name="student" th:value="${id}">
 
-                                                <br /> <span>
+                                        </td>
 
-                                                    <input type="text" th:field="*{Amount}" 
+                                        <td><input type="hidden" readonly="true" th:field="*{user}" ></td>
+
+
+
+                                        <td><label >Amount:</label>
+
+                                            <br /> <span>
+
+                                                    <input type="text" th:field="*{Amount}"
 
                                                            class="form-control"></span>
 
-                                            <td>  
+                                        <td>
 
 
 
-                                                <div class="form-group ">
+                                            <div class="form-group ">
 
-                                                    <label >Payment Type</label>
+                                                <label >Payment Type</label>
 
-                                                    <select class="form-control"  th:field="*{paymentType}">
+                                                <select class="form-control"  th:field="*{paymentType}">
 
-                                                        <option value="School_Fees">School Fees</option>
+                                                    <option value="School_Fees">School Fees</option>
 
-                                                        <option value="New_Admission">new_admission</option>
+                                                    <option value="New_Admission">new_admission</option>
 
-                                                    </select>
-
-
-
-                                                </div>
+                                                </select>
 
 
 
-                                            </td>
-
-                                            <td>
-
-                                                <label>Discount</label><br />
-
-                                                <input type="text"  class="form-control" th:field="*{discount}"></td>
+                                            </div>
 
 
 
-                                            <td><br /><input type="hidden" readonly="true" th:field="*{term}" >
+                                        </td>
+
+                                        <td>
+
+                                            <label>Discount</label><br />
+
+                                            <input type="text"  class="form-control" th:field="*{discount}"></td>
 
 
 
-                                                <label class="form-control" th:text="${payment.term.TermName}">Amount:</label>
+                                        <td><br /><input type="hidden" readonly="true" th:field="*{term}" >
 
-                                            </td>
 
-                                            <td><br /><input type="submit" class="btn btn-primary " value="Approve" id="upload_btn" th:onclick="spinOnload()"></td>
+
+                                            <label class="form-control" th:text="${payment.term.TermName}">Amount:</label>
+
+                                        </td>
+
+                                        <td><br /><input type="submit" class="btn btn-primary " value="Approve" id="upload_btn" th:onclick="spinOnload()"></td>
 
                                         <button  class="btn btn-primary d-none" id="loading_btn" type="button">
 
@@ -811,251 +907,13 @@
 
 
 
-                                        </tr>
-
-
-
-                                    </table>
-
-                                </form>
-
-                            </div>
-
-
-
-
-
-                        </div> </div>
-
-
-
-                    <!---Student Payments -->
-
-                    <div th:if="${stud}">
-
-                        <div class="card border-0 shadow-sm rounded-lg" >
-
-                            <div class="col-md-10 ">
-
-
-
-                                <div class="row"><div class="col-2"> 
-
-                                        <a th:href="@{/FinancePortal/PaymentForm/{id}(id=${stud.StudentId})}" class="nav-item nav-link">Return</a></div><div> 
-
-                                        <a th:href="@{/findStudReceipt/{id}(id=${stud.StudentId})}"
-
-                                           class="nav-item nav-link">All Receipts</a></div></div>
-
-
-
-
-
-
-
-                                <table class="table  table-primary">
-
-                                    <tr>
-
-                                        <th>Student Name</th>
-
-                                        <td th:text="${stud.StudentId}"></td> 
-
-
-
-
-
-                                        <th>Student Class</th>
-
-                                        <td th:text="${class}"></td>
-
-
-
-                                        <th>Bills(Total Amount GHC)</th>
-
-                                        <td th:text="${balance}"></td>
-
-                                        <th>Payments(Total Amount GHC)</th>
-
-                                        <td th:text="${paymentt}"></td>
-
                                     </tr>
 
 
 
                                 </table>
 
-
-
-
-
-
-
-
-
-                                <table class="table table-info " id="mydata2">
-
-                                    <Label>Student Payments</label>
-
-                                    <thead>
-
-                                        <tr>
-
-                                            <th>Payment ID</th>
-
-                                            <th>Amount(GHC)</th>
-
-                                            <th>Discount (GHC)</th>
-
-                                            <th>Balance(GHC)</th>
-
-                                            <th> Payment Type </th>
-
-                                            <th> Date</th>
-
-                                            <th>Term Name</th>
-
-                                            <th>Academic Year</th>
-
-                                        </tr>
-
-
-
-                                    </thead>
-
-                                    <tbody>
-
-                                        <tr th:each="p:${studentPayments}">
-
-                                            <td th:text="${p.id}"></td>
-
-                                            <td th:text="${p.Amount}"></td>
-
-                                            <td th:text="${p.discount}"></td>
-
-                                            <td th:text="${p.Remaining}"></td>
-
-                                            <td th:text="${p.paymentType}"></td> 
-
-                                            <td th:text="${p.date}"></td>
-
-                                            <td th:text="${p.term.TermName}"></td>
-
-
-
-                                            <td th:text="${p.term.academicyear.AcademicYear.getYear()}"></td>
-
-
-
-                                        </tr>
-
-
-
-                                    </tbody>
-
-                                </table>
-
-                            </div>
-
-
-
-                        </div></div>
-
-                    <!---Class Payments Based On Term-->
-
-                    <div th:if="${KlassPayments}">
-
-                        <div class="card border-0 shadow-sm rounded-lg" >
-
-                            <div class="col-md-10 ">
-
-                                <table class="table  table-primary">
-
-                                    <tr>
-
-                                        <th>Student Class:</th>
-
-                                        <td th:text="${class}"></td>
-
-
-
-                                        <th>Total Students:</th>
-
-                                        <td th:text="${TotalStudents}"></td>
-
-                                        <th>Terms:</th>
-
-                                        <td ></td>
-
-                                        <td ></td>
-
-                                        <td ></td>
-
-                                    </tr>
-
-
-
-                                </table>
-
-                                <table class="table table-info" id="mydata3">
-
-                                    <thead>
-
-                                        <tr>
-
-                                            <th>Student Reference</th>    <th>Student Id</th><th>Total Payments</th>
-
-                                            <th>Total Bills</th><th>Balance</th><th>Term</th><th>Academic Year</th><th>OutStanding Balance</th>
-
-                                        </tr>
-
-                                    </thead>
-
-                                    <tbody>
-
-                                        <tr th:each="STP:${KlassPayments}">
-
-                                            <td th:text="${STP.stud.StudentReference}"></td>
-
-                                            <td th:text="${STP.stud.StudentId}"></td>
-
-
-
-
-
-
-
-                                            <td th:text="${STP.TotalAmountPaid}"></td>
-
-                                            <td th:text="${STP.TotalBills}"></td>
-
-                                            <td th:text="${STP.Balance}"></td>
-
-                                            <td th:text="${STP.term.TermName}"></td>
-
-                                            <td th:text="${STP.term.academicyear.AcademicYear.getYear()}"></td>
-
-                                            <td th:text="${STP.TotalOutStandingBalance}"></td>
-
-
-
-                                        </tr>
-
-
-
-                                    </tbody>
-
-                                </table>
-
-
-
-
-
-
-
-                            </div>
-
-
+                            </form>
 
                         </div>
 
@@ -1063,11 +921,235 @@
 
 
 
+                    </div> </div>
+
+
+
+                <!---Student Payments -->
+
+                <div th:if="${stud}">
+
+                    <div class="card border-0 shadow-sm rounded-lg" >
+
+                        <div class="col-md-10 ">
+
+
+
+                            <div class="row"><div class="col-2">
+
+                                <a th:href="@{/FinancePortal/PaymentForm/{id}(id=${stud.StudentId})}" class="nav-item nav-link">Return</a></div><div>
+
+                                <a th:href="@{/findStudReceipt/{id}(id=${stud.StudentId})}"
+
+                                   class="nav-item nav-link">All Receipts</a></div></div>
 
 
 
 
 
+
+
+                            <table class="table  table-primary">
+
+                                <tr>
+
+                                    <th>Student Name</th>
+
+                                    <td th:text="${stud.StudentId}"></td>
+
+
+
+
+
+                                    <th>Student Class</th>
+
+                                    <td th:text="${class}"></td>
+
+
+
+                                    <th>Bills(Total Amount GHC)</th>
+
+                                    <td th:text="${balance}"></td>
+
+                                    <th>Payments(Total Amount GHC)</th>
+
+                                    <td th:text="${paymentt}"></td>
+
+                                </tr>
+
+
+
+                            </table>
+
+
+
+
+
+
+
+
+
+                            <table class="table table-info " id="mydata2">
+
+                                <Label>Student Payments</label>
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>Payment ID</th>
+
+                                    <th>Amount(GHC)</th>
+
+                                    <th>Discount (GHC)</th>
+
+                                    <th>Balance(GHC)</th>
+
+                                    <th> Payment Type </th>
+
+                                    <th> Date</th>
+
+                                    <th>Term Name</th>
+
+                                    <th>Academic Year</th>
+
+                                </tr>
+
+
+
+                                </thead>
+
+                                <tbody>
+
+                                <tr th:each="p:${studentPayments}">
+
+                                    <td th:text="${p.id}"></td>
+
+                                    <td th:text="${p.Amount}"></td>
+
+                                    <td th:text="${p.discount}"></td>
+
+                                    <td th:text="${p.Remaining}"></td>
+
+                                    <td th:text="${p.paymentType}"></td>
+
+                                    <td th:text="${p.date}"></td>
+
+                                    <td th:text="${p.term.TermName}"></td>
+
+
+
+                                    <td th:text="${p.term.academicyear.AcademicYear.getYear()}"></td>
+
+
+
+                                </tr>
+
+
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+
+                    </div></div>
+
+                <!---Class Payments Based On Term-->
+
+                <div th:if="${KlassPayments}">
+
+                    <div class="card border-0 shadow-sm rounded-lg" >
+
+                        <div class="col-md-10 ">
+
+                            <table class="table  table-primary">
+
+                                <tr>
+
+                                    <th>Student Class:</th>
+
+                                    <td th:text="${class}"></td>
+
+
+
+                                    <th>Total Students:</th>
+
+                                    <td th:text="${TotalStudents}"></td>
+
+                                    <th>Terms:</th>
+
+                                    <td ></td>
+
+                                    <td ></td>
+
+                                    <td ></td>
+
+                                </tr>
+
+
+
+                            </table>
+
+                            <table class="table table-info" id="mydata3">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>Student Reference</th>    <th>Student Id</th><th>Total Payments</th>
+
+                                    <th>Total Bills</th><th>Balance</th><th>Term</th><th>Academic Year</th><th>OutStanding Balance</th>
+
+                                </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                <tr th:each="STP:${KlassPayments}">
+
+                                    <td th:text="${STP.stud.StudentReference}"></td>
+
+                                    <td th:text="${STP.stud.StudentId}"></td>
+
+
+
+
+
+
+
+                                    <td th:text="${STP.TotalAmountPaid}"></td>
+
+                                    <td th:text="${STP.TotalBills}"></td>
+
+                                    <td th:text="${STP.Balance}"></td>
+
+                                    <td th:text="${STP.term.TermName}"></td>
+
+                                    <td th:text="${STP.term.academicyear.AcademicYear.getYear()}"></td>
+
+                                    <td th:text="${STP.TotalOutStandingBalance}"></td>
+
+
+
+                                </tr>
+
+
+
+                                </tbody>
+
+                            </table>
+
+
+
+
+
+
+
+                        </div>
 
 
 
@@ -1083,28 +1165,144 @@
 
 
 
-                </div></div>
-
-            <!-- Bootstrap core JavaScript -->
 
 
+                </div>
 
-          
-            <script th:src="@{/script/bootstrap.min.js}" type="text/javascript"></script>
 
-            <script th:src="@{/script/select2.min.js}"></script>
 
-            <script TYPE="text/javascript">
 
-                $(document).ready(function () {
 
-                    $('#mydata1').DataTable();
 
-                    $('#mydata2').DataTable();
 
-                    $('#mydata3').DataTable();
 
+
+
+
+            </div></div>
+
+        <!-- Bootstrap core JavaScript -->
+
+
+
+
+        <script th:src="@{/script/bootstrap.min.js}" type="text/javascript"></script>
+
+        <script th:src="@{/script/select2.min.js}"></script>
+
+        <script th:inline="javascript">
+            (function () {
+                const billingUrl = /*[[@{/FinancePortal/RunBillingProcess}]]*/ "/FinancePortal/RunBillingProcess";
+                const modal = document.getElementById("billingConfirmationModal");
+                if (!modal) return;
+
+                const startButton = document.getElementById("billingStartButton");
+                const cancelButton = document.getElementById("billingCancelButton");
+                const syncButton = document.getElementById("billingSyncButton");
+                const progressSection = document.getElementById("billingProgressSection");
+                const progressTitle = document.getElementById("billingProgressTitle");
+                const progressPercent = document.getElementById("billingProgressPercent");
+                const progressBar = document.getElementById("billingProgressBar");
+                const progressMessage = document.getElementById("billingProgressMessage");
+                const resultBox = document.getElementById("billingResult");
+
+                function showResult(message, isError) {
+                    resultBox.textContent = message || (isError
+                        ? "Billing could not be completed. Please try again or check the server logs."
+                        : "The billing request has completed.");
+                    resultBox.className = "alert mt-3 mb-0 " + (isError ? "alert-danger" : "alert-success");
+                }
+
+                function resetBillingModal() {
+                    progressSection.classList.add("d-none");
+                    resultBox.className = "alert d-none mt-3 mb-0";
+                    startButton.disabled = false;
+                    cancelButton.disabled = false;
+                    syncButton.classList.remove("disabled");
+                    syncButton.removeAttribute("aria-disabled");
+                    startButton.innerHTML = '<i class="bi bi-play-fill mr-1"></i> Confirm and Run in Background';
+                    progressBar.classList.add("progress-bar-animated");
+                    progressBar.classList.remove("bg-success", "bg-danger");
+                    progressBar.classList.add("bg-primary");
+                    progressBar.style.width = "100%";
+                    progressPercent.textContent = "In progress";
+                }
+
+                modal.addEventListener("show.bs.modal", resetBillingModal);
+
+                startButton.addEventListener("click", async function () {
+                    const approved = window.confirm(
+                        "Approve running the billing process? Bills may be assigned to students based on the current fee configuration."
+                    );
+                    if (!approved) return;
+
+                    progressSection.classList.remove("d-none");
+                    resultBox.className = "alert d-none mt-3 mb-0";
+                    progressTitle.textContent = "Billing process is running...";
+                    progressMessage.textContent = "The server is processing the billing request. The bar indicates activity, not an exact percentage.";
+                    progressPercent.textContent = "Running";
+                    startButton.disabled = true;
+                    cancelButton.disabled = true;
+                    syncButton.classList.add("disabled");
+                    syncButton.setAttribute("aria-disabled", "true");
+                    startButton.innerHTML = '<span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span> Running...';
+
+                    try {
+                        // The supplied controller uses @GetMapping, so invoke it with GET.
+                        const response = await fetch(billingUrl, {
+                            method: "GET",
+                            headers: { "X-Requested-With": "XMLHttpRequest" },
+                            credentials: "same-origin"
+                        });
+                        const responseText = await response.text();
+
+                        if (!response.ok) {
+                            throw new Error("The server returned HTTP " + response.status + ".");
+                        }
+
+                        // The controller returns the FinancePortal view; extract its message if present.
+                        const parsed = new DOMParser().parseFromString(responseText, "text/html");
+                        const serverMessage = parsed.querySelector(".alert.alert-info.text-info");
+                        const message = serverMessage ? serverMessage.textContent.trim() : "";
+
+                        progressBar.classList.remove("progress-bar-animated", "progress-bar-striped");
+                        progressBar.classList.remove("bg-primary", "bg-danger");
+                        progressBar.classList.add("bg-success");
+                        progressBar.style.width = "100%";
+                        progressPercent.textContent = "Completed";
+                        progressTitle.textContent = "Billing request completed";
+                        progressMessage.textContent = "The server has returned a response.";
+                        showResult(message || "The billing endpoint returned successfully. Check the server message or logs to confirm the billing outcome.", false);
+                    } catch (error) {
+                        progressBar.classList.remove("progress-bar-animated", "progress-bar-striped", "bg-primary");
+                        progressBar.classList.add("bg-danger");
+                        progressBar.style.width = "100%";
+                        progressPercent.textContent = "Failed";
+                        progressTitle.textContent = "Billing request failed";
+                        progressMessage.textContent = "The request did not complete successfully.";
+                        showResult(error.message || "Unable to run the billing process. Please check your connection and server logs.", true);
+                    } finally {
+                        startButton.disabled = false;
+                        cancelButton.disabled = false;
+                        syncButton.classList.remove("disabled");
+                        syncButton.removeAttribute("aria-disabled");
+                        startButton.innerHTML = '<i class="bi bi-arrow-clockwise mr-1"></i> Run Again';
+                    }
                 });
+            })();
+        </script>
+
+        <script TYPE="text/javascript">
+
+            $(document).ready(function () {
+
+                $('#mydata1').DataTable();
+
+                $('#mydata2').DataTable();
+
+                $('#mydata3').DataTable();
+
+            });
 
 
 
@@ -1112,7 +1310,7 @@
 
 
 
-            </script>
+        </script>
 
 
 
@@ -1120,8 +1318,10 @@
         <footer class="footer text-center text-muted py-3 mt-auto border-top">
             <small>Powered by <strong>Quantum Publications EST: 2021</strong></small>
         </footer>
-
-    </body>
+    </div>
+</div>
+</body>
 
 </html>
+
 

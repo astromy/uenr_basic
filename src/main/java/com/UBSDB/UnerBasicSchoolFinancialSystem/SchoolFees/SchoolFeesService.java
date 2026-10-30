@@ -152,6 +152,7 @@ public class SchoolFeesService {
             StudentBill studentBil = StudentBill.builder()
                     .fees(fee)
                     .student(student)
+                    .amount((float) fee.getAmount())
                     .build();
             studentBillService.saveStudentBill(studentBil);
         }
@@ -227,6 +228,7 @@ public List<klass>SortedListOfKlasses(List<String>level){
             StudentBill studBill =StudentBill
                     .builder().student(stud)
                     .fees(fees)
+                    .amount((float) fees.getAmount())
                     .build();
             studentBillService.saveStudentBill(studBill);
 
@@ -254,9 +256,20 @@ public List<klass>SortedListOfKlasses(List<String>level){
         return terms;
 
     }
-    public List<SchoolFees>getAllSchoolFees(){
-    
+    public List<SchoolFees> getAllSchoolFees() {
     return SR.findAll();
+}
+
+    /**
+     * Returns a flat list of SchoolFees converted to SchoolFeesResponse DTOs.
+     * Used by the REST API to support live client-side filtering in the Finance Portal.
+     *
+     * @return list of SchoolFeesResponse objects
+     */
+    public List<SchoolFeesResponse> getAllSchoolFeesResponse() {
+        return SR.findAll().stream()
+                .map(SchoolFeesResponse::new)
+                .collect(Collectors.toList());
     }
     public SchoolFees findSchoolFees(SchoolFees fees){
     return SR.findById(fees.getId()).orElse(null);

@@ -42,6 +42,10 @@ public class StudentBillServiceImpl implements StudentBillService {
             if (studentBill.getFees() != null && studentBill.getTerm() == null) {
                 studentBill.setTerm(studentBill.getFees().getTerm());
             }
+            // Ensure the amount is set from the SchoolFees amount if not already set
+            if (studentBill.getFees() != null && studentBill.getAmount() == 0.0) {
+                studentBill.setAmount((float) studentBill.getFees().getAmount());
+            }
             return studentBillRepository.save(studentBill);
         } catch (Exception e) {
             System.out.println("Error saving StudentBill: " + e.getMessage());

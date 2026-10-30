@@ -7,6 +7,7 @@ package com.UBSDB.UnerBasicSchoolFinancialSystem.SchoolFees;
 
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBill;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Bill.StudentBill.StudentBillService;
+import com.UBSDB.UnerBasicSchoolFinancialSystem.Billing.DailyBillingService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.PTA.PTAService;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.Student;
 import com.UBSDB.UnerBasicSchoolFinancialSystem.Student.StudentService;
@@ -39,7 +40,9 @@ public class SchoolFeesController {
   private  @Autowired klassService ks;
   private @Autowired TermService termService;
   private  @Autowired StudentBillService studentBillService;
-  
+  @Autowired
+  private DailyBillingService dailyBillingService;
+
     @GetMapping("/ShowSchoolFeesForm")
    public String ShowSchoolFeesForm(Model model)
    {
@@ -183,12 +186,13 @@ public class SchoolFeesController {
                              .fees(tempSchoolFees.get())
                                      .student(stud)
                                      .term(tempSchoolFees.get().getTerm())
+                                     .amount((float) tempSchoolFees.get().getAmount())
 
                              .build();
                      studentBillService.saveStudentBill(studentBill);
                             }
-                       }});
-              return "Billed Successfully";
+                        }});
+               return "Billed Successfully";
         }catch(Exception ex){
             model.addAttribute("msg",ex.toString());
            ex.printStackTrace();
@@ -217,6 +221,7 @@ public class SchoolFeesController {
                                 .fees(tempSchoolFees.get())
                                 .student(stud)
                                 .term(tempSchoolFees.get().getTerm())
+                                .amount((float) tempSchoolFees.get().getAmount())
 
                                 .build();
                         studentBillService.saveStudentBill(studentBill);
@@ -229,6 +234,43 @@ public class SchoolFeesController {
         }
 
         return " null ";
+    }
+
+    /**
+     * Endpoint to manually trigger the background billing process.
+     * Runs the billing in a background thread so the user is not blocked.
+     *
+     * @param model the Spring model
+     * @return the FinancePortal view with a status message
+     */
+    @GetMapping("/RunBillingProcess")
+    public String runBillingProcess(Model model) {
+        try {
+            String result = dailyBillingService.runBillingManually();
+            model.addAttribute("msg", result);
+        } catch (Exception ex) {
+            model.addAttribute("msg", "Error starting billing process: " + ex.toString());
+            ex.printStackTrace();
+        }
+        return "FinancePortal";
+    }
+
+    /**
+     * Endpoint to run the billing process synchronously (waits for completion).
+     *
+     * @param model the Spring model
+     * @return the FinancePortal view with a status message
+     */
+    @GetMapping("/RunBillingProcessSync")
+    public String runBillingProcessSync(Model model) {
+        try {
+            String result = dailyBillingService.runBillingSynchronously();
+            model.addAttribute("msg", result);
+        } catch (Exception ex) {
+            model.addAttribute("msg", "Error running billing process: " + ex.toString());
+            ex.printStackTrace();
+        }
+        return "FinancePortal";
     }
 
 
