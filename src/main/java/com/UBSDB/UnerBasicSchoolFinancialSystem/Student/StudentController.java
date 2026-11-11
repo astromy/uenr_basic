@@ -189,7 +189,8 @@ public class StudentController {
 
     @PostMapping({"/SaveStudent"})
     public String saveStudent(Model model, Student student
-            , @RequestParam("NewStudent") String NewStudent
+            , @RequestParam("NewStudent") String NewStudent,
+                              @RequestParam("klass") String klass
             , @RequestParam("file-image") MultipartFile file)
             throws Exception {
         try {
