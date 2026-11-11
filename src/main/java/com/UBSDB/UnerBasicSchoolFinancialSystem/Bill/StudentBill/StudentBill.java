@@ -23,6 +23,7 @@ public class StudentBill {
     private Student student;
     @ManyToOne
     private SchoolFees fees;
+    private float amount;
     @ManyToOne
     private Term term;
 

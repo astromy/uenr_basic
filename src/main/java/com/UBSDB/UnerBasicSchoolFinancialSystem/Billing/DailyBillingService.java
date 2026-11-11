@@ -58,7 +58,7 @@ public class DailyBillingService {
      * For each student in the class, if the student's parent category matches
      * the fee specification, creates a StudentBill (if not already exists).
      */
-    public void processDailyBilling() {
+    public void processDailyBilling() throws Exception {
         log.info("Starting daily billing process at {}", LocalDate.now());
 
         Term currentTerm = termService.getCurrentTerm();
@@ -87,10 +87,11 @@ public class DailyBillingService {
      * @param currentTerm the current academic term
      * @return number of bills created for this class
      */
-    private int processClassBilling(klass k, Term currentTerm) {
+    private int processClassBilling(klass k, Term currentTerm) throws Exception {
         int billsCreated = 0;
-
+         log.info("{},{} started checking bills",k.getClassName(),currentTerm.getTermName());
         // Get school fees for this class and current term
+
         List<SchoolFees> classFees = schoolFeesRepository.findAll().stream()
                 .filter(fee -> fee.getKlass() != null
                         && fee.getKlass().getClassName().equals(k.getClassName())
@@ -99,13 +100,13 @@ public class DailyBillingService {
                         && fee.getTerm().getId().equals(currentTerm.getId())
                         && fee.isStatus())
                 .toList();
-
+        log.info("{} Total fees found",classFees.size());
         if (classFees.isEmpty()) {
-            log.debug("No active school fees found for class: {}", k.getClassName());
+            log.info("No active school fees found for class: {}", k.getClassName());
             return 0;
         }
 
-        log.debug("Found {} fee(s) for class: {}", classFees.size(), k.getClassName());
+        log.info("Found {} fee(s) for class: {}", classFees.size(), k.getClassName());
      klass  tempKlass=klassService.FindKlass(k.getClassName());
         // Get all active students in this class
         List<Student> students =  studentRepository.findByStudentStatusAndStudentklassClassName("in School", k.getClassName());
@@ -152,7 +153,7 @@ public class DailyBillingService {
 
                 // Check if a StudentBill already exists for this student, bill, and term
                 if (studentBillRepository.existsByStudentAndFeesAndTerm(student, fee, currentTerm)) {
-                    log.debug("StudentBill already exists for student: {}, bill: {}, term: {}",
+                    log.info("StudentBill already exists for student: {}, bill: {}, term: {}",
                             student.getStudentId(), bill.getId(), currentTerm.getId());
                     continue;
                 }
@@ -162,12 +163,13 @@ public class DailyBillingService {
                         .student(student)
                         .fees(fee)
                         .term(currentTerm)
+                        .amount((float) fee.getAmount())
                         .build();
 
                 try {
                     studentBillRepository.save(studentBill);
                     billsCreated++;
-                    log.debug("Created StudentBill for student: {} in class: {} for fee specification: {}",
+                    log.info("Created StudentBill for student: {} in class: {} for fee specification: {}",
                             student.getStudentId(), k.getClassName(), feeSpecification);
 
                     // Create notification for the student
@@ -198,5 +200,54 @@ public class DailyBillingService {
         }
 
         return billsCreated;
+    }
+
+    /**
+     * Manually triggers the daily billing process in a background thread.
+     * Returns immediately with a status message.
+     *
+     * @return status message indicating the billing process has been started
+     */
+    public String runBillingManually() {
+        log.info("Manual billing process triggered");
+
+        Runnable r = () -> {
+            try {
+                processDailyBilling();
+            } catch (Exception e) {
+                log.error("Error occurred during manual billing process: {}", e.getMessage(), e);
+            }
+        };
+
+        Thread t = new Thread(r);
+        t.start();
+
+        return "Billing process started in background. Check logs for details.";
+    }
+
+    /**
+     * Runs the billing process synchronously and returns the result.
+     *
+     * @return status message with the result of the billing process
+     */
+    public String runBillingSynchronously() throws Exception{
+        try {
+            int totalBillsCreated = 0;
+            Term currentTerm = termService.getCurrentTerm();
+            if (currentTerm == null) {
+                return "No current term found. Please contact admin to set the current term.";
+            }
+
+            List<klass> allClasses = klassService.AllKlass();
+            for (klass k : allClasses) {
+
+                totalBillsCreated += processClassBilling(k, currentTerm);
+            }
+
+            return "Billing process completed successfully. Total bills created: " + totalBillsCreated;
+        } catch (Exception e) {
+            log.error("Error occurred during synchronous billing process: {}", e.getMessage(), e);
+            return "Error occurred during billing process: " + e.getMessage();
+        }
     }
 }

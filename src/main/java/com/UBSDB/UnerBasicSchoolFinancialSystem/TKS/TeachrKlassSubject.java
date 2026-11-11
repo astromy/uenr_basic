@@ -25,7 +25,6 @@ import java.util.UUID;
 @Setter
 @Getter
 @AllArgsConstructor
-@Table(name="Klass_Teacher_Subject")
 public class TeachrKlassSubject  {
     @Id
   // @GeneratedValue(strategy = GenerationType.UUID)

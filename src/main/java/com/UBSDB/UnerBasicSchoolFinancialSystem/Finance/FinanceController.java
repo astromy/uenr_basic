@@ -68,6 +68,7 @@ public class FinanceController {
         };
         r1.run();
         model.addAttribute("dash_oard", true);
+        model.addAttribute("billingForm", true);
         if (this.Ts.getCurrentTerm() == null) {
             model.addAttribute("msg", "Please Contact Admin To Set Current Term");
             return "FinancePortal";
