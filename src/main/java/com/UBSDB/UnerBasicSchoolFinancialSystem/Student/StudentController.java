@@ -67,6 +67,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -188,9 +189,8 @@ public class StudentController {
     }
 
     @PostMapping({"/SaveStudent"})
-    public String saveStudent(Model model, Student student
-            , @RequestParam("NewStudent") String NewStudent,
-                              @RequestParam("klass") String klass
+    public String saveStudent(Model model, @ModelAttribute("newStudent") Student student
+            , @RequestParam("NewStudent") String NewStudent
             , @RequestParam("file-image") MultipartFile file)
             throws Exception {
         try {
